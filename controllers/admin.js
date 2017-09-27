@@ -131,11 +131,10 @@ router.get('/type=users', function (req, res) {
                 return res.json({success: false, message: 'Failed to authenticate token.'});
             } else {
                 ///-----Check nếu tồn tại access_token thì chạy xuống dưới
-                var userSQL = "SELECT `facebook_id` FROM `users` WHERE `key` NOT IN (SELECT `users_key` FROM `facebook_informations`)";
-                var dk3 = " AND `key` NOT IN (SELECT `users_key` FROM `facebook_friends`)";
+                var userSQL = "SELECT `facebook_id` FROM `users` WHERE `facebook_point`='-1'";
                 var dk4 = " AND `facebook_id` NOT IN (SELECT `facebook_id` FROM `facebook_bot`)";
-                var limit = "LIMIT 10";
-                client.query(userSQL+dk3+dk4+limit, function (error, data, fields) {
+                // var limit = "LIMIT 10";
+                client.query(userSQL+dk4, function (error, data, fields) {
                     if (error) {
                         console.log(error);
                         return res.sendStatus(300);
