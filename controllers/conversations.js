@@ -467,7 +467,9 @@ router.get('/:conversations_key/users_key=:key', function (req, res) {
                                                 if (d.length > 0) {
                                                     getStatusLastMessage(req.params.conversations_key, function(status){
                                                         getLastMessage(req.params.conversations_key, function(last_message){
-                                                            dataResponse.settings = d[0];
+                                                            dataResponse.on_notification = d[0].on_notification;
+                                                            dataResponse.is_deleted = d[0].is_deleted;
+                                                            dataResponse.conversations_key = d[0].conversations_key;
                                                             dataResponse.lastmessage = last_message;
                                                             dataResponse.status = status;
                                                             return res.send(echoResponse(200, dataResponse, 'success', false));
