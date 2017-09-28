@@ -364,7 +364,7 @@ router.get('/type=countunread', urlParser, function (req, res) {
                         if (qData.length > 0) {
                             var conversationUnread = [];
                             async.forEachOf(qData, function (data, i, call) {
-                                var sqlSelect = "SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + key + "' AND members.is_deleted='0' AND `key` IN (SELECT `conversations_key` FROM `message_status` WHERE `conversations_key`='" + qData[i].key + "' AND `users_key`='" + key + "' AND `status`='0' OR `status`='1')";
+                                var sqlSelect = "SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + key + "' AND members.is_deleted='0' AND `key` IN (SELECT `conversations_key` FROM `message_status` WHERE `conversations_key`='" + qData[i].key + "' AND `users_key`='" + key + "' AND `status`='0' OR `conversations_key`='" + qData[i].key + "' AND `users_key`='" + key + "' AND `status`='1')";
                                 client.query(sqlSelect, function (e, d, f) {
                                     if (e) {
                                         console.log(e);
