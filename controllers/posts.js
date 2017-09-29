@@ -240,11 +240,34 @@ router.post('/new', urlParser, function (req, res) {
                                                 
                                             // },
                                             // function(call) {
-                                                if (req.body.type == 'albums' || req.body.type == 'photo') {
-                                                    //Check porn image
-                                                    //checkNow(dInsert.insertId);
-                                                    //sendNotificationToFriend(dInsert.insertId);
-                                                    //-- end check
+                                                // if (req.body.type == 'albums' || req.body.type == 'photo') {
+                                                //     //Check porn image
+                                                //     //checkNow(dInsert.insertId);
+                                                //     //sendNotificationToFriend(dInsert.insertId);
+                                                //     //-- end check
+                                                    
+                                                // } else if (req.body.type == 'video') {
+                                                //     var json;
+                                                //     if (isJsonString(req.body.video)) {
+                                                //         json = JSON.parse(req.body.video);
+                                                //         for (var n = 0; n < json.length; n++) {
+                                                //             var insertMember = "INSERT INTO `store_videos`(`video_url`,`users_key`,`posts_id`)";
+                                                //             var dataMember = "VALUES ('" + json[n].video_url + "','" + req.body.users_key + "','" + dInsert.insertId + "')";
+                                                //             client.query(insertMember + dataMember, function (eMember, rMember, fMember) {
+                                                //                 if (eMember) {
+                                                //                     console.log(eMember);
+                                                //                     return res.sendStatus(300);
+                                                //                 } else {
+                                                //                     console.log("INSERT VIDEO SUCCESS");
+                                                //                 }
+                                                //             });
+                                                //         }
+                                                //         // call(null, 'three');
+                                                //     }
+                                                // } else {
+                                                //     // call(null, 'three');
+                                                //     // sendNotificationToFriend(dInsert.insertId);
+                                                // }
                                                     var json;
                                                     if (isJsonString(req.body.albums)) {
                                                         json = JSON.parse(req.body.albums);
@@ -267,29 +290,6 @@ router.post('/new', urlParser, function (req, res) {
                                                         // call(null, 'three');
                                                         console.log("ERROR JSON");
                                                     }
-                                                } else if (req.body.type == 'video') {
-                                                    var json;
-                                                    if (isJsonString(req.body.video)) {
-                                                        json = JSON.parse(req.body.video);
-                                                        for (var n = 0; n < json.length; n++) {
-                                                            var insertMember = "INSERT INTO `store_videos`(`video_url`,`users_key`,`posts_id`)";
-                                                            var dataMember = "VALUES ('" + json[n].video_url + "','" + req.body.users_key + "','" + dInsert.insertId + "')";
-                                                            client.query(insertMember + dataMember, function (eMember, rMember, fMember) {
-                                                                if (eMember) {
-                                                                    console.log(eMember);
-                                                                    return res.sendStatus(300);
-                                                                } else {
-                                                                    console.log("INSERT VIDEO SUCCESS");
-                                                                }
-                                                            });
-                                                        }
-                                                        // call(null, 'three');
-                                                    }
-                                                } else {
-                                                    // call(null, 'three');
-                                                    // sendNotificationToFriend(dInsert.insertId);
-                                                }
-
                                                 if (req.body.tags) {
                                                     var sqlCurrent = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
                                                     client.query(sqlCurrent, function (cError, cData, cField) {
