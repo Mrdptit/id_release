@@ -305,6 +305,7 @@ router.post('/type=params', urlParser, function (req, res) {
                                     var other = "SELECT * FROM `other_information` WHERE `users_key`='" + rsss[i].key + "'";
                                     client.query(other, function (eGet, dGet, fGet) {
                                         if (eGet) {
+                                            console.log(eGet);
                                             return res.send(echoResponse(300, 'error', JSON.stringify(eGet), true));
                                         } else {
                                             if (dGet.length > 0) {
