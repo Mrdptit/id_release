@@ -310,81 +310,33 @@ router.post('/type=params', urlParser, function(req, res) {
                                             return res.send(echoResponse(300, 'error', JSON.stringify(eGet), true));
                                         } else {
                                             if (dGet.length > 0) {
-                                                //async.forEachOf(dGet, function (dataElementt, ii, callbackk) {
-                                                var heightUser = dGet[0].height;
-                                                var weightUser = dGet[0].weight;
-                                                if (req.body.height != '-1') {
-                                                    if (parseInt(heightUser) >= heightInt) {
-                                                        var date = new Date(rsss[i].birthday);
-                                                        var today = new Date();
-                                                        var age = today.getFullYear() - date.getFullYear();
-                                                        if (age >= min_age && age <= max_age) {
-                                                            rsss[i].year_old = age;
-                                                            rsss[i].height = dGet[0].height;
-                                                            rsss[i].industry = dGet[0].industry;
-                                                            arrayMembers.push(rsss[i]);
-                                                        }
-                                                        if (req.body.gender == '-1' || req.body.gender == '2') {
-                                                            rsss[i].year_old = age;
-                                                            rsss[i].height = dGet[0].height;
-                                                            rsss[i].industry = dGet[0].industry;
+                                                var chieucao = parseInt(dGet[0].height);
+                                                var cannang = parseInt(dGet[0].weight);
+                                                var date = new Date(rsss[i].birthday);
+                                                var today = new Date();
+                                                var age = today.getFullYear() - date.getFullYear();
+                                                if (age >= min_age && age <= max_age) {
+                                                    rsss[i].year_old = age;
+                                                    rsss[i].height = dGet[0].height;
+                                                    rsss[i].industry = dGet[0].industry;
+                                                    if (req.body.height == '-1') {
+                                                        arrayMembers.push(rsss[i]);
+                                                    } else {
+                                                        if (chieucao >= heightInt) {
                                                             arrayMembers.push(rsss[i]);
                                                         }
                                                     }
-                                                } else {
-                                                    var date = new Date(rsss[i].birthday);
-                                                    var today = new Date();
-                                                    var age = today.getFullYear() - date.getFullYear();
-                                                    if (age >= min_age && age <= max_age) {
-                                                        rsss[i].year_old = age;
-                                                        rsss[i].height = dGet[0].height;
-                                                        rsss[i].industry = dGet[0].industry;
+                                                    // 
+                                                    if (req.body.weight == '-1') {
                                                         arrayMembers.push(rsss[i]);
+                                                    } else {
+                                                        if (cannang >= weightInt) {
+                                                            arrayMembers.push(rsss[i]);
+                                                        }
                                                     }
-                                                    if (req.body.gender == '-1' || req.body.gender == '2') {
-                                                        rsss[i].year_old = age;
-                                                        rsss[i].height = dGet[0].height;
-                                                        rsss[i].industry = dGet[0].industry;
-                                                        arrayMembers.push(rsss[i]);
-                                                    }
+                                                    
                                                 }
-                                                if (req.body.weight != '-1') {
-                                                    if (parseInt(weightUser) >= weightInt) {
-                                                        var date = new Date(rsss[i].birthday);
-                                                        var today = new Date();
-                                                        var age = today.getFullYear() - date.getFullYear();
-                                                        if (age >= min_age && age <= max_age) {
-                                                            rsss[i].year_old = age;
-                                                            rsss[i].height = dGet[0].height;
-                                                            rsss[i].industry = dGet[0].industry;
-                                                            arrayMembers.push(rsss[i]);
-                                                        }
-                                                        if (req.body.gender == '-1' || req.body.gender == '2') {
-                                                            rsss[i].year_old = age;
-                                                            rsss[i].height = dGet[0].height;
-                                                            rsss[i].industry = dGet[0].industry;
-                                                            arrayMembers.push(rsss[i]);
-                                                        }
-                                                    }
-                                                } else {
-                                                    var date = new Date(rsss[i].birthday);
-                                                    var today = new Date();
-                                                    var age = today.getFullYear() - date.getFullYear();
-                                                    if (age >= min_age && age <= max_age) {
-                                                        rsss[i].year_old = age;
-                                                        rsss[i].height = dGet[0].height;
-                                                        rsss[i].industry = dGet[0].industry;
-                                                        arrayMembers.push(rsss[i]);
-                                                    }
-                                                    if (req.body.gender == '-1' || req.body.gender == '2') {
-                                                        rsss[i].year_old = age;
-                                                        rsss[i].height = dGet[0].height;
-                                                        rsss[i].industry = dGet[0].industry;
-                                                        arrayMembers.push(rsss[i]);
-                                                    }
-                                                }
-                                                console.log(parseInt(heightUser) + '-' + heightInt + '--' + parseInt(weightUser) + '-' + weightInt);
-                                                //});
+                                                
                                                 if (i === rsss.length - 1) {
                                                     if (arrayMembers.length > 0) {
                                                         return res.send(echoResponse(200, arrayMembers, 'success', false));
