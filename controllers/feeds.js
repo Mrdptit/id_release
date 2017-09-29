@@ -541,91 +541,84 @@ router.get('/type=myalbums', function (req, res) {
         return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
     }
 });
-// AVATAR
-router.get('/type=avatar', function (req, res) {
+/// AVATAR
+router.get('/type=avatar', function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     if (token) {
-        jwt.verify(token, config.secret, function (err, decoded) {
+        jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
-                return res.json({success: false, message: 'Failed to authenticate token.'});
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
                 var key = req.body.key || req.query.key || req.params.key;
-                var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + key + "'";
+                var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + key + "' AND `type`='avatar'";
                 var orderBy = "ORDER BY `posted_time` DESC";
-                client.query(selectSQL + orderBy, function (ePost, post, fPost) {
+                client.query(selectSQL + orderBy, function(ePost, post, fPost) {
                     if (ePost) {
                         console.log(ePost);
                         return res.sendStatus(300);
                     } else {
                         if (post.length > 0) {
-                                var postID = [];
-                                var postArray = [];
-                                console.log("Feeds: "+ key);
-                                checkReadWall(post, key, function(isRead){
-                                    if (isRead) {
-                                        postID = isRead;
-                                        var last_post = req.body.last_post || req.query.last_post || req.params.last_post;
-                                        if (last_post) {
-                                            // Sắp xếp lại mảng theo ID, và lấy vị trí bài cuối client gửi lên.
-                                            postID = _.sortBy(postID);
-                                            postID.reverse();
-                                            var last = postID.indexOf(parseInt(last_post));
-                                            // Vị trí bài đầu tiên
-                                            var vitribaidautien = last+1;
-                                            // Nếu vị trí bài cuối truyền lên mà bằng chính độ dài của mảng trừ đi 1
-                                            // Tức là bài viết cuối cùng trong mảng, thì trả về không còn bài nào.
-                                            if (last === postID.length - 1) {
-                                                return res.send(echoResponse(404, 'No posts', 'success', true));
+                            var postID = post;
+                            var last_post = req.body.last_post || req.query.last_post || req.params.last_post;
+                            if (last_post) {
+                                // Sắp xếp lại mảng theo ID, và lấy vị trí bài cuối client gửi lên.
+                                postID = _.sortBy(postID);
+                                postID.reverse();
+                                var last = postID.indexOf(parseInt(last_post));
+                                // Vị trí bài đầu tiên
+                                var vitribaidautien = last + 1;
+                                // Nếu vị trí bài cuối truyền lên mà bằng chính độ dài của mảng trừ đi 1
+                                // Tức là bài viết cuối cùng trong mảng, thì trả về không còn bài nào.
+                                if (last === postID.length - 1) {
+                                    return res.send(echoResponse(404, 'No posts', 'success', true));
+                                }
+                                var vitribaicuoi;
+                                if (last + MOILANLAY < postID.length) {
+                                    // Nếu mà vị trí bài cuối cần lấy mà nhỏ hơn độ dài của mảng đó
+                                    // Thì bài cuối sẽ bằng vị trí bài cuối truyền lên + mỗi lần lấy
+                                    vitribaicuoi = last + MOILANLAY;
+                                } else {
+                                    // Vì vị trí của bài cuối nhỏ hơn độ dài của mảng
+                                    // Nên vị trí của bài cuối bằng độ dài của mảng trừ đi 1
+                                    vitribaicuoi = postID.length - 1;
+                                }
+                                var listPost = [];
+                                async.forEachOf(postID, function(element, index, call) {
+                                    if (index >= vitribaidautien && index <= vitribaicuoi) {
+                                        getPost(postID[index], key, function(onepost) {
+                                            listPost.push(onepost);
+                                            if (index === vitribaicuoi) {
+                                                return res.send(echoResponse(200, listPost, 'success', true));
                                             }
-                                            var vitribaicuoi;
-                                            if (last+MOILANLAY < postID.length) {
-                                                // Nếu mà vị trí bài cuối cần lấy mà nhỏ hơn độ dài của mảng đó
-                                                // Thì bài cuối sẽ bằng vị trí bài cuối truyền lên + mỗi lần lấy
-                                                vitribaicuoi = last+MOILANLAY;
-                                            } else {
-                                                // Vì vị trí của bài cuối nhỏ hơn độ dài của mảng
-                                                // Nên vị trí của bài cuối bằng độ dài của mảng trừ đi 1
-                                                vitribaicuoi = postID.length-1;
-                                            }
-                                            var listPost = [];
-                                            async.forEachOf(postID, function(element, index, call){
-                                                if (index >= vitribaidautien && index <= vitribaicuoi) {
-                                                    getPost(postID[index], key, function(onepost){
-                                                        listPost.push(onepost);
-                                                        if (index === vitribaicuoi) {
-                                                            return res.send(echoResponse(200, listPost, 'success', true));
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        } else {
-                                            postID = _.sortBy(postID);
-                                            postID.reverse();
-                                            var vitribaicuoi;
-                                            if (MOILANLAY < postID.length) {
-                                                // Nếu mà vị trí bài cuối cần lấy mà nhỏ hơn độ dài của mảng đó
-                                                // Thì bài cuối sẽ bằng vị trí bài cuối truyền lên + mỗi lần lấy
-                                                vitribaicuoi = MOILANLAY;
-                                            } else {
-                                                // Vì vị trí của bài cuối nhỏ hơn độ dài của mảng
-                                                // Nên vị trí của bài cuối bằng độ dài của mảng trừ đi 1
-                                                vitribaicuoi = postID.length-1;
-                                            }
-                                            var listPost = [];
-                                            async.forEachOf(postID, function(element, index, call){
-                                                if (index <= vitribaicuoi) {
-                                                    getPost(postID[index], key, function(onepost){
-                                                        listPost.push(onepost);
-                                                        if (index === vitribaicuoi) {
-                                                            return res.send(echoResponse(200, listPost, 'success', true));
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        }
-                                        //--- end async
+                                        });
                                     }
                                 });
+                            } else {
+                                postID = _.sortBy(postID);
+                                postID.reverse();
+                                var vitribaicuoi;
+                                if (MOILANLAY < postID.length) {
+                                    // Nếu mà vị trí bài cuối cần lấy mà nhỏ hơn độ dài của mảng đó
+                                    // Thì bài cuối sẽ bằng vị trí bài cuối truyền lên + mỗi lần lấy
+                                    vitribaicuoi = MOILANLAY;
+                                } else {
+                                    // Vì vị trí của bài cuối nhỏ hơn độ dài của mảng
+                                    // Nên vị trí của bài cuối bằng độ dài của mảng trừ đi 1
+                                    vitribaicuoi = postID.length - 1;
+                                }
+                                var listPost = [];
+                                async.forEachOf(postID, function(element, index, call) {
+                                    if (index <= vitribaicuoi) {
+                                        getPost(postID[index], key, function(onepost) {
+                                            listPost.push(onepost);
+                                            if (index === vitribaicuoi) {
+                                                return res.send(echoResponse(200, listPost, 'success', true));
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+
                         } else {
                             return res.send(echoResponse(404, 'No posts', 'success', true));
                         }
@@ -637,6 +630,98 @@ router.get('/type=avatar', function (req, res) {
         return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
     }
 });
+// END AVATAR
+// COVER
+router.get('/type=cover', function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                var key = req.body.key || req.query.key || req.params.key;
+                var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + key + "' AND `type`='cover'";
+                var orderBy = "ORDER BY `posted_time` DESC";
+                client.query(selectSQL + orderBy, function(ePost, post, fPost) {
+                    if (ePost) {
+                        console.log(ePost);
+                        return res.sendStatus(300);
+                    } else {
+                        if (post.length > 0) {
+                            var postID = post;
+                            var last_post = req.body.last_post || req.query.last_post || req.params.last_post;
+                            if (last_post) {
+                                // Sắp xếp lại mảng theo ID, và lấy vị trí bài cuối client gửi lên.
+                                postID = _.sortBy(postID);
+                                postID.reverse();
+                                var last = postID.indexOf(parseInt(last_post));
+                                // Vị trí bài đầu tiên
+                                var vitribaidautien = last + 1;
+                                // Nếu vị trí bài cuối truyền lên mà bằng chính độ dài của mảng trừ đi 1
+                                // Tức là bài viết cuối cùng trong mảng, thì trả về không còn bài nào.
+                                if (last === postID.length - 1) {
+                                    return res.send(echoResponse(404, 'No posts', 'success', true));
+                                }
+                                var vitribaicuoi;
+                                if (last + MOILANLAY < postID.length) {
+                                    // Nếu mà vị trí bài cuối cần lấy mà nhỏ hơn độ dài của mảng đó
+                                    // Thì bài cuối sẽ bằng vị trí bài cuối truyền lên + mỗi lần lấy
+                                    vitribaicuoi = last + MOILANLAY;
+                                } else {
+                                    // Vì vị trí của bài cuối nhỏ hơn độ dài của mảng
+                                    // Nên vị trí của bài cuối bằng độ dài của mảng trừ đi 1
+                                    vitribaicuoi = postID.length - 1;
+                                }
+                                var listPost = [];
+                                async.forEachOf(postID, function(element, index, call) {
+                                    if (index >= vitribaidautien && index <= vitribaicuoi) {
+                                        getPost(postID[index], key, function(onepost) {
+                                            listPost.push(onepost);
+                                            if (index === vitribaicuoi) {
+                                                return res.send(echoResponse(200, listPost, 'success', true));
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                postID = _.sortBy(postID);
+                                postID.reverse();
+                                var vitribaicuoi;
+                                if (MOILANLAY < postID.length) {
+                                    // Nếu mà vị trí bài cuối cần lấy mà nhỏ hơn độ dài của mảng đó
+                                    // Thì bài cuối sẽ bằng vị trí bài cuối truyền lên + mỗi lần lấy
+                                    vitribaicuoi = MOILANLAY;
+                                } else {
+                                    // Vì vị trí của bài cuối nhỏ hơn độ dài của mảng
+                                    // Nên vị trí của bài cuối bằng độ dài của mảng trừ đi 1
+                                    vitribaicuoi = postID.length - 1;
+                                }
+                                var listPost = [];
+                                async.forEachOf(postID, function(element, index, call) {
+                                    if (index <= vitribaicuoi) {
+                                        getPost(postID[index], key, function(onepost) {
+                                            listPost.push(onepost);
+                                            if (index === vitribaicuoi) {
+                                                return res.send(echoResponse(200, listPost, 'success', true));
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+
+                        } else {
+                            return res.send(echoResponse(404, 'No posts', 'success', true));
+                        }
+                    }
+                });
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
+// END COVER
+
 // END AVATAR
 router.get('/type=myalbumscount', function (req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
