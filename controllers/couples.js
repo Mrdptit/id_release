@@ -284,10 +284,10 @@ router.post('/type=params', urlParser, function (req, res) {
                 }
 
                 var param13;
-                if (req.body.gender != '2' || req.body.gender != '-1') {
-                    param13 = " AND `sex`='" + req.body.gender + "'";
-                } else {
+                if (req.body.gender == '2' || req.body.gender == '-1') {
                     param13 = "";
+                } else {
+                    param13 = " AND `sex`='" + req.body.gender + "'";
                 }
                 console.log(JSON.stringify(req.body));
                 var orderby = "ORDER BY RAND() LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10);
