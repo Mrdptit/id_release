@@ -7,6 +7,8 @@ var escapeSQL = require('sqlstring');
 var jwt = require('jsonwebtoken');
 var async = require('async');
 
+var _ = require('lodash');
+
 var moment = require('moment-timezone');
 // parse application/x-www-form-urlencoded
 var urlParser = bodyParser.urlencoded({ extended: false });
@@ -338,8 +340,9 @@ router.post('/type=params', urlParser, function(req, res) {
                                                 }
                                                 
                                                 if (i === rsss.length - 1) {
-                                                    if (arrayMembers.length > 0) {
-                                                        return res.send(echoResponse(200, arrayMembers, 'success', false));
+                                                    var last = _.sortedUniq(arrayMembers);
+                                                    if (last.length > 0) {
+                                                        return res.send(echoResponse(200, last, 'success', false));
                                                     } else {
                                                         return res.send(echoResponse(404, 'No user', 'success', true));
                                                     }
