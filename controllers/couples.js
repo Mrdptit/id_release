@@ -322,41 +322,39 @@ router.post('/type=params', urlParser, function(req, res) {
                                                     rsss[i].height = dGet[0].height;
                                                     rsss[i].industry = dGet[0].industry;
                                                     if (req.body.height == '-1') {
-                                                        isExistObject(arrayMembers, rsss[i], function(isDuplicate){
-                                                            if (isDuplicate == false) {
-                                                                arrayMembers.push(rsss[i]);
-                                                            }
-                                                        });
+                                                        var b = isExistObject(arrayMembers, rsss[i]);
+                                                        if (b == false) {
+                                                            arrayMembers.push(rsss[i]);
+                                                        }
                                                     } else {
                                                         if (chieucao >= heightInt) {
-                                                            isExistObject(arrayMembers, rsss[i], function(isDuplicate){
-                                                                if (isDuplicate == false) {
-                                                                    arrayMembers.push(rsss[i]);
-                                                                }
-                                                            });
+                                                            var b = isExistObject(arrayMembers, rsss[i]);
+                                                            if (b == false) {
+                                                                arrayMembers.push(rsss[i]);
+                                                            }
                                                         }
                                                     }
                                                     // 
                                                     if (req.body.weight == '-1') {
-                                                        isExistObject(arrayMembers, rsss[i], function(isDuplicate){
-                                                            if (isDuplicate == false) {
-                                                                arrayMembers.push(rsss[i]);
-                                                            }
-                                                        });
+                                                        var b = isExistObject(arrayMembers, rsss[i]);
+                                                        if (b == false) {
+                                                            arrayMembers.push(rsss[i]);
+                                                        }
                                                     } else {
                                                         if (cannang >= weightInt) {
-                                                            isExistObject(arrayMembers, rsss[i], function(isDuplicate){
-                                                                if (isDuplicate == false) {
-                                                                    arrayMembers.push(rsss[i]);
-                                                                }
-                                                            });
+                                                            var b = isExistObject(arrayMembers, rsss[i]);
+                                                            if (b == false) {
+                                                                arrayMembers.push(rsss[i]);
+                                                            }
                                                         }
                                                     }
+                                                    
                                                 }
                                                 
                                                 if (i === rsss.length - 1) {
-                                                    if (arrayMembers.length > 0) {
-                                                        return res.send(echoResponse(200, arrayMembers, 'success', false));
+                                                    var last = _.uniqBy(arrayMembers, 'key');
+                                                    if (last.length > 0) {
+                                                        return res.send(echoResponse(200, last, 'success', false));
                                                     } else {
                                                         return res.send(echoResponse(404, 'No user', 'success', true));
                                                     }
@@ -392,12 +390,12 @@ router.post('/type=params', urlParser, function(req, res) {
     }
 });
 
-function isExistObject(list, position, callback){
+function isExistObject(list, position){
     var data = _.find(list, ["key", position.key]);
     if(_.isObject(data)){
-        callback(true);
+        return true;
     }else{
-        callback(false);
+        return false;
     }
 }
 
