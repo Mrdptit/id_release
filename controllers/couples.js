@@ -324,7 +324,7 @@ router.post('/type=params', urlParser, function(req, res) {
                                                             rsss[i].industry = dGet[0].industry;
                                                             arrayMembers.push(rsss[i]);
                                                         }
-                                                        if (req.body.gender != '-1' || req.body.gender != '2') {
+                                                        if (req.body.gender == '-1' || req.body.gender == '2') {
                                                             rsss[i].year_old = age;
                                                             rsss[i].height = dGet[0].height;
                                                             rsss[i].industry = dGet[0].industry;
@@ -341,7 +341,7 @@ router.post('/type=params', urlParser, function(req, res) {
                                                         rsss[i].industry = dGet[0].industry;
                                                         arrayMembers.push(rsss[i]);
                                                     }
-                                                    if (req.body.gender != '-1' || req.body.gender != '2') {
+                                                    if (req.body.gender == '-1' || req.body.gender == '2') {
                                                         rsss[i].year_old = age;
                                                         rsss[i].height = dGet[0].height;
                                                         rsss[i].industry = dGet[0].industry;
@@ -359,7 +359,7 @@ router.post('/type=params', urlParser, function(req, res) {
                                                             rsss[i].industry = dGet[0].industry;
                                                             arrayMembers.push(rsss[i]);
                                                         }
-                                                        if (req.body.gender != '-1' || req.body.gender != '2') {
+                                                        if (req.body.gender == '-1' || req.body.gender == '2') {
                                                             rsss[i].year_old = age;
                                                             rsss[i].height = dGet[0].height;
                                                             rsss[i].industry = dGet[0].industry;
@@ -376,7 +376,7 @@ router.post('/type=params', urlParser, function(req, res) {
                                                         rsss[i].industry = dGet[0].industry;
                                                         arrayMembers.push(rsss[i]);
                                                     }
-                                                    if (req.body.gender != '-1' || req.body.gender != '2') {
+                                                    if (req.body.gender == '-1' || req.body.gender == '2') {
                                                         rsss[i].year_old = age;
                                                         rsss[i].height = dGet[0].height;
                                                         rsss[i].industry = dGet[0].industry;
