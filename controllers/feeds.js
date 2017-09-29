@@ -954,7 +954,7 @@ function checkPostImage(list_post, isRead) {
                 isRead(null);
             } else {
                 if (data.length > 0) {
-                    if (data[0].type == 'photo' || data[0].type == 'albums') {
+                    if (data[0].type == 'photo' || data[0].type == 'albums' || data[0].type == 'avatar' || data[0].type == 'cover') {
                         baivietanh.push(data[0].id);
                     }
                 } else {

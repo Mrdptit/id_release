@@ -277,14 +277,14 @@ router.post('/type=params', urlParser, function (req, res) {
                     param11 = "";
                 }
                 var param12;
-                if (req.body.same_city == '1' && req.body.same_city != '-1') {
+                if (req.body.same_city == '1') {
                     param12 = " AND `city`='" + req.body.city + "'";
                 } else {
                     param12 = "";
                 }
 
                 var param13;
-                if (req.body.gender != '2') {
+                if (req.body.gender != '2' || req.body.gender != '-1') {
                     param13 = " AND `sex`='" + req.body.gender + "'";
                 } else {
                     param13 = "";
