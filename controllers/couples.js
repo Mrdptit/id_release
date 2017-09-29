@@ -322,27 +322,41 @@ router.post('/type=params', urlParser, function(req, res) {
                                                     rsss[i].height = dGet[0].height;
                                                     rsss[i].industry = dGet[0].industry;
                                                     if (req.body.height == '-1') {
-                                                        arrayMembers.push(rsss[i]);
+                                                        isExistObject(arrayMembers, rsss[i], function(isDuplicate){
+                                                            if (isDuplicate == false) {
+                                                                arrayMembers.push(rsss[i]);
+                                                            }
+                                                        });
                                                     } else {
                                                         if (chieucao >= heightInt) {
-                                                            arrayMembers.push(rsss[i]);
+                                                            isExistObject(arrayMembers, rsss[i], function(isDuplicate){
+                                                                if (isDuplicate == false) {
+                                                                    arrayMembers.push(rsss[i]);
+                                                                }
+                                                            });
                                                         }
                                                     }
                                                     // 
                                                     if (req.body.weight == '-1') {
-                                                        arrayMembers.push(rsss[i]);
+                                                        isExistObject(arrayMembers, rsss[i], function(isDuplicate){
+                                                            if (isDuplicate == false) {
+                                                                arrayMembers.push(rsss[i]);
+                                                            }
+                                                        });
                                                     } else {
                                                         if (cannang >= weightInt) {
-                                                            arrayMembers.push(rsss[i]);
+                                                            isExistObject(arrayMembers, rsss[i], function(isDuplicate){
+                                                                if (isDuplicate == false) {
+                                                                    arrayMembers.push(rsss[i]);
+                                                                }
+                                                            });
                                                         }
                                                     }
-                                                    
                                                 }
                                                 
                                                 if (i === rsss.length - 1) {
-                                                    var last = _.sortedUniq(arrayMembers);
-                                                    if (last.length > 0) {
-                                                        return res.send(echoResponse(200, last, 'success', false));
+                                                    if (arrayMembers.length > 0) {
+                                                        return res.send(echoResponse(200, arrayMembers, 'success', false));
                                                     } else {
                                                         return res.send(echoResponse(404, 'No user', 'success', true));
                                                     }
@@ -377,6 +391,15 @@ router.post('/type=params', urlParser, function(req, res) {
         return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
     }
 });
+
+function isExistObject(list, position, callback){
+    var data = _.find(list, ["key", position.key]);
+    if(_.isObject(data)){
+        callback(true);
+    }else{
+        callback(false);
+    }
+}
 
 function parseIntFromText(text) {
     if (text.indexOf(">") > -1) {
