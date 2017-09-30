@@ -41,7 +41,7 @@ firebase.initializeApp(configFirebase);
 server.listen(config.app_port, config.app_ip, function() {
     console.log("Server running @ http://" + config.app_ip + ":" + config.app_port);
 });
-server.timeout = 20000;
+server.timeout = 60000;
 
 // --- CREATED VARIABLE ---
 // ------------------------
