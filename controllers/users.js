@@ -484,7 +484,7 @@ function sendReport(receiver_key, friend_key){
                     var note = new apn.Notification();
                     note.alert = 'Hello '+name+notify;
                     note.sound = 'bingbong.aiff';
-                    note.topic = "privaten.Com.LockHD";
+                    note.topic = "config.ios";
                     note.badge = count;
                     note.payload = {
                         "friend_key": friend_key,
@@ -3018,7 +3018,7 @@ function removeNotification(res, users_key, friend_key, type){
 //                                 var note = new apn.Notification();
 //                                 note.alert = dataNguoiGui[0].nickname + " "+noidung;
 //                                 note.sound = 'default';
-//                                 note.topic = "privaten.Com.LockHD";
+//                                 note.topic = "config.ios";
 //                                 note.badge = parseInt(dataThongBao[0].chat, 10) + updateBadge;
 //                                 note.payload = {
 //                                     "sender_id": sender_key,
@@ -3144,7 +3144,7 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, posts_id){
                                 var note = new apn.Notification();
                                 note.alert = dataNguoiGui[0].nickname + " "+noidung;
                                 note.sound = 'default';
-                                note.topic = "privaten.Com.LockHD";
+                                note.topic = "config.ios";
                                 note.badge = count;
                                 if (posts_id) {
                                     note.payload = {

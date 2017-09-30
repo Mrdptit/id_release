@@ -451,7 +451,7 @@ function sendNotification(type,conversation_key, sender_key, receiver_key, noidu
                                                         }
                                                         
                                                         note.sound = 'default';
-                                                        note.topic = "privaten.Com.LockHD";
+                                                        note.topic = config.ios;
                                                         note.badge = count;
                                                         if (posts_id) {
                                                             note.payload = {

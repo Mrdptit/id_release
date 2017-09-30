@@ -656,7 +656,7 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, posts_id) {
                             var note = new apn.Notification();
                             note.alert = dataNguoiGui[0].nickname + " " + noidung;
                             note.sound = 'default';
-                            note.topic = "privaten.Com.LockHD";
+                            note.topic = config.ios;
                             note.badge = count;
                             if (posts_id) {
                                 note.payload = {
