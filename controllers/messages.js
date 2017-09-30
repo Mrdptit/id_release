@@ -95,7 +95,7 @@ router.post('/new', urlParser, function (req, res) {
 
                             var insert = [];
                             for (var k in req.body) {
-                                if (k != 'access_token' & k != 'content') {
+                                if (k != 'access_token' && k != 'content') {
                                     insert.push("`" + k + "`='"+req.body[k]+"'");
                                 }
                             }
