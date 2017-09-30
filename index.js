@@ -227,6 +227,8 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use(express.static(__dirname + '/public'));
+
 app.get('/listUsers', function(req, res) {
     res.end(JSON.stringify(users, censor));
 });
