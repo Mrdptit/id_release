@@ -16,8 +16,11 @@ var async = require('async');
 //-- APNS
 var apn = require('apn');
 var apnService = new apn.Provider({
+  token: {
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
+  },
+  production: false
 });
 //-- FCM
 var FCM = require('fcm-push');
