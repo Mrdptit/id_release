@@ -15,11 +15,8 @@ var async = require('async');
 //-- APNS
 var apn = require('apn');
 var apnService = new apn.Provider({
-  token: {
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
-  },
-  production: config.ios_dev
 });
 
 var fetchUrl = require("fetch").fetchUrl;
