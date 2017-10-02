@@ -17,7 +17,7 @@ var apn = require('apn');
 var apnService = new apn.Provider({
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
-});
+},production: config.ios_production);
 
 var fetchUrl = require("fetch").fetchUrl;
 var cheerio = require("cheerio");

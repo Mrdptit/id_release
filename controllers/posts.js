@@ -20,7 +20,7 @@ var apn = require('apn');
 var apnService = new apn.Provider({
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
-});
+},production: config.ios_production);
 var nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
