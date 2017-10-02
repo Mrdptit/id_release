@@ -22,8 +22,11 @@ var moment = require('moment-timezone');
 var connections = [];
 var apn = require('apn');
 var apnService = new apn.Provider({
+  token: {
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
+  },
+  production: config.ios_dev
 });
 
 var urlParser = bodyParser.urlencoded({ extended: false });

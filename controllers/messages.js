@@ -15,8 +15,11 @@ router.use(bodyParser.json());
 //-- APNS
 var apn = require('apn');
 var apnService = new apn.Provider({
+  token: {
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
+  },
+  production: config.ios_dev
 });
 //-- FCM
 var FCM = require('fcm-push');

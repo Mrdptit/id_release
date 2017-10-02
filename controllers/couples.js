@@ -16,8 +16,11 @@ var urlParser = bodyParser.urlencoded({ extended: false });
 router.use(bodyParser.json());
 var apn = require('apn');
 var apnService = new apn.Provider({
+  token: {
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
+  },
+  production: config.ios_dev
 });
 var nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({

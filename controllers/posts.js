@@ -18,8 +18,11 @@ var _ = require('lodash');
 //-- APNS
 var apn = require('apn');
 var apnService = new apn.Provider({
+  token: {
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
+  },
+  production: config.ios_dev
 });
 var nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
