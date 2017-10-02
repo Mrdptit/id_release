@@ -169,12 +169,12 @@ router.post('/signin', urlParser, function (req, res) {
 
                 var insert = [];
                 for (var k in req.body) {
-                    if (k != 'access_token') {
+                    if (k != 'access_token' && k != 'nickname') {
                         insert.push("`" + k + "`=" + "'" + req.body[k] + "'");
                     }
                 }
-                var dataSQL = "UPDATE `users` SET " + insert.toString() + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
-                
+                var contentMessage = decodeURIComponent(req.body.nickname);
+                var dataSQL = "UPDATE `users` SET " + insert.toString() + ", `nickname`='"+contentMessage+"', `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                 client.query(dataSQL, function (eUpdate, dUpdate, fUpdate) {
                     if (eUpdate) {
                         console.log(eUpdate);
