@@ -20,7 +20,7 @@ var apnService = new apn.Provider({
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
   },
-  production: false
+  production: config.ios_dev
 });
 //-- FCM
 var FCM = require('fcm-push');
