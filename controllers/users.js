@@ -18,7 +18,7 @@ var apn = require('apn');
 var apnService = new apn.Provider({
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
-},production: config.ios_production);
+});
 //-- FCM
 var FCM = require('fcm-push');
 var serverKey = config.android;
@@ -169,12 +169,12 @@ router.post('/signin', urlParser, function (req, res) {
 
                 var insert = [];
                 for (var k in req.body) {
-                    if (k != 'access_token' && k != 'nickname') {
+                    if (k != 'access_token') {
                         insert.push("`" + k + "`=" + "'" + req.body[k] + "'");
                     }
                 }
-                var contentMessage = decodeURIComponent(req.body.nickname);
-                var dataSQL = "UPDATE `users` SET " + insert.toString() + ", `nickname`="+escapeSQL.escape(contentMessage)+", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                var dataSQL = "UPDATE `users` SET " + insert.toString() + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                
                 client.query(dataSQL, function (eUpdate, dUpdate, fUpdate) {
                     if (eUpdate) {
                         console.log(eUpdate);
