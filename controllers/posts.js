@@ -2011,7 +2011,7 @@ function sendWarning(receiver_key, posts_id) {
                     var note = new apn.Notification();
                     note.alert = 'Hello ' + name + notify;
                     note.sound = 'bingbong.aiff';
-                    note.topic = "privaten.Com.LockHD";
+                    note.topic = config.ios;
                     note.badge = count;
                     note.payload = {
                         "posts_id": posts_id,
@@ -2064,7 +2064,7 @@ function sendReport(receiver_key, posts_id) {
                     var note = new apn.Notification();
                     note.alert = 'Hello ' + name + notify;
                     note.sound = 'bingbong.aiff';
-                    note.topic = "privaten.Com.LockHD";
+                    note.topic = config.ios;
                     note.badge = count;
                     note.payload = {
                         "posts_id": posts_id,
