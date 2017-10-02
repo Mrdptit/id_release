@@ -174,7 +174,13 @@ router.post('/signin', urlParser, function (req, res) {
                         insert.push("`" + k + "`=" + "'" + req.body[k] + "'");
                     }
                 }
-                var dataSQL = "UPDATE `users` SET " + insert.toString() + ",`nickname`="+escapeSQL.escape(contentMessage)+", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                var dataSQL;
+                if (req.body.nickname) {
+                    dataSQL = "UPDATE `users` SET " + insert.toString() + ",`nickname`="+escapeSQL.escape(contentMessage)+", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                } else {
+                    dataSQL = "UPDATE `users` SET " + insert.toString() + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                }
+                
                 client.query(dataSQL, function (eUpdate, dUpdate, fUpdate) {
                     if (eUpdate) {
                         console.log(eUpdate);
