@@ -174,7 +174,7 @@ router.post('/signin', urlParser, function (req, res) {
                     }
                 }
                 var contentMessage = decodeURIComponent(req.body.nickname);
-                var dataSQL = "UPDATE `users` SET " + insert.toString() + ", `nickname`='"+contentMessage+"', `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                var dataSQL = "UPDATE `users` SET " + insert.toString() + ", `nickname`="+escapeSQL.escape(contentMessage)+", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                 client.query(dataSQL, function (eUpdate, dUpdate, fUpdate) {
                     if (eUpdate) {
                         console.log(eUpdate);
