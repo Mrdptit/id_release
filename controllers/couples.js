@@ -541,7 +541,38 @@ router.get('/type=unlike', function(req, res) {
         return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
     }
 });
-
+router.get('/type=me', function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                ///-----Check nếu tồn tại access_token thì chạy xuống dưới
+                var key = req.body.key || req.query.key || req.params.key;
+                var page = req.body.page || req.query.page || req.params.page;
+                var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
+                var orderby = "LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10);
+                var selectUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `couple_unlike` WHERE `friend_key`='" + key + "') "+orderby;
+                client.query(selectUser, function(eSelect, dSelect, fSelect) {
+                    if (eSelect) {
+                        console.log(eSelect);
+                        return res.send(echoResponse(300, 'error', JSON.stringify(eSelect), true));
+                    } else {
+                        if (dSelect.length > 0) {
+                            return res.send(echoResponse(200, dSelect, 'success', true));
+                        } else {
+                            return res.send(echoResponse(404, 'No user', 'success', true));
+                        }
+                    }
+                });
+                //---
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
 
 router.post('/like', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
