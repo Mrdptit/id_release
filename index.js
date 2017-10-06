@@ -214,25 +214,29 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log("Disconnected: %s sockets connected", connections.length);
     });
     socket.on('chat message', function(msg) {
-        console.log(JSON.stringify(msg));
+        // console.log(JSON.stringify(msg));
         if (msg.subtype == 'candidate') {
             if (incomings.length > 0) {
-                async.forEachOf(incomings, function(el, i, callback) {
-                    if (el.from != msg.from && el.to != msg.to) {
-                        incomings.push(msg);
-                        setTimeout(function() {
-                            sendNotification(msg.from, msg.to, "is calling", "calling", msg);
-                        }, 3000);
-                        callback();
+                async.forEachOf(incomings, function(el, i, callback){
+                    if (el.key != msg.to) {
+                        incomings.push({key: msg.to, calling: true});
                     }
                 });
             } else {
-                incomings.push(msg);
-                setTimeout(function() {
-                    sendNotification(msg.from, msg.to, "is calling", "calling", msg);
-                }, 3000);
+                incomings.push({key: msg.to, calling: true});
             }
+        } else {
+            var tmpArray = [];
+            async.forEachOf(incomings, function(el, i, callback){
+                if (el.key != msg.to) {
+                    tmpArray.push(el);
+                }
+                if (i == incomings.length-1) {
+                    incomings = tmpArray;
+                }
+            });
         }
+        console.log(incomings);
         if (msg.to == 'all') {
             socket.broadcast.emit('chat message', msg);
         } else {
