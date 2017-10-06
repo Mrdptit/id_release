@@ -223,10 +223,10 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         var timer = setInterval(function() {
                             current++;
                             sendNotification(msg.from, msg.to, "is calling", "calling", msg);
-                            if (current == 5) {
+                            if (current == 3) {
                                 clearInterval(timer);
                             }
-                        }, 3000);
+                        }, 5500);
                     }
                 });
             } else {
@@ -235,10 +235,10 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 var timer = setInterval(function() {
                     current++;
                     sendNotification(msg.from, msg.to, "is calling", "calling", msg);
-                    if (current == 5) {
+                    if (current == 3) {
                         clearInterval(timer);
                     }
-                }, 3000);
+                }, 5500);
             }
             incomings = _.uniqBy(incomings, 'key');
             console.log(incomings);
@@ -300,7 +300,7 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
                             //--------APNS
                             var note = new apn.Notification();
                             note.alert = dataNguoiGui[0].nickname + " " + noidung;
-                            note.sound = 'default';
+                            note.sound = 'dong.aiff';
                             note.topic = config.ios;
                             note.badge = count;
                             if (message) {
