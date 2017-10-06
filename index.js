@@ -229,6 +229,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                             }
                         }, 5500);
                         incomings.push({ key: msg.to, timer: timer });
+                        incomings = _.uniqBy(incomings, 'key');
                     }
                 });
             } else {
@@ -242,8 +243,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
                     }
                 }, 5500);
                 incomings.push({ key: msg.to, timer: timer });
+                incomings = _.uniqBy(incomings, 'key');
             }
-            incomings = _.uniqBy(incomings, 'key');
         }
         if (msg.subtype == 'close') {
             async.forEachOf(incomings, function(el, i, callback) {
