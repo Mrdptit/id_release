@@ -179,13 +179,8 @@ router.post('/type=params', urlParser, function(req, res) {
                 var min_age = req.body.min_age || req.query.min_age || req.params.min_age;
                 var max_age = req.body.max_age || req.query.max_age || req.params.max_age;
 
-                var height;
-                var weight;
-                var heightInt;
-                var weightInt;
-
-                heightInt = parseInt(req.body.height);
-                weightInt = parseInt(req.body.weight);
+                var heightInt = parseInt(req.body.height);
+                var weightInt = parseInt(req.body.weight);
 
                 var industry = req.body.industry || req.query.industry || req.params.industry;
                 var married = req.body.married || req.query.married || req.params.married;
@@ -304,73 +299,51 @@ router.post('/type=params', urlParser, function(req, res) {
                         if (rsss.length > 0) {
                             var arrayMembers = [];
                             async.forEachOf(rsss, function(dataElement, i, callback) {
-                                if (rsss[i].birthday) {
-                                    var other = "SELECT * FROM `other_information` WHERE `users_key`='" + rsss[i].key + "'";
-                                    client.query(other, function(eGet, dGet, fGet) {
-                                        if (eGet) {
-                                            console.log(eGet);
-                                            return res.send(echoResponse(300, 'error', JSON.stringify(eGet), true));
-                                        } else {
-                                            if (dGet.length > 0) {
-                                                var chieucao = parseInt(dGet[0].height);
-                                                var cannang = parseInt(dGet[0].weight);
-                                                var date = new Date(rsss[i].birthday);
-                                                var today = new Date();
-                                                var age = today.getFullYear() - date.getFullYear();
-                                                if (age >= min_age && age <= max_age) {
-                                                    rsss[i].year_old = age;
-                                                    rsss[i].height = dGet[0].height;
-                                                    rsss[i].industry = dGet[0].industry;
-                                                    if (req.body.height == '-1') {
-                                                        var b = isExistObject(arrayMembers, rsss[i]);
-                                                        if (b == false) {
-                                                            arrayMembers.push(rsss[i]);
-                                                        }
-                                                    } else {
-                                                        if (chieucao >= heightInt) {
-                                                            var b = isExistObject(arrayMembers, rsss[i]);
-                                                            if (b == false) {
-                                                                arrayMembers.push(rsss[i]);
-                                                            }
-                                                        }
-                                                    }
-                                                    // 
-                                                    if (req.body.weight == '-1') {
-                                                        var b = isExistObject(arrayMembers, rsss[i]);
-                                                        if (b == false) {
-                                                            arrayMembers.push(rsss[i]);
-                                                        }
-                                                    } else {
-                                                        if (cannang >= weightInt) {
-                                                            var b = isExistObject(arrayMembers, rsss[i]);
-                                                            if (b == false) {
-                                                                arrayMembers.push(rsss[i]);
-                                                            }
-                                                        }
-                                                    }
-                                                    
-                                                }
-                                                
-                                                if (i === rsss.length - 1) {
-                                                    var last = _.uniqBy(arrayMembers, 'key');
-                                                    if (last.length > 0) {
-                                                        return res.send(echoResponse(200, last, 'success', false));
-                                                    } else {
-                                                        return res.send(echoResponse(404, 'No user', 'success', true));
-                                                    }
+                                var fullSql;
+                                var sqlOther = "SELECT * FROM `other_information` WHERE `users_key`='" + rsss[i].key + "'";
+                                var sqlHeight = "AND CAST(`height` AS UNSIGNED) >= " + heightInt;
+                                var sqlWeight = "AND CAST(`weight` AS UNSIGNED) >= " + weightInt;
+                                if (req.body.height == '-1' && req.body.weight == '-1') {
+                                    fullSql = sqlOther;
+                                } else if (req.body.height == '-1' && req.body.weight != '-1') {
+                                    fullSql = sqlOther + sqlWeight;
+                                } else if (req.body.height != '-1' && req.body.weight == '-1') {
+                                    fullSql = sqlOther + sqlHeight;
+                                } else if (req.body.height != '-1' && req.body.weight != '-1') {
+                                    fullSql = sqlOther + sqlHeight + sqlWeight;
+                                }
+
+
+                                client.query(fullSql, function(eGet, dGet, fGet) {
+                                    if (eGet) {
+                                        console.log(eGet);
+                                        return res.send(echoResponse(300, 'error', JSON.stringify(eGet), true));
+                                    } else {
+                                        if (dGet.length > 0) {
+                                            var chieucao = parseInt(dGet[0].height);
+                                            var cannang = parseInt(dGet[0].weight);
+                                            var date = new Date(rsss[i].birthday);
+                                            var today = new Date();
+                                            var age = today.getFullYear() - date.getFullYear();
+                                            if (age >= min_age && age <= max_age) {
+                                                rsss[i].year_old = age;
+                                                rsss[i].height = dGet[0].height;
+                                                rsss[i].industry = dGet[0].industry;
+                                                arrayMembers.push(rsss[i]);
+                                            }
+                                            if (i === rsss.length - 1) {
+                                                var last = _.uniqBy(arrayMembers, 'key');
+                                                if (last.length > 0) {
+                                                    return res.send(echoResponse(200, last, 'success', false));
+                                                } else {
+                                                    return res.send(echoResponse(404, 'No user', 'success', true));
                                                 }
                                             }
-                                        }
-                                    });
-                                } else {
-                                    if (i === rsss.length - 1) {
-                                        if (arrayMembers.length > 0) {
-                                            return res.send(echoResponse(200, arrayMembers, 'success', false));
                                         } else {
                                             return res.send(echoResponse(404, 'No user', 'success', true));
                                         }
                                     }
-                                }
+                                });
                             }, function(err) {
                                 if (err) {
                                     //handle the error if the query throws an error
@@ -390,11 +363,11 @@ router.post('/type=params', urlParser, function(req, res) {
     }
 });
 
-function isExistObject(list, position){
+function isExistObject(list, position) {
     var data = _.find(list, ["key", position.key]);
-    if(_.isObject(data)){
+    if (_.isObject(data)) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
@@ -553,7 +526,7 @@ router.get('/type=me', function(req, res) {
                 var page = req.body.page || req.query.page || req.params.page;
                 var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
                 var orderby = "LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10);
-                var selectUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `couple_like` WHERE `friend_key`='" + key + "') "+orderby;
+                var selectUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `couple_like` WHERE `friend_key`='" + key + "') " + orderby;
                 client.query(selectUser, function(eSelect, dSelect, fSelect) {
                     if (eSelect) {
                         console.log(eSelect);
