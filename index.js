@@ -227,7 +227,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
             }
             incomings = _.uniqBy(incomings, 'key');
             console.log(incomings);
-        } else {
+        }
+        if (msg.subtype == 'close') {
             incomings = _.remove(incomings, {
                 key: msg.to
             });
