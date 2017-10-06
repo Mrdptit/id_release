@@ -33,6 +33,10 @@ var collapse_key = 'com.android.abc';
 var fcm = new FCM(serverKey);
 var avatarApp = "http://i.imgur.com/rt1NU2t.png";
 
+var async = require('async');
+var _ = require('lodash');
+var moment = require('moment-timezone');
+
 var urlParser = bodyParser.urlencoded({ extended: false });
 
 var configFirebase = {
