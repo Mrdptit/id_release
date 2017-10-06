@@ -218,7 +218,6 @@ io.on('connection', function(socket) { // Incoming connections from clients
             if (incomings.length > 0) {
                 async.forEachOf(incomings, function(el, i, callback) {
                     if (el.key != msg.to) {
-                        incomings.push({ key: msg.to, calling: true });
                         sendNotification(msg.from, msg.to, "is calling", "calling", msg);
                         var current = 0;
                         var timer = setInterval(function() {
@@ -228,17 +227,10 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                 clearInterval(timer);
                             }
                         }, 5500);
-                        if (msg.subtype == 'close') {
-                            _.remove(incomings, {
-                                key: msg.to
-                            });
-                            clearInterval(timer);
-                            console.log(incomings);
-                        }
+                        incomings.push({ key: msg.to, timer: timer });
                     }
                 });
             } else {
-                incomings.push({ key: msg.to, calling: true });
                 sendNotification(msg.from, msg.to, "is calling", "calling", msg);
                 var current = 0;
                 var timer = setInterval(function() {
@@ -248,18 +240,22 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         clearInterval(timer);
                     }
                 }, 5500);
-                if (msg.subtype == 'close') {
-                    _.remove(incomings, {
-                        key: msg.to
-                    });
-                    clearInterval(timer);
-                    console.log(incomings);
-                }
+                incomings.push({ key: msg.to, timer: timer });
             }
             incomings = _.uniqBy(incomings, 'key');
             console.log(incomings);
         }
-
+        if (msg.subtype == 'close') {
+            async.forEachOf(incomings, function(el, i, callback) {
+                if (el.key == msg.to) {
+                    clearInterval(el.timer);
+                    _.remove(incomings, {
+                        key: msg.to
+                    });
+                    console.log(incomings);
+                }
+            });
+        }
 
         if (msg.to == 'all') {
             socket.broadcast.emit('chat message', msg);
