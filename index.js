@@ -219,13 +219,16 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 async.forEachOf(incomings, function(el, i, callback) {
                     if (el.key != msg.to) {
                         incomings.push({ key: msg.to, calling: true });
-                        setTimeout(function(){
+                        setTimeout(function() {
                             sendNotification(msg.from, msg.to, "is calling", "calling", msg);
-                        },3000);
+                        }, 3000);
                     }
                 });
             } else {
                 incomings.push({ key: msg.to, calling: true });
+                setTimeout(function() {
+                    sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                }, 3000);
             }
             incomings = _.uniqBy(incomings, 'key');
             console.log(incomings);
