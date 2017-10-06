@@ -229,7 +229,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             console.log(incomings);
         }
         if (msg.subtype == 'close') {
-            incomings = _.remove(incomings, {
+            _.remove(incomings, {
                 key: msg.to
             });
             console.log(incomings);
