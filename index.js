@@ -59,7 +59,7 @@ server.timeout = 60000;
 // ------------------------
 var users = [];
 var index = 0;
-
+var incomings = [];
 /*********--------------------------*********
  **********------- MYSQL CONNECT ----*********
  **********--------------------------*********/
@@ -108,7 +108,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
     var peer;
     socket.on('online', function(user) {
         if (findUserByUID(user.uuid) == null) {
-            var usr = {id: user.uuid, key: user.key, socketid: socket.id};
+            var usr = { id: user.uuid, key: user.key, socketid: socket.id };
             users.push(usr);
             socket.emit('register succeed', { id: user.uuid, key: user.key });
             socket.broadcast.emit('new user', { id: user.uuid, key: user.key });
@@ -215,6 +215,24 @@ io.on('connection', function(socket) { // Incoming connections from clients
     });
     socket.on('chat message', function(msg) {
         console.log(JSON.stringify(msg));
+        if (msg.subtype == 'candidate') {
+            if (incomings.length > 0) {
+                async.forEachOf(incomings, function(el, i, callback) {
+                    if (el.from != msg.from && el.to != msg.to) {
+                        incomings.push(msg);
+                        setTimeout(function() {
+                            sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                        }, 3000);
+                        callback();
+                    }
+                });
+            } else {
+                incomings.push(msg);
+                setTimeout(function() {
+                    sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                }, 3000);
+            }
+        }
         if (msg.to == 'all') {
             socket.broadcast.emit('chat message', msg);
         } else {
@@ -226,9 +244,6 @@ io.on('connection', function(socket) { // Incoming connections from clients
             } else {
                 socket.broadcast.emit("chat message", msg);
             }
-            setTimeout(function(){
-                sendNotification(msg.from, msg.to, "is calling", "calling", msg);
-            }, 3000);
         }
     });
     //end socket
@@ -331,6 +346,7 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
         }
     });
 }
+
 function numberBadge(key, count) {
     var userSQL = "SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + key + "' AND members.is_deleted='0'";
     client.query(userSQL, function(qError, qData, qFiels) {
