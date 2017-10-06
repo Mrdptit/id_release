@@ -26,6 +26,12 @@ var apnService = new apn.Provider({
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
 });
+//-- FCM
+var FCM = require('fcm-push');
+var serverKey = config.android;
+var collapse_key = 'com.android.abc';
+var fcm = new FCM(serverKey);
+var avatarApp = "http://i.imgur.com/rt1NU2t.png";
 
 var urlParser = bodyParser.urlencoded({ extended: false });
 
@@ -204,11 +210,14 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log("Disconnected: %s sockets connected", connections.length);
     });
     socket.on('chat message', function(msg) {
+        console.log(JSON.stringify(msg));
         if (msg.to == 'all') {
             socket.broadcast.emit('chat message', msg);
         } else {
             var target = findUserByUID(msg.to);
             if (target) {
+                // Send notifications
+                sendNotification(msg.from, msg.to, "is calling", "calling", msg);
                 socket.broadcast.to(target.socketid).emit('chat message', msg);
                 //socket_to.emit("chat message", msg);
             } else {
@@ -237,7 +246,85 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
+function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
+    var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
+    client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
+        if (loiNguoiGui) {
+            console.log(loiNguoiGui);
+        } else {
+            numberBadge(receiver_key, function(count) {
+                var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + receiver_key + "'";
+                client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
+                    if (loiNguoiNhan) {
+                        console.log(loiNguoiNhan);
+                    } else {
+                        if (dataNguoiNhan[0].device_type == 'ios') {
+                            //--------APNS
+                            var note = new apn.Notification();
+                            note.alert = dataNguoiGui[0].nickname + " " + noidung;
+                            note.sound = 'default';
+                            note.topic = config.ios;
+                            note.badge = count;
+                            if (message) {
+                                note.payload = {
+                                    "message": message,
+                                    "content": dataNguoiGui[0].nickname + " " + noidung,
+                                    "type": kieu
+                                };
+                            } else {
+                                note.payload = {
+                                    "sender_id": sender_key,
+                                    "content": dataNguoiGui[0].nickname + " " + noidung,
+                                    "type": kieu
+                                };
+                            }
 
+                            apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
+                                console.log("sent:", result.sent.length);
+                            });
+                        } else {
+                            var message;
+                            if (message) {
+                                message = {
+                                    to: dataNguoiNhan[0].device_token,
+                                    collapse_key: collapse_key,
+                                    data: {
+                                        message: message,
+                                        content: dataNguoiGui[0].nickname + " " + noidung,
+                                        type: kieu,
+                                        title: 'IUDI',
+                                        body: dataNguoiGui[0].nickname + " " + noidung
+                                    }
+                                };
+                            } else {
+                                message = {
+                                    to: dataNguoiNhan[0].device_token,
+                                    collapse_key: collapse_key,
+                                    data: {
+                                        sender_id: sender_key,
+                                        content: dataNguoiGui[0].nickname + " " + noidung,
+                                        type: kieu,
+                                        title: 'IUDI',
+                                        body: dataNguoiGui[0].nickname + " " + noidung
+                                    }
+                                };
+                            }
+
+                            //callback style
+                            fcm.send(message, function(err, response) {
+                                if (err) {
+                                    console.log("Something has gone wrong!");
+                                } else {
+                                    console.log("Successfully sent with response: ", response);
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }
+    });
+}
 
 
 function findIndexByUID(uid) {
