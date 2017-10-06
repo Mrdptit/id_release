@@ -228,6 +228,13 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                 clearInterval(timer);
                             }
                         }, 5500);
+                        if (msg.subtype == 'close') {
+                            _.remove(incomings, {
+                                key: msg.to
+                            });
+                            clearInterval(timer);
+                            console.log(incomings);
+                        }
                     }
                 });
             } else {
@@ -241,16 +248,18 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         clearInterval(timer);
                     }
                 }, 5500);
+                if (msg.subtype == 'close') {
+                    _.remove(incomings, {
+                        key: msg.to
+                    });
+                    clearInterval(timer);
+                    console.log(incomings);
+                }
             }
             incomings = _.uniqBy(incomings, 'key');
             console.log(incomings);
         }
-        if (msg.subtype == 'close') {
-            _.remove(incomings, {
-                key: msg.to
-            });
-            console.log(incomings);
-        }
+
 
         if (msg.to == 'all') {
             socket.broadcast.emit('chat message', msg);
