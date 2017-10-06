@@ -120,7 +120,6 @@ io.on('connection', function(socket) { // Incoming connections from clients
             keyUser = user.key;
             socket.emit('reload', keyUser);
             var sqlCheckVisible = "SELECT `is_visible` FROM `users_settings` WHERE `users_key`='" + keyUser + "'";
-            console.log(sqlCheckVisible);
             client.query(sqlCheckVisible, function(eCheck, dCheck, fCheck) {
                 if (eCheck) {
                     console.log(eCheck);
@@ -222,9 +221,6 @@ io.on('connection', function(socket) { // Incoming connections from clients
                     if (el.key != msg.to) {
                         incomings.push({key: msg.to, calling: true});
                     }
-                    if (i == incomings.length-1) {
-                        incomings = _.uniqBy(incomings, 'key');
-                    }
                 });
             } else {
                 incomings.push({key: msg.to, calling: true});
@@ -235,12 +231,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 if (el.key != msg.to) {
                     tmpArray.push(el);
                 }
-                if (i == incomings.length-1) {
-                    incomings = tmpArray;
-                    incomings = _.uniqBy(incomings, 'key');
-                }
             });
         }
+        incomings = _.uniqBy(incomings, 'key');
         console.log(incomings);
         if (msg.to == 'all') {
             socket.broadcast.emit('chat message', msg);
