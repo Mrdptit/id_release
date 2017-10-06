@@ -325,7 +325,49 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
         }
     });
 }
-
+function numberBadge(key, count) {
+    var userSQL = "SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + key + "' AND members.is_deleted='0'";
+    client.query(userSQL, function(qError, qData, qFiels) {
+        if (qError) {
+            console.log(qError);
+            count(0);
+        } else {
+            if (qData.length > 0) {
+                var conversationUnread = [];
+                async.forEachOf(qData, function(data, i, call) {
+                    var sqlSelect = "SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + key + "' AND members.is_deleted='0' AND `key` IN (SELECT `conversations_key` FROM `message_status` WHERE `conversations_key`='" + qData[i].key + "' AND `users_key`='" + key + "' AND `is_read`='0')";
+                    client.query(sqlSelect, function(e, d, f) {
+                        if (e) {
+                            console.log(e);
+                            return res.sendStatus(300);
+                        } else {
+                            if (d.length > 0) {
+                                conversationUnread.push(qData[i]);
+                            }
+                            if (i === qData.length - 1) {
+                                var userSQL = "SELECT * FROM `notification_feed` INNER JOIN `notification_refresh` ON `notification_feed`.`users_key` = '" + key + "' AND `notification_feed`.`users_key` = notification_refresh.users_key AND `notification_feed`.`time` > `notification_refresh`.`time`";
+                                client.query(userSQL, function(error, data, fields) {
+                                    if (error) {
+                                        console.log(error);
+                                        return res.sendStatus(300);
+                                    } else {
+                                        if (data.length > 0) {
+                                            count(conversationUnread.length + data.length);
+                                        } else {
+                                            count(conversationUnread.length);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                });
+            } else {
+                count(0);
+            }
+        }
+    });
+}
 
 function findIndexByUID(uid) {
     var i;
