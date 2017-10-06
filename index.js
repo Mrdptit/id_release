@@ -219,15 +219,25 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 async.forEachOf(incomings, function(el, i, callback) {
                     if (el.key != msg.to) {
                         incomings.push({ key: msg.to, calling: true });
-                        setTimeout(function() {
+                        var current = 0;
+                        var timer = setInterval(function() {
+                            current++;
                             sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                            if (current == 5) {
+                                clearInterval(timer);
+                            }
                         }, 3000);
                     }
                 });
             } else {
                 incomings.push({ key: msg.to, calling: true });
-                setTimeout(function() {
+                var current = 0;
+                var timer = setInterval(function() {
+                    current++;
                     sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                    if (current == 5) {
+                        clearInterval(timer);
+                    }
                 }, 3000);
             }
             incomings = _.uniqBy(incomings, 'key');
