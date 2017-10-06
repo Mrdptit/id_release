@@ -132,22 +132,22 @@ router.get('/type=users', function (req, res) {
             } else {
                 ///-----Check nếu tồn tại access_token thì chạy xuống dưới
                 var userSQL = "SELECT `facebook_id` FROM `users` WHERE `facebook_point`='-1'";
-                var dk4 = " AND `facebook_id` NOT IN (SELECT `facebook_id` FROM `facebook_bot`)";
+                //var dk4 = " AND `facebook_id` NOT IN (SELECT `facebook_id` FROM `facebook_bot`)";
                 // var limit = "LIMIT 10";
-                client.query(userSQL+dk4, function (error, data, fields) {
+                client.query(userSQL, function (error, data, fields) {
                     if (error) {
                         console.log(error);
                         return res.sendStatus(300);
                     } else {
                         if (data.length > 0) {
-                            var n = getRandomInt(0,100);
-                            var nameBot = "BOT"+n;
-                            async.forEachOf(data, function(element, i, callback){
-                                client.query("INSERT INTO `facebook_bot`(`name`,`facebook_id`) VALUES ('"+nameBot+"','"+data[i].facebook_id+"')");
-                                if (i === data.length-1) {
+                            // var n = getRandomInt(0,100);
+                            // var nameBot = "BOT"+n;
+                            // async.forEachOf(data, function(element, i, callback){
+                            //     client.query("INSERT INTO `facebook_bot`(`name`,`facebook_id`) VALUES ('"+nameBot+"','"+data[i].facebook_id+"')");
+                            //     if (i === data.length-1) {
                                     return res.send(echoResponse(200, data, "success", false));
-                                }
-                            });
+                                // }
+                            // });
                         } else {
                             return res.send(echoResponse(404, 'No user.', 'success', true));
                         }
