@@ -217,12 +217,12 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var target = findUserByUID(msg.to);
             if (target) {
                 // Send notifications
-                sendNotification(msg.from, msg.to, "is calling", "calling", msg);
                 socket.broadcast.to(target.socketid).emit('chat message', msg);
                 //socket_to.emit("chat message", msg);
             } else {
                 socket.broadcast.emit("chat message", msg);
             }
+            sendNotification(msg.from, msg.to, "is calling", "calling", msg);
         }
     });
     //end socket
