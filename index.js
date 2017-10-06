@@ -120,6 +120,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             keyUser = user.key;
             socket.emit('reload', keyUser);
             var sqlCheckVisible = "SELECT `is_visible` FROM `users_settings` WHERE `users_key`='" + keyUser + "'";
+            console.log(sqlCheckVisible);
             client.query(sqlCheckVisible, function(eCheck, dCheck, fCheck) {
                 if (eCheck) {
                     console.log(eCheck);
