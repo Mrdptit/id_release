@@ -214,7 +214,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log("Disconnected: %s sockets connected", connections.length);
     });
     socket.on('chat message', function(msg) {
-        // console.log(JSON.stringify(msg));
+        console.log(JSON.stringify(msg));
         if (msg.subtype == 'candidate') {
             if (incomings.length > 0) {
                 async.forEachOf(incomings, function(el, i, callback){
