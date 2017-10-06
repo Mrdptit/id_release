@@ -228,11 +228,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
             incomings = _.uniqBy(incomings, 'key');
             console.log(incomings);
         } else {
-            var tmpArray = [];
-            async.forEachOf(incomings, function(el, i, callback) {
-                if (el.key != msg.to) {
-                    tmpArray.push(el);
-                }
+            incomings = _.remove(incomings, {
+                key: msg.to
             });
             incomings = _.uniqBy(incomings, 'key');
             console.log(incomings);
