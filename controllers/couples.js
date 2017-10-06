@@ -313,7 +313,7 @@ router.post('/type=params', urlParser, function(req, res) {
                                     fullSql = sqlOther + sqlHeight + sqlWeight;
                                 }
 
-
+                                console.log(fullSql);
                                 client.query(fullSql, function(eGet, dGet, fGet) {
                                     if (eGet) {
                                         console.log(eGet);
