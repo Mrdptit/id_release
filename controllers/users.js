@@ -909,7 +909,7 @@ router.post('/update', urlParser, function(req, res) {
                         if (data.length > 0) {
                             var insert = [];
                             for (var k in req.body) {
-                                if (k != 'access_token') {
+                                if (k != 'access_token' && k != 'nickname') {
                                     insert.push("`" + k + "`=" + "'" + req.body[k] + "'");
                                 }
                             }
@@ -931,7 +931,14 @@ router.post('/update', urlParser, function(req, res) {
                                     }
                                 });
                             }
-                            var dataSQL = "UPDATE `users` SET " + insert.toString() + " WHERE `key`='" + req.body.key + "'";
+                            var contentMessage = decodeURIComponent(req.body.nickname);
+                            var dataSQL;
+                            if (req.body.nickname) {
+                                dataSQL = "UPDATE `users` SET " + insert.toString() + ",`nickname`=" + escapeSQL.escape(contentMessage) + " WHERE `key`='" + req.body.key + "'";
+                            } else {
+                                dataSQL = "UPDATE `users` SET " + insert.toString() + " WHERE `key`='" + req.body.key + "'";
+                            }
+                            
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);
