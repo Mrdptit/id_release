@@ -248,6 +248,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
         if (msg.subtype == 'close') {
             async.forEachOf(incomings, function(el, i, callback) {
                 if (el.key == msg.to) {
+                    send(msg.from, msg.to, "You missed a call from", "close", msg);
                     clearInterval(el.timer);
                     _.remove(incomings, {
                         key: msg.to
@@ -370,7 +371,85 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
         }
     });
 }
+function send(sender_key, receiver_key, noidung, kieu, message) {
+    var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
+    client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
+        if (loiNguoiGui) {
+            console.log(loiNguoiGui);
+        } else {
+            numberBadge(receiver_key, function(count) {
+                var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + receiver_key + "'";
+                client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
+                    if (loiNguoiNhan) {
+                        console.log(loiNguoiNhan);
+                    } else {
+                        if (dataNguoiNhan[0].device_type == 'ios') {
+                            //--------APNS
+                            var note = new apn.Notification();
+                            note.alert =  noidung + " " + dataNguoiGui[0].nickname;
+                            note.sound = 'dong.aiff';
+                            note.topic = config.ios;
+                            note.badge = count;
+                            if (message) {
+                                note.payload = {
+                                    "message": message,
+                                    "content": noidung + " " + dataNguoiGui[0].nickname,
+                                    "type": kieu
+                                };
+                            } else {
+                                note.payload = {
+                                    "sender_id": sender_key,
+                                    "content": noidung + " " + dataNguoiGui[0].nickname,
+                                    "type": kieu
+                                };
+                            }
 
+                            apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
+                                console.log("sent:", result.sent.length);
+                            });
+                        } else {
+                            var message;
+                            if (message) {
+                                message = {
+                                    to: dataNguoiNhan[0].device_token,
+                                    collapse_key: collapse_key,
+                                    data: {
+                                        message: message,
+                                        content: noidung + " " + dataNguoiGui[0].nickname,
+                                        type: kieu,
+                                        title: 'IUDI',
+                                        body: noidung + " " + dataNguoiGui[0].nickname
+                                    }
+                                };
+                            } else {
+                                message = {
+                                    to: dataNguoiNhan[0].device_token,
+                                    collapse_key: collapse_key,
+                                    data: {
+                                        sender_id: sender_key,
+                                        content: noidung + " " + dataNguoiGui[0].nickname,
+                                        type: kieu,
+                                        title: 'IUDI',
+                                        body: noidung + " " + dataNguoiGui[0].nickname
+                                    }
+                                };
+                            }
+
+                            //callback style
+                            fcm.send(message, function(err, response) {
+                                if (err) {
+                                    console.log("Something has gone wrong!");
+                                } else {
+                                    console.log("Successfully sent with response: ", response);
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }
+    });
+}
 function numberBadge(key, count) {
     var userSQL = "SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + key + "' AND members.is_deleted='0'";
     client.query(userSQL, function(qError, qData, qFiels) {
