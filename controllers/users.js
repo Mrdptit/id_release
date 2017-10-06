@@ -176,15 +176,17 @@ router.post('/signin', urlParser, function(req, res) {
                     }
                 }
                 var dataSQL;
+                var deviceid = decodeURIComponent(req.body.device_id);
+                deviceid.replace(new RegExp('\\', 'gi'), "");
                 if (req.body.nickname) {
                     if (req.body.device_id) {
-                        dataSQL = "UPDATE `users` SET " + insert.toString() + ",`device_id`="+escapeSQL.escape(decodeURIComponent(req.body.device_id))+",`nickname`=" + escapeSQL.escape(contentMessage) + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                        dataSQL = "UPDATE `users` SET " + insert.toString() + ",`device_id`="+escapeSQL.escape(deviceid)+",`nickname`=" + escapeSQL.escape(contentMessage) + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     } else {
                         dataSQL = "UPDATE `users` SET " + insert.toString() + ",`nickname`=" + escapeSQL.escape(contentMessage) + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     }
                 } else {
                     if (req.body.device_id) {
-                        dataSQL = "UPDATE `users` SET " + insert.toString() + ",`device_id`="+escapeSQL.escape(decodeURIComponent(req.body.device_id))+", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                        dataSQL = "UPDATE `users` SET " + insert.toString() + ",`device_id`="+escapeSQL.escape(deviceid)+", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     } else {
                         dataSQL = "UPDATE `users` SET " + insert.toString() + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     }
