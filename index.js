@@ -232,7 +232,6 @@ io.on('connection', function(socket) { // Incoming connections from clients
             incomings = _.remove(incomings, {
                 key: msg.to
             });
-            incomings = _.uniqBy(incomings, 'key');
             console.log(incomings);
         }
 
