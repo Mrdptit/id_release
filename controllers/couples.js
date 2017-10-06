@@ -301,8 +301,8 @@ router.post('/type=params', urlParser, function(req, res) {
                             async.forEachOf(rsss, function(dataElement, i, callback) {
                                 var fullSql;
                                 var sqlOther = "SELECT * FROM `other_information` WHERE `users_key`='" + rsss[i].key + "'";
-                                var sqlHeight = "AND `height` IS NOT NULL AND CAST(`height` AS UNSIGNED) >= " + heightInt;
-                                var sqlWeight = "AND `weight` IS NOT NULL AND CAST(`weight` AS UNSIGNED) >= " + weightInt;
+                                var sqlHeight = "AND `height` IS NOT NULL AND `height` >= " + heightInt;
+                                var sqlWeight = "AND `weight` IS NOT NULL AND `weight` >= " + weightInt;
                                 if (req.body.height == '-1' && req.body.weight == '-1') {
                                     fullSql = sqlOther;
                                 } else if (req.body.height == '-1' && req.body.weight != '-1') {
