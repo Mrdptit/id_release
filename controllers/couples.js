@@ -331,16 +331,14 @@ router.post('/type=params', urlParser, function(req, res) {
                                                 rsss[i].industry = dGet[0].industry;
                                                 arrayMembers.push(rsss[i]);
                                             }
-                                            if (i === rsss.length - 1) {
-                                                var last = _.uniqBy(arrayMembers, 'key');
-                                                if (last.length > 0) {
-                                                    return res.send(echoResponse(200, last, 'success', false));
-                                                } else {
-                                                    return res.send(echoResponse(404, 'No user', 'success', true));
-                                                }
+                                        }
+                                        if (i === rsss.length - 1) {
+                                            var last = _.uniqBy(arrayMembers, 'key');
+                                            if (last.length > 0) {
+                                                return res.send(echoResponse(200, last, 'success', false));
+                                            } else {
+                                                return res.send(echoResponse(404, 'No user', 'success', true));
                                             }
-                                        } else {
-                                            return res.send(echoResponse(404, 'No user', 'success', true));
                                         }
                                     }
                                 });
