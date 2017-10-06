@@ -217,24 +217,27 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log(JSON.stringify(msg));
         if (msg.subtype == 'candidate') {
             if (incomings.length > 0) {
-                async.forEachOf(incomings, function(el, i, callback){
+                async.forEachOf(incomings, function(el, i, callback) {
                     if (el.key != msg.to) {
-                        incomings.push({key: msg.to, calling: true});
+                        incomings.push({ key: msg.to, calling: true });
                     }
                 });
             } else {
-                incomings.push({key: msg.to, calling: true});
+                incomings.push({ key: msg.to, calling: true });
             }
+            incomings = _.uniqBy(incomings, 'key');
+            console.log(incomings);
         } else {
             var tmpArray = [];
-            async.forEachOf(incomings, function(el, i, callback){
+            async.forEachOf(incomings, function(el, i, callback) {
                 if (el.key != msg.to) {
                     tmpArray.push(el);
                 }
             });
+            incomings = _.uniqBy(incomings, 'key');
+            console.log(incomings);
         }
-        incomings = _.uniqBy(incomings, 'key');
-        console.log(incomings);
+
         if (msg.to == 'all') {
             socket.broadcast.emit('chat message', msg);
         } else {
