@@ -221,6 +221,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
                     if (el.key != msg.to) {
                         incomings.push({key: msg.to, calling: true});
                     }
+                    if (i == incomings.length-1) {
+                        incomings = _.uniqBy(incomings, 'key');
+                    }
                 });
             } else {
                 incomings.push({key: msg.to, calling: true});
@@ -233,6 +236,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 }
                 if (i == incomings.length-1) {
                     incomings = tmpArray;
+                    incomings = _.uniqBy(incomings, 'key');
                 }
             });
         }
