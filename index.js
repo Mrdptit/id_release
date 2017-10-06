@@ -226,7 +226,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
             } else {
                 socket.broadcast.emit("chat message", msg);
             }
-            sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+            setTimeout(function(){
+                sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+            }, 3000);
         }
     });
     //end socket
