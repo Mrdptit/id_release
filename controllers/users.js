@@ -189,6 +189,7 @@ router.post('/signin', urlParser, function(req, res) {
                         dataSQL = "UPDATE `users` SET " + insert.toString() + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     }
                 }
+                console.log(dataSQL);
                 client.query(dataSQL, function(eUpdate, dUpdate, fUpdate) {
                     if (eUpdate) {
                         console.log(eUpdate);
