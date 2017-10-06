@@ -220,19 +220,20 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 async.forEachOf(incomings, function(el, i, callback) {
                     if (el.key != msg.to) {
                         incomings.push({ key: msg.to, calling: true });
+                        setTimeout(function(){
+                            sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                        },3000);
                     }
                 });
             } else {
                 incomings.push({ key: msg.to, calling: true });
             }
             incomings = _.uniqBy(incomings, 'key');
-            console.log(incomings);
         }
         if (msg.subtype == 'close') {
             _.remove(incomings, {
                 key: msg.to
             });
-            console.log(incomings);
         }
 
         if (msg.to == 'all') {
