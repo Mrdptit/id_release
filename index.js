@@ -223,7 +223,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         var timer = setInterval(function() {
                             current++;
                             sendNotification(msg.from, msg.to, "is calling", "calling", msg);
-                            if (current == 3) {
+                            if (current == 4) {
                                 clearInterval(timer);
                             }
                         }, 5500);
@@ -235,7 +235,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 var timer = setInterval(function() {
                     current++;
                     sendNotification(msg.from, msg.to, "is calling", "calling", msg);
-                    if (current == 3) {
+                    if (current == 4) {
                         clearInterval(timer);
                     }
                 }, 5500);
