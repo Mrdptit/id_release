@@ -90,7 +90,7 @@ router.get('/type=received', urlParser, function(req, res) {
                 var key = req.params.key || req.query.key;
                 var page = req.params.page || req.query.page;
                 var per_page = req.params.per_page || req.query.per_page;
-                var sql = "SELECT * FROM `questions` WHERE `receiver_deleted`=0 AND `receiver_key`='" + key + "' ORDER BY `time` DESC LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
+                var sql = "SELECT `id`,`content`,`time` FROM `questions` WHERE `receiver_deleted`=0 AND `receiver_key`='" + key + "' ORDER BY `time` DESC LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
                 client.query(sql, function(error, data, fields) {
                     if (error) {
                         console.log(error);
@@ -131,6 +131,10 @@ router.get('/type=sent', urlParser, function(req, res) {
                                 var tmp = element;
                                 getUser(element.receiver_key, function(info) {
                                     tmp.receiver = info;
+                                    delete tmp.sender_deleted;
+                                    delete tmp.receiver_deleted;
+                                    delete tmp.sender_key;
+                                    delete tmp.receiver_key;
                                     arrayData.push(tmp);
                                     if (i == data.length - 1) {
                                         return res.send(echoResponse(200, arrayData, 'success', false));
