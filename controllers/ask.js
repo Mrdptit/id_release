@@ -97,17 +97,7 @@ router.get('/type=received', urlParser, function(req, res) {
                         return res.sendStatus(300);
                     } else {
                         if (data.length > 0) {
-                            var arrayData = [];
-                            async.forEachOf(data, function(element, i, callback) {
-                                var tmp = element;
-                                getUser(element.sender_key, function(info) {
-                                    tmp.sender = info;
-                                    arrayData.push(tmp);
-                                    if (i == data.length - 1) {
-                                        return res.send(echoResponse(200, arrayData, 'success', false));
-                                    }
-                                });
-                            });
+                            return res.send(echoResponse(200, data, 'success', false));
                         } else {
                             return res.send(echoResponse(404, "No have any data", 'success', true));
                         }
@@ -140,7 +130,7 @@ router.get('/type=sent', urlParser, function(req, res) {
                             async.forEachOf(data, function(element, i, callback) {
                                 var tmp = element;
                                 getUser(element.receiver_key, function(info) {
-                                    tmp.sender = info;
+                                    tmp.receiver = info;
                                     arrayData.push(tmp);
                                     if (i == data.length - 1) {
                                         return res.send(echoResponse(200, arrayData, 'success', false));
