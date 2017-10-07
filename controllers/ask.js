@@ -90,7 +90,7 @@ router.get('/type=received', urlParser, function(req, res) {
                 var key = req.params.key || req.query.key;
                 var page = req.params.page || req.query.page;
                 var per_page = req.params.per_page || req.query.per_page;
-                var sql = "SELECT * FROM `questions` WHERE `receiver_key`='" + key + "' ORDER BY `time` DESC LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
+                var sql = "SELECT * FROM `questions` WHERE `receiver_deleted`=0 AND `receiver_key`='" + key + "' ORDER BY `time` DESC LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
                 client.query(sql, function(error, data, fields) {
                     if (error) {
                         console.log(error);
@@ -119,7 +119,7 @@ router.get('/type=sent', urlParser, function(req, res) {
                 var key = req.params.key || req.query.key;
                 var page = req.params.page || req.query.page;
                 var per_page = req.params.per_page || req.query.per_page;
-                var sql = "SELECT * FROM `questions` WHERE `sender_key`='" + key + "' ORDER BY `time` DESC LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
+                var sql = "SELECT * FROM `questions` WHERE `sender_deleted`=0 AND `sender_key`='" + key + "' ORDER BY `time` DESC LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
                 client.query(sql, function(error, data, fields) {
                     if (error) {
                         console.log(error);
@@ -247,7 +247,7 @@ router.post('/questions/delete', urlParser, function(req, res) {
                         return res.sendStatus(300);
                     } else {
                         if (data.length > 0) {
-                            if (data[0].sender_deleted == 1 && data[0].receiver_deleted == 1) {
+                            if (data[0].sender_deleted == 1 && key == data[0].receiver_deleted || data[0].receiver_deleted == 1 && key == data[0].sender_deleted) {
                                 client.query("DELETE FROM `questions` WHERE `id`=" + id + "", function(error2, data2, fields2) {
                                     if (error2) {
                                         console.log(error2);
