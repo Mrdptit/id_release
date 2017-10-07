@@ -97,7 +97,17 @@ router.get('/type=received', urlParser, function(req, res) {
                         return res.sendStatus(300);
                     } else {
                         if (data.length > 0) {
-                            return res.send(echoResponse(200, data, 'success', false));
+                            var arrayData = [];
+                            async.forEachOf(data, function(element, i, callback) {
+                                var tmp = element;
+                                getUser(element.sender_key, function(info) {
+                                    tmp.sender = info;
+                                    arrayData.push(tmp);
+                                    if (i == data.length - 1) {
+                                        return res.send(echoResponse(200, arrayData, 'success', false));
+                                    }
+                                });
+                            });
                         } else {
                             return res.send(echoResponse(404, "No have any data", 'success', true));
                         }
@@ -126,7 +136,17 @@ router.get('/type=sent', urlParser, function(req, res) {
                         return res.sendStatus(300);
                     } else {
                         if (data.length > 0) {
-                            return res.send(echoResponse(200, data, 'success', false));
+                            var arrayData = [];
+                            async.forEachOf(data, function(element, i, callback) {
+                                var tmp = element;
+                                getUser(element.receiver_key, function(info) {
+                                    tmp.sender = info;
+                                    arrayData.push(tmp);
+                                    if (i == data.length - 1) {
+                                        return res.send(echoResponse(200, arrayData, 'success', false));
+                                    }
+                                });
+                            });
                         } else {
                             return res.send(echoResponse(404, "No have any data", 'success', true));
                         }
@@ -155,17 +175,7 @@ router.get('/type=answers', urlParser, function(req, res) {
                         return res.sendStatus(300);
                     } else {
                         if (data.length > 0) {
-                            var arrayData = [];
-                            async.forEachOf(data, function(element, i, callback) {
-                                var tmp = element;
-                                getUser(element.sender_key, function(info) {
-                                    tmp.sender = info;
-                                    arrayData.push(tmp);
-                                    if (i == data.length-1) {
-                                        return res.send(echoResponse(200, arrayData, 'success', false)); 
-                                    }
-                                });
-                            });
+                            return res.send(echoResponse(200, data, 'success', false));
                         } else {
                             return res.send(echoResponse(404, "No have any data", 'success', true));
                         }
@@ -247,31 +257,42 @@ router.post('/questions/delete', urlParser, function(req, res) {
                         return res.sendStatus(300);
                     } else {
                         if (data.length > 0) {
-                            if (data[0].sender_deleted == 1 && key == data[0].receiver_deleted || data[0].receiver_deleted == 1 && key == data[0].sender_deleted) {
-                                client.query("DELETE FROM `questions` WHERE `id`=" + id + "", function(error2, data2, fields2) {
-                                    if (error2) {
-                                        console.log(error2);
-                                        return res.sendStatus(300);
-                                    } else {
-                                        return res.send(echoResponse(200, 'Delete successfully', 'success', false));
-                                    }
-                                });
-                            } else {
-                                var sql;
-                                if (key == data[0].sender_key) {
-                                    sql = "UPDATE `questions` SET `sender_deleted`=1 WHERE `id`=" + id + "";
-                                } else if (key == data[0].receiver_key) {
-                                    sql = "UPDATE `questions` SET `receiver_deleted`=1 WHERE `id`=" + id + "";
-                                }
-                                client.query(sql, function(error2, data2, fields2) {
-                                    if (error2) {
-                                        console.log(error2);
-                                        return res.sendStatus(300);
-                                    } else {
-                                        return res.send(echoResponse(200, 'Delete successfully', 'success', false));
-                                    }
-                                });
+                            var sql;
+                            if (key == data[0].sender_key) {
+                                sql = "UPDATE `questions` SET `sender_deleted`=1 WHERE `id`=" + id + "";
+                            } else if (key == data[0].receiver_key) {
+                                sql = "UPDATE `questions` SET `receiver_deleted`=1 WHERE `id`=" + id + "";
                             }
+                            client.query(sql, function(error2, data2, fields2) {
+                                if (error2) {
+                                    console.log(error2);
+                                    return res.sendStatus(300);
+                                } else {
+                                    client.query("SELECT * FROM `questions` WHERE `id`=" + id + "", function(errorDel, dataDel, fieldsDel) {
+                                        if (errorDel) {
+                                            console.log(errorDel);
+                                            return res.sendStatus(300);
+                                        } else {
+                                            if (dataDel.length > 0) {
+                                                if (dataDel[0].sender_deleted == 1 && dataDel[0].receiver_deleted == 1) {
+                                                    client.query("DELETE FROM `questions` WHERE `id`=" + id + "", function(error2, data2, fields2) {
+                                                        if (error2) {
+                                                            console.log(error2);
+                                                            return res.sendStatus(300);
+                                                        } else {
+                                                            return res.send(echoResponse(200, 'Delete successfully', 'success', false));
+                                                        }
+                                                    });
+                                                } else {
+                                                    return res.send(echoResponse(200, 'Delete successfully', 'success', false));
+                                                }
+                                            } else {
+                                                return res.send(echoResponse(404, 'This questions not exists', 'success', true));
+                                            }
+                                        }
+                                    });
+                                }
+                            });
                         } else {
                             return res.send(echoResponse(404, 'This questions not exists', 'success', true));
                         }
