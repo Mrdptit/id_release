@@ -9,5 +9,6 @@ router.use('/search', require('./search'));
 router.use('/feeds', require('./feeds'));
 router.use('/posts', require('./posts'));
 router.use('/couples', require('./couples'));
+router.use('/ask', require('./ask'));
 
 module.exports = router;

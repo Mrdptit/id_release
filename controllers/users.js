@@ -693,18 +693,21 @@ router.post('/other_information', urlParser, function(req, res) {
                         if (data.length > 0) {
                             var insert = [];
                             for (var k in req.body) {
-                                if (k != 'access_token' && k != 'email' && k != 'about') {
+                                if (k != 'access_token' && k != 'email' && k != 'about' && k != 'height' && k != 'weight') {
                                     insert.push("`" + k + "`=" + "'" + req.body[k] + "'");
                                 }
                             }
                             if (req.body.email) {
                                 client.query("UPDATE `users` SET `email`='" + req.body.email + "' WHERE `key`='" + req.body.users_key + "'");
                             }
+                            if (req.body.height && req.body.weight) {
+                                client.query("UPDATE `other_information` SET `height`="+req.body.height+",`weight`="+req.body.weight+" WHERE `users_key`='" + req.body.users_key + "'");
+                            }
                             var dataSQL;
                             if (req.body.about) {
-                                dataSQL = "UPDATE `other_information` SET " + insert.toString() + ",`about`=" + escapeSQL.escape(req.body.about) + " WHERE `users_key`='" + req.body.users_key + "'";
+                                dataSQL = "UPDATE `other_information` SET "+insert.toString() + ",`about`=" + escapeSQL.escape(req.body.about) + " WHERE `users_key`='" + req.body.users_key + "'";
                             } else {
-                                dataSQL = "UPDATE `other_information` SET " + insert.toString() + " WHERE `users_key`='" + req.body.users_key + "'";
+                                dataSQL = "UPDATE `other_information` SET "+insert.toString() + " WHERE `users_key`='" + req.body.users_key + "'";
                             }
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
@@ -719,12 +722,12 @@ router.post('/other_information', urlParser, function(req, res) {
                             var value = [];
                             var insert = [];
                             for (var k in req.body) {
-                                if (k != 'access_token' && k != 'about') {
+                                if (k != 'access_token' && k != 'about' && k != 'height' && k != 'weight') {
                                     insert.push("`" + k + "`");
                                     value.push("'" + req.body[k] + "'");
                                 }
                             }
-                            var dataSQL = "INSERT INTO `other_information`(" + insert.toString() + ",`about`) VALUES(" + value.toString() + "," + escapeSQL.escape(req.body.about) + ")";
+                            var dataSQL = "INSERT INTO `other_information`(`height`,`weight`," + insert.toString() + ",`about`) VALUES("+req.body.height+","+req.body.weight+"," + value.toString() + "," + escapeSQL.escape(req.body.about) + ")";
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);
