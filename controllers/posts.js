@@ -112,7 +112,7 @@ router.post('/new', urlParser, function(req, res) {
                         client.query(permis);
                         addRelate(req.body.users_key, dInsert.insertId, function(successCall) {
                             addPermission(dInsert.insertId, req.body.users, function(successPermission) {
-                                addPhotoAlbum(dInsert.insertId, req.body.albums, function(successAlbum) {
+                                addPhotoAlbum(dInsert.insertId, req.body.users_key, req.body.albums, function(successAlbum) {
                                     addTags(dInsert.insertId, req.body.tags, function(successTags) {
                                         sendNotificationToFriend(dInsert.insertId);
                                         return res.send(echoResponse(200, {
@@ -170,7 +170,7 @@ function addPermission(id, data, callback) {
     }
 }
 
-function addPhotoAlbum(id, data, callback) {
+function addPhotoAlbum(id, key, data, callback) {
     var json;
     if (isJsonString(data)) {
         json = JSON.parse(data);
@@ -178,7 +178,7 @@ function addPhotoAlbum(id, data, callback) {
             async.forEachOf(json, function(element, n, call) {
                 if (json[n].img_url) {
                     var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                    var dataMember = "VALUES ('" + json[n].img_url + "','" + json[n].img_width + "','" + json[n].img_height + "','" + req.body.users_key + "','" + id + "')";
+                    var dataMember = "VALUES ('" + json[n].img_url + "','" + json[n].img_width + "','" + json[n].img_height + "','" + key + "','" + id + "')";
                     client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
                         if (eMember) {
                             console.log(eMember);
