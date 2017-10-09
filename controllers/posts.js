@@ -110,7 +110,7 @@ router.post('/new', urlParser, function(req, res) {
                         console.log("Vừa thêm bài viết thành công với caption " + req.body.caption);
                         var permis = "INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + dInsert.insertId + "','" + req.body.users_key + "')";
                         client.query(permis);
-                        insertRelate(req.body.users_key, dInsert.insertId, function(successCall) {
+                        addRelate(req.body.users_key, dInsert.insertId, function(successCall) {
                             addPermission(dInsert.insertId, req.body.users, function(successPermission) {
                                 addPhotoAlbum(dInsert.insertId, req.body.albums, function(successAlbum) {
                                     addTags(dInsert.insertId, req.body.tags, function(successTags) {
@@ -129,86 +129,6 @@ router.post('/new', urlParser, function(req, res) {
                                 });
                             });
                         });
-                        // if (req.body.permission && req.body.permission == 2 && req.body.users) {
-                        //     var json;
-                        //     if (isJsonString(req.body.users)) {
-                        //         json = JSON.parse(req.body.users);
-                        //         for (var n = 0; n < json.length; n++) {
-                        //             var insertMember = "INSERT INTO `permissions`(`posts_id`,`users_key`)";
-                        //             var dataMember = "VALUES ('" + dInsert.insertId + "','" + json[n].users_key + "')";
-                        //             client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                        //                 if (eMember) {
-                        //                     console.log(eMember);
-                        //                     return res.sendStatus(300);
-                        //                 } else {
-                        //                     console.log("INSERT USERS SUCCESS");
-                        //                 }
-                        //             });
-                        //         }
-                        //     }
-                        // }
-                        // var json;
-                        // if (isJsonString(req.body.albums)) {
-                        //     json = JSON.parse(req.body.albums);
-                        //     for (var n = 0; n < json.length; n++) {
-                        //         if (json[n].img_url) {
-                        //             var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                        //             var dataMember = "VALUES ('" + json[n].img_url + "','" + json[n].img_width + "','" + json[n].img_height + "','" + req.body.users_key + "','" + dInsert.insertId + "')";
-                        //             client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                        //                 if (eMember) {
-                        //                     console.log(eMember);
-                        //                     return res.sendStatus(300);
-                        //                 } else {
-                        //                     console.log("INSERT ALBUMS SUCCESS");
-                        //                 }
-                        //             });
-                        //         }
-                        //     }
-                        // } else {
-                        //     console.log("ERROR JSON");
-                        // }
-                        // if (req.body.tags) {
-                        //     var sqlCurrent = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
-                        //     client.query(sqlCurrent, function(cError, cData, cField) {
-                        //         if (cError) {
-                        //             console.log(cError);
-                        //             return res.sendStatus(300);
-                        //         } else {
-                        //             // var json;
-                        //             // if (isJsonString(req.body.tags)) {
-                        //             //     json = JSON.parse(req.body.tags);
-                        //             //     async.forEachOf(json, function(dataJ, j, callBackJ) {
-                        //             //         var permissionSQL = "INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + dInsert.insertId + "','" + json[j].users_key + "')";
-                        //             //         console.log("INSERT PERMISSION SUCCESS");
-                        //             //         client.query(permissionSQL);
-                        //             //         var insertMember = "INSERT INTO `tags`(`posts_id`,`users_key`)";
-                        //             //         var dataMember = "VALUES ('" + dInsert.insertId + "','" + json[j].users_key + "')";
-                        //             //         // relate notification tag
-                        //             //         insertRelate(json[j].users_key, dInsert.insertId, function(successInsert) {
-                        //             //             if (successInsert) {
-                        //             //                 // end
-                        //             //                 client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                        //             //                     if (eMember) {
-                        //             //                         console.log(eMember);
-                        //             //                         return res.sendStatus(300);
-                        //             //                     } else {
-                        //             //                         console.log("INSERT TAGS USERS SUCCESS");
-                        //             //                     }
-                        //             //                 });
-                        //             //             }
-                        //             //         });
-                        //             //         if (j === json.length - 1) {
-                        //             //             sendNotificationToFriend(dInsert.insertId);
-                        //             //         }
-                        //             //     });
-                        //             // }
-                        //         }
-                        //     });
-                        // } else {
-                        //     sendNotificationToFriend(dInsert.insertId);
-                        // }
-
-
                     }
                 });
             }
@@ -297,7 +217,7 @@ function addTags(id, data, callback) {
                 client.query("INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + id + "','" + json[j].users_key + "')");
                 var insertMember = "INSERT INTO `tags`(`posts_id`,`users_key`) VALUES('" + id + "','" + json[j].users_key + "')";
                 // relate notification tag
-                insertRelate(json[j].users_key, id, function(successInsert) {
+                addRelate(json[j].users_key, id, function(successInsert) {
                     if (successInsert) {
                         // end
                         client.query(insertMember, function(eMember, rMember, fMember) {
@@ -486,7 +406,7 @@ router.post('/update', urlParser, function(req, res) {
                         var permis = "INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + req.body.id + "','" + req.body.users_key + "')";
                         client.query(permis);
 
-                        insertRelate(req.body.users_key, req.body.id, function(successCall) {
+                        addRelate(req.body.users_key, req.body.id, function(successCall) {
                             if (successCall) {
                                 if (req.body.permission && req.body.permission == 2 && req.body.users) {
                                     var json;
@@ -523,7 +443,7 @@ router.post('/update', urlParser, function(req, res) {
                                                     var insertMember = "INSERT INTO `tags`(`posts_id`,`users_key`)";
                                                     var dataMember = "VALUES ('" + req.body.id + "','" + json[j].users_key + "')";
                                                     // relate notification tag
-                                                    insertRelate(json[j].users_key, req.body.id, function(successInsert) {
+                                                    addRelate(json[j].users_key, req.body.id, function(successInsert) {
                                                         if (successInsert) {
                                                             // end
                                                             client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
@@ -1457,7 +1377,7 @@ router.post('/comment/new', urlParser, function(req, res) {
                                                 console.log(eCurrent);
                                                 return res.sendStatus(300);
                                             } else {
-                                                insertRelate(req.body.users_key, req.body.posts_id, function(successCall) {
+                                                addRelate(req.body.users_key, req.body.posts_id, function(successCall) {
                                                     if (successCall) {
                                                         var selectRelate = "SELECT * FROM `notification_relate` WHERE `posts_id`='" + req.body.posts_id + "' AND `users_key`!='" + req.body.users_key + "'";
                                                         client.query(selectRelate, function(eRelate, dRelate, fRelate) {
@@ -1855,7 +1775,7 @@ function notificationReport(users_key, posts_id) {
     });
 }
 
-function insertRelate(users_key, posts_id, callback) {
+function addRelate(users_key, posts_id, callback) {
     var select = "SELECT * FROM `notification_relate` WHERE `users_key`='" + users_key + "' AND `posts_id`='" + posts_id + "'";
     client.query(select, function(eSelect, dSelect, fSelect) {
         if (eSelect) {
