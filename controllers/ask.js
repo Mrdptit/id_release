@@ -80,6 +80,22 @@ client.query("SET CHARACTER SET utf8mb4", function(error, results, fields) {
 /*********--------------------------*********
  **********------- FUNCTION ------*********
  **********--------------------------*********/
+router.get('/type=email', urlParser, function(req, res) {
+    var email = req.params.email || req.query.email;
+    var sql = "SELECT `avatar`,`cover`,`email`,`nickname` FROM `users` WHERE `email` LIKE '%"+email+"%'";
+    client.query(sql, function(error, data, fields) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(300);
+        } else {
+            if (data.length > 0) {
+                return res.send(echoResponse(200, data[0], 'success', false));
+            } else {
+                return res.send(echoResponse(404, "No have any data", 'success', true));
+            }
+        }
+    });
+});
 router.get('/type=received', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     if (token) {
