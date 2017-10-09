@@ -325,8 +325,10 @@ router.post('/answers/new', urlParser, function(req, res) {
                                     return res.sendStatus(300);
                                 } else {
                                     if (sender_key == data2[0].sender_key) {
+                                        client.query("UPDATE `questions` SET `sender_deleted`=0 WHERE `id`=" + questions_id + "");
                                         sendNotification(sender_key, data2[0].receiver_key, content, "answers", questions_id);
                                     } else if (sender_key == data2[0].sender_key) {
+                                        client.query("UPDATE `questions` SET `receiver_deleted`=0 WHERE `id`=" + questions_id + "");
                                         sendNotification(sender_key, data2[0].sender_key, content, "answers", questions_id);
                                     }
                                     return res.send(echoResponse(200, 'Send successfully', 'success', false));
