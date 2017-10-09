@@ -85,102 +85,6 @@ var path = require('path');
 
 
 
-function downloadImage(urlList, completion) {
-    var data = [];
-    var download = function(url, dest, callback) {
-        request.get(url)
-            .on('error', function(err) { console.log(err) })
-            .pipe(fs.createWriteStream(dest))
-            .on('close', callback);
-    };
-    async.forEachOf(urlList, function(element, i, call) {
-        var filename = element.split('/').pop();
-        console.log('Downloading ' + filename);
-        download(element, filename, function(callback) {
-            console.log('Finished Downloading ' + filename);
-            var tmpPath = path.dirname(__dirname) + '/' + filename;
-            data.push(tmpPath);
-            if (i === urlList.length - 1) {
-                completion(data);
-            }
-        });
-    });
-}
-
-function checkPorn(posts_id, callback) {
-    var sql = "SELECT `img_url` FROM `store_images` WHERE `posts_id`='" + posts_id + "'";
-    client.query(sql, function(error, data, fields) {
-        if (error) {
-            console.log(error);
-        } else {
-            var arrayimages = [];
-            async.forEachOf(data, function(dt, i, call) {
-                arrayimages.push(data[i].img_url);
-                if (i === data.length - 1) {
-                    downloadImage(arrayimages, function(completion) {
-                        callback(completion);
-                    });
-                }
-            });
-        }
-    });
-}
-
-/*********--------------------------*********
- **********------- FUNCTION ------*********
- **********--------------------------*********/
-
-function checkNow(posts_id) {
-    var arrayBools = [];
-    setTimeout(function() {
-        checkPorn(posts_id, function(callback) {
-            setTimeout(function() {
-                async.forEachOf(callback, function(element, i, ok) {
-                    nude.scan(element, function(result) {
-                        console.log(result + ' --- ' + element);
-                        arrayBools.push(result);
-                        if (i === callback.length - 1) {
-                            checkBoolArrays(arrayBools, posts_id, function(bool) {
-                                if (bool == false) {
-                                    sendNotificationToFriend(posts_id);
-                                }
-                            });
-                        }
-                        fs.unlinkSync(element);
-                    });
-                });
-            }, 3000);
-        });
-    }, 2000);
-}
-
-function checkBoolArrays(arrayBools, posts_id, callback) {
-    for (var j = 0; j < arrayBools.length; j++) {
-        if (arrayBools[j] == true) {
-            var us = "SELECT `users_key` FROM `posts` WHERE `id`='" + posts_id + "'";
-            client.query(us, function(e, d, f) {
-                if (e) {
-                    console.log(e);
-                } else {
-                    console.log("CHECK: " + posts_id);
-                    client.query("INSERT INTO `warning_posts`(`posts_id`) VALUES ('" + posts_id + "')");
-                    client.query("UPDATE `posts` SET `is_active`='0' WHERE `id`='" + posts_id + "'");
-                    sendWarning(d[0].users_key, posts_id);
-                    notificationWarning(d[0].users_key, posts_id);
-                    //client.query("DELETE FROM `posts` WHERE `id`='"+posts_id+"'");
-                }
-            });
-            return callback(arrayBools[j]);
-        } else {
-            if (j === arrayBools.length - 1) {
-                callback(arrayBools[j]);
-            }
-        }
-    }
-}
-// sendWarning('o0B9V80446R6mkXA21BL4ksI7MO2', '302');
-
-
 router.post('/new', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     if (token) {
@@ -203,112 +107,108 @@ router.post('/new', urlParser, function(req, res) {
                         console.log(eInsert);
                         return res.sendStatus(300);
                     } else {
-                        // async.series([
-                        //     function(successCallback) {
                         console.log("Vừa thêm bài viết thành công với caption " + req.body.caption);
                         var permis = "INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + dInsert.insertId + "','" + req.body.users_key + "')";
                         client.query(permis);
-
                         insertRelate(req.body.users_key, dInsert.insertId, function(successCall) {
-                            if (successCall) {
-                                // async.series([
-                                //     function(call) {
-                                if (req.body.permission && req.body.permission == 2 && req.body.users) {
-                                    var json;
-                                    if (isJsonString(req.body.users)) {
-                                        json = JSON.parse(req.body.users);
-                                        for (var n = 0; n < json.length; n++) {
-                                            var insertMember = "INSERT INTO `permissions`(`posts_id`,`users_key`)";
-                                            var dataMember = "VALUES ('" + dInsert.insertId + "','" + json[n].users_key + "')";
-                                            client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                if (eMember) {
-                                                    console.log(eMember);
-                                                    return res.sendStatus(300);
-                                                } else {
-                                                    console.log("INSERT USERS SUCCESS");
-                                                }
-                                            });
-                                        }
-                                        // call(null, 'one');
-                                    }
-                                } else {
-                                    // call(null, 'one');
-                                }
-                                var json;
-                                if (isJsonString(req.body.albums)) {
-                                    json = JSON.parse(req.body.albums);
-                                    for (var n = 0; n < json.length; n++) {
-                                        if (json[n].img_url) {
-                                            var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                                            var dataMember = "VALUES ('" + json[n].img_url + "','" + json[n].img_width + "','" + json[n].img_height + "','" + req.body.users_key + "','" + dInsert.insertId + "')";
-                                            client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                if (eMember) {
-                                                    console.log(eMember);
-                                                    return res.sendStatus(300);
-                                                } else {
-                                                    console.log("INSERT ALBUMS SUCCESS");
-                                                }
-                                            });
-                                        }
-                                    }
-                                    // call(null, 'three');
-                                } else {
-                                    // call(null, 'three');
-                                    console.log("ERROR JSON");
-                                }
-                                if (req.body.tags) {
-                                    var sqlCurrent = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
-                                    client.query(sqlCurrent, function(cError, cData, cField) {
-                                        if (cError) {
-                                            console.log(cError);
-                                            return res.sendStatus(300);
-                                        } else {
-                                            var json;
-                                            if (isJsonString(req.body.tags)) {
-                                                json = JSON.parse(req.body.tags);
-                                                async.forEachOf(json, function(dataJ, j, callBackJ) {
-                                                    var permissionSQL = "INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + dInsert.insertId + "','" + json[j].users_key + "')";
-                                                    console.log("INSERT PERMISSION SUCCESS");
-                                                    client.query(permissionSQL);
-                                                    var insertMember = "INSERT INTO `tags`(`posts_id`,`users_key`)";
-                                                    var dataMember = "VALUES ('" + dInsert.insertId + "','" + json[j].users_key + "')";
-                                                    // relate notification tag
-                                                    insertRelate(json[j].users_key, dInsert.insertId, function(successInsert) {
-                                                        if (successInsert) {
-                                                            // end
-                                                            client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                                if (eMember) {
-                                                                    console.log(eMember);
-                                                                    return res.sendStatus(300);
-                                                                } else {
-                                                                    console.log("INSERT TAGS USERS SUCCESS");
-                                                                }
-                                                            });
-                                                        }
-                                                    });
-                                                    if (j === json.length - 1) {
-                                                        sendNotificationToFriend(dInsert.insertId);
-                                                    }
-                                                });
-                                            }
-                                        }
+                            addPermission(dInsert.insertId, req.body.users, function(successPermission) {
+                                addPhotoAlbum(dInsert.insertId, req.body.albums, function(successAlbum) {
+                                    addTags(dInsert.insertId, req, body.tags, function(successTags) {
+                                        sendNotificationToFriend(dInsert.insertId);
+                                        return res.send(echoResponse(200, {
+                                            id: dInsert.insertId,
+                                            caption: req.body.caption,
+                                            location: req.body.location,
+                                            posted_time: req.body.posted_time,
+                                            edited_time: req.body.edited_time,
+                                            permission: req.body.permission,
+                                            type: req.body.type,
+                                            users_key: req.body.users_key
+                                        }, 'success', false));
                                     });
-                                } else {
-                                    sendNotificationToFriend(dInsert.insertId);
-                                    // call(null, 'two');
-                                }
-                            }
+                                });
+                            });
                         });
-                        return res.send(echoResponse(200, {
-                            id: dInsert.insertId,
-                            caption: req.body.caption,
-                            location: req.body.location,
-                            posted_time: req.body.posted_time,
-                            edited_time: req.body.edited_time,
-                            permission: req.body.permission,
-                            type: req.body.type,
-                            users_key: req.body.users_key
-                        }, 'success', false));
+                        // if (req.body.permission && req.body.permission == 2 && req.body.users) {
+                        //     var json;
+                        //     if (isJsonString(req.body.users)) {
+                        //         json = JSON.parse(req.body.users);
+                        //         for (var n = 0; n < json.length; n++) {
+                        //             var insertMember = "INSERT INTO `permissions`(`posts_id`,`users_key`)";
+                        //             var dataMember = "VALUES ('" + dInsert.insertId + "','" + json[n].users_key + "')";
+                        //             client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                        //                 if (eMember) {
+                        //                     console.log(eMember);
+                        //                     return res.sendStatus(300);
+                        //                 } else {
+                        //                     console.log("INSERT USERS SUCCESS");
+                        //                 }
+                        //             });
+                        //         }
+                        //     }
+                        // }
+                        // var json;
+                        // if (isJsonString(req.body.albums)) {
+                        //     json = JSON.parse(req.body.albums);
+                        //     for (var n = 0; n < json.length; n++) {
+                        //         if (json[n].img_url) {
+                        //             var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                        //             var dataMember = "VALUES ('" + json[n].img_url + "','" + json[n].img_width + "','" + json[n].img_height + "','" + req.body.users_key + "','" + dInsert.insertId + "')";
+                        //             client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                        //                 if (eMember) {
+                        //                     console.log(eMember);
+                        //                     return res.sendStatus(300);
+                        //                 } else {
+                        //                     console.log("INSERT ALBUMS SUCCESS");
+                        //                 }
+                        //             });
+                        //         }
+                        //     }
+                        // } else {
+                        //     console.log("ERROR JSON");
+                        // }
+                        // if (req.body.tags) {
+                        //     var sqlCurrent = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
+                        //     client.query(sqlCurrent, function(cError, cData, cField) {
+                        //         if (cError) {
+                        //             console.log(cError);
+                        //             return res.sendStatus(300);
+                        //         } else {
+                        //             // var json;
+                        //             // if (isJsonString(req.body.tags)) {
+                        //             //     json = JSON.parse(req.body.tags);
+                        //             //     async.forEachOf(json, function(dataJ, j, callBackJ) {
+                        //             //         var permissionSQL = "INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + dInsert.insertId + "','" + json[j].users_key + "')";
+                        //             //         console.log("INSERT PERMISSION SUCCESS");
+                        //             //         client.query(permissionSQL);
+                        //             //         var insertMember = "INSERT INTO `tags`(`posts_id`,`users_key`)";
+                        //             //         var dataMember = "VALUES ('" + dInsert.insertId + "','" + json[j].users_key + "')";
+                        //             //         // relate notification tag
+                        //             //         insertRelate(json[j].users_key, dInsert.insertId, function(successInsert) {
+                        //             //             if (successInsert) {
+                        //             //                 // end
+                        //             //                 client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                        //             //                     if (eMember) {
+                        //             //                         console.log(eMember);
+                        //             //                         return res.sendStatus(300);
+                        //             //                     } else {
+                        //             //                         console.log("INSERT TAGS USERS SUCCESS");
+                        //             //                     }
+                        //             //                 });
+                        //             //             }
+                        //             //         });
+                        //             //         if (j === json.length - 1) {
+                        //             //             sendNotificationToFriend(dInsert.insertId);
+                        //             //         }
+                        //             //     });
+                        //             // }
+                        //         }
+                        //     });
+                        // } else {
+                        //     sendNotificationToFriend(dInsert.insertId);
+                        // }
+
+
                     }
                 });
             }
@@ -317,6 +217,118 @@ router.post('/new', urlParser, function(req, res) {
         return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
     }
 });
+
+function addPermission(id, data, callback) {
+    var json;
+    if (isJsonString(data)) {
+        json = JSON.parse(data);
+        if (json.length > 0) {
+            async.forEachOf(json, function(element, n, call) {
+                var insertMember = "INSERT INTO `permissions`(`posts_id`,`users_key`)";
+                var dataMember = "VALUES ('" + id + "','" + json[n].users_key + "')";
+                client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                    if (eMember) {
+                        console.log(eMember);
+                        if (n == json.length - 1) {
+                            callback(true);
+                        }
+                    } else {
+                        console.log("POST: INSERT PERMISSION SUCCESS");
+                        if (n == json.length - 1) {
+                            callback(true);
+                        }
+                    }
+                });
+            });
+        } else {
+            console.log("POST: NO HAVE PERMISSIONS MEMBERS");
+            callback(true);
+        }
+    } else {
+        console.log("POST: ERROR JSON PERMISSION");
+        callback(true);
+    }
+}
+
+function addPhotoAlbum(id, data, callback) {
+    var json;
+    if (isJsonString(data)) {
+        json = JSON.parse(data);
+        if (json.length > 0) {
+            async.forEachOf(json, function(element, n, call) {
+                if (json[n].img_url) {
+                    var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                    var dataMember = "VALUES ('" + json[n].img_url + "','" + json[n].img_width + "','" + json[n].img_height + "','" + req.body.users_key + "','" + id + "')";
+                    client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                        if (eMember) {
+                            console.log(eMember);
+                            if (n == json.length - 1) {
+                                callback(true);
+                            }
+                        } else {
+                            console.log("POST: INSERT ALBUMS SUCCESS");
+                            if (n == json.length - 1) {
+                                callback(true);
+                            }
+                        }
+                    });
+                } else {
+                    if (n == json.length - 1) {
+                        callback(true);
+                    }
+                }
+            });
+        } else {
+            console.log("POST: NO HAVE PHOTO ALBUMS");
+            callback(true);
+        }
+    } else {
+        console.log("POST: ERROR JSON ALBUMS");
+        callback(true);
+    }
+}
+
+function addTags(id, data, callback) {
+    var json;
+    if (isJsonString(data)) {
+        json = JSON.parse(data);
+        if (json.length > 0) {
+            async.forEachOf(json, function(dataJ, j, callBackJ) {
+                client.query("INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + id + "','" + json[j].users_key + "')");
+                var insertMember = "INSERT INTO `tags`(`posts_id`,`users_key`) VALUES('" + id + "','" + json[j].users_key + "')";
+                // relate notification tag
+                insertRelate(json[j].users_key, id, function(successInsert) {
+                    if (successInsert) {
+                        // end
+                        client.query(insertMember, function(eMember, rMember, fMember) {
+                            if (eMember) {
+                                console.log(eMember);
+                                if (j == json.length - 1) {
+                                    callback(true);
+                                }
+                            } else {
+                                console.log("INSERT TAGS USERS SUCCESS");
+                                if (j == json.length - 1) {
+                                    callback(true);
+                                }
+                            }
+                        });
+                    } else {
+                        if (j == json.length - 1) {
+                            callback(true);
+                        }
+                    }
+                });
+            });
+        } else {
+            console.log("POST: NO HAVE TAGS MEMBERS");
+            callback(true);
+        }
+    } else {
+        console.log("ERROR JSON TAGS");
+        callback(true);
+    }
+}
 
 function sendNotificationToFriend(posts_id) {
     var sqlPost = "SELECT * FROM `posts` WHERE `id`='" + posts_id + "'";
@@ -2107,6 +2119,100 @@ function sendReport(receiver_key, posts_id) {
     });
 }
 
+function downloadImage(urlList, completion) {
+    var data = [];
+    var download = function(url, dest, callback) {
+        request.get(url)
+            .on('error', function(err) { console.log(err) })
+            .pipe(fs.createWriteStream(dest))
+            .on('close', callback);
+    };
+    async.forEachOf(urlList, function(element, i, call) {
+        var filename = element.split('/').pop();
+        console.log('Downloading ' + filename);
+        download(element, filename, function(callback) {
+            console.log('Finished Downloading ' + filename);
+            var tmpPath = path.dirname(__dirname) + '/' + filename;
+            data.push(tmpPath);
+            if (i === urlList.length - 1) {
+                completion(data);
+            }
+        });
+    });
+}
+
+function checkPorn(posts_id, callback) {
+    var sql = "SELECT `img_url` FROM `store_images` WHERE `posts_id`='" + posts_id + "'";
+    client.query(sql, function(error, data, fields) {
+        if (error) {
+            console.log(error);
+        } else {
+            var arrayimages = [];
+            async.forEachOf(data, function(dt, i, call) {
+                arrayimages.push(data[i].img_url);
+                if (i === data.length - 1) {
+                    downloadImage(arrayimages, function(completion) {
+                        callback(completion);
+                    });
+                }
+            });
+        }
+    });
+}
+
+/*********--------------------------*********
+ **********------- FUNCTION ------*********
+ **********--------------------------*********/
+
+function checkNow(posts_id) {
+    var arrayBools = [];
+    setTimeout(function() {
+        checkPorn(posts_id, function(callback) {
+            setTimeout(function() {
+                async.forEachOf(callback, function(element, i, ok) {
+                    nude.scan(element, function(result) {
+                        console.log(result + ' --- ' + element);
+                        arrayBools.push(result);
+                        if (i === callback.length - 1) {
+                            checkBoolArrays(arrayBools, posts_id, function(bool) {
+                                if (bool == false) {
+                                    sendNotificationToFriend(posts_id);
+                                }
+                            });
+                        }
+                        fs.unlinkSync(element);
+                    });
+                });
+            }, 3000);
+        });
+    }, 2000);
+}
+
+function checkBoolArrays(arrayBools, posts_id, callback) {
+    for (var j = 0; j < arrayBools.length; j++) {
+        if (arrayBools[j] == true) {
+            var us = "SELECT `users_key` FROM `posts` WHERE `id`='" + posts_id + "'";
+            client.query(us, function(e, d, f) {
+                if (e) {
+                    console.log(e);
+                } else {
+                    console.log("CHECK: " + posts_id);
+                    client.query("INSERT INTO `warning_posts`(`posts_id`) VALUES ('" + posts_id + "')");
+                    client.query("UPDATE `posts` SET `is_active`='0' WHERE `id`='" + posts_id + "'");
+                    sendWarning(d[0].users_key, posts_id);
+                    notificationWarning(d[0].users_key, posts_id);
+                    //client.query("DELETE FROM `posts` WHERE `id`='"+posts_id+"'");
+                }
+            });
+            return callback(arrayBools[j]);
+        } else {
+            if (j === arrayBools.length - 1) {
+                callback(arrayBools[j]);
+            }
+        }
+    }
+}
+// sendWarning('o0B9V80446R6mkXA21BL4ksI7MO2', '302');
 function checkHavePost(res, posts_id, callback) {
     var sql = "SELECT * FROM `posts` WHERE `id`='" + posts_id + "'";
     client.query(sql, function(error, data, fields) {
