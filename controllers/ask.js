@@ -82,7 +82,7 @@ client.query("SET CHARACTER SET utf8mb4", function(error, results, fields) {
  **********--------------------------*********/
 router.get('/type=email', urlParser, function(req, res) {
     var email = req.params.email || req.query.email;
-    var sql = "SELECT `key`,`avatar`,`cover`,`email`,`nickname` FROM `users` WHERE `email` LIKE '"+email+"%'";
+    var sql = "SELECT `key`,`avatar`,`cover`,`email`,`nickname` FROM `users` WHERE `email` LIKE '" + email + "%'";
     client.query(sql, function(error, data, fields) {
         if (error) {
             console.log(error);
@@ -214,40 +214,40 @@ function getUser(key, callback) {
 }
 
 router.post('/questions/new', urlParser, function(req, res) {
-    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
-    if (token) {
-        jwt.verify(token, config.secret, function(err, decoded) {
-            if (err) {
-                return res.json({ success: false, message: 'Failed to authenticate token.' });
-            } else {
-                var time = new Date().getTime();
-                var content = escapeSQL.escape(decodeURIComponent(req.body.content));
-                var sender_key = req.body.sender_key;
-                var receiver_key = req.body.receiver_key;
-                if (!req.body.content || !req.body.sender_key || !req.body.receiver_key) {
-                    return res.sendStatus(300);
-                }
-                client.query("INSERT INTO `questions` SET `time`=" + time + ", `sender_key`='" + sender_key + "', `receiver_key`='" + receiver_key + "', `content`=" + content + "", function(error, data, fields) {
-                    if (error) {
-                        console.log(error);
-                        return res.sendStatus(300);
-                    } else {
-                        client.query("INSERT INTO `answers` SET `content`=" + content + ", `time`=" + time + ", `questions_id`=" + data.insertId + ", `sender_key`='" + sender_key + "'", function(error2, data2, fields2) {
-                            if (error2) {
-                                console.log(error2);
-                                return res.sendStatus(300);
-                            } else {
-                                sendNotification(sender_key, receiver_key, content, "questions", data.insertId);
-                                return res.send(echoResponse(200, 'Send successfully', 'success', false));
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    } else {
-        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    // var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    // if (token) {
+    //     jwt.verify(token, config.secret, function(err, decoded) {
+    //         if (err) {
+    //             return res.json({ success: false, message: 'Failed to authenticate token.' });
+    //         } else {
+    var time = new Date().getTime();
+    var content = escapeSQL.escape(decodeURIComponent(req.body.content));
+    var sender_key = req.body.sender_key;
+    var receiver_key = req.body.receiver_key;
+    if (!req.body.content || !req.body.receiver_key) {
+        return res.sendStatus(300);
     }
+    client.query("INSERT INTO `questions` SET `time`=" + time + ", `sender_key`='" + sender_key + "', `receiver_key`='" + receiver_key + "', `content`=" + content + "", function(error, data, fields) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(300);
+        } else {
+            client.query("INSERT INTO `answers` SET `content`=" + content + ", `time`=" + time + ", `questions_id`=" + data.insertId + ", `sender_key`='" + sender_key + "'", function(error2, data2, fields2) {
+                if (error2) {
+                    console.log(error2);
+                    return res.sendStatus(300);
+                } else {
+                    sendNotification(sender_key, receiver_key, content, "questions", data.insertId);
+                    return res.send(echoResponse(200, 'Send successfully', 'success', false));
+                }
+            });
+        }
+    });
+    //         }
+    //     });
+    // } else {
+    //     return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    // }
 });
 router.post('/questions/delete', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
