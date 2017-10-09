@@ -113,7 +113,7 @@ router.post('/new', urlParser, function(req, res) {
                         insertRelate(req.body.users_key, dInsert.insertId, function(successCall) {
                             addPermission(dInsert.insertId, req.body.users, function(successPermission) {
                                 addPhotoAlbum(dInsert.insertId, req.body.albums, function(successAlbum) {
-                                    addTags(dInsert.insertId, req, body.tags, function(successTags) {
+                                    addTags(dInsert.insertId, req.body.tags, function(successTags) {
                                         sendNotificationToFriend(dInsert.insertId);
                                         return res.send(echoResponse(200, {
                                             id: dInsert.insertId,
