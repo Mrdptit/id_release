@@ -80,9 +80,9 @@ client.query("SET CHARACTER SET utf8mb4", function(error, results, fields) {
 /*********--------------------------*********
  **********------- FUNCTION ------*********
  **********--------------------------*********/
-router.get('/type=email', urlParser, function(req, res) {
-    var email = req.params.email || req.query.email;
-    var sql = "SELECT `key`,`avatar`,`cover`,`email`,`nickname` FROM `users` WHERE `email` LIKE '" + email + "%'";
+router.get('/type=username', urlParser, function(req, res) {
+    var username = req.params.username || req.query.username;
+    var sql = "SELECT `username`,`key`,`avatar`,`cover`,`email`,`nickname` FROM `users` WHERE `username`='" + username + "'";
     client.query(sql, function(error, data, fields) {
         if (error) {
             console.log(error);
