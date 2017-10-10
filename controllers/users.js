@@ -137,7 +137,7 @@ router.post('/signup', urlParser, function(req, res) {
                         return res.sendStatus(300);
                     } else {
                         var currentTime = new Date().getTime();
-                        currentTime = getRandomInt(99, 999) + "0" + currentTime;
+                        currentTime = getRandomInt(1, 9) + "0" + currentTime;
                         client.query("UPDATE `users` SET `username`='"+currentTime+"' WHERE `email`='"+req.body.email+"'");
                         console.log("Vừa đăng ký thành công với email " + req.body.email + " bằng thiết bị " + req.body.device_name);
                         return res.send(echoResponse(200, 'Registered successfully.', 'success', false));
