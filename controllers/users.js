@@ -173,7 +173,6 @@ function updateUsername(email) {
                 console.log("Error username: "+username);
                 console.log(error);
                 exists = false;
-                break;
             } else {
                 if (data.length > 0) {
                     console.log("Duplicate username: "+username);
@@ -182,7 +181,6 @@ function updateUsername(email) {
                     exists = false;
                     client.query("UPDATE `users` SET `username`='" + username + "' WHERE `email`='" + email + "'");
                     console.log("SET username: "+username);
-                    break;
                 }
             }
         })
