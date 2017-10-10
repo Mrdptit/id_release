@@ -136,6 +136,15 @@ router.post('/signup', urlParser, function(req, res) {
                         console.log(eInsert);
                         return res.sendStatus(300);
                     } else {
+                        if (req.body.email) {
+                            var k = req.body.email;
+                            var match = k.match(/@/g);
+                            if (match.length > 0) {
+                                var number = k.indexOf("@");
+                                var ema = k.substring(0, number);
+                                client.query("UPDATE `users` SET `username`='"+ema+"' WHERE `email`='"+req.body.email+"'");
+                            }
+                        }
                         console.log("Vừa đăng ký thành công với email " + req.body.email + " bằng thiết bị " + req.body.device_name);
                         return res.send(echoResponse(200, 'Registered successfully.', 'success', false));
                     }
@@ -178,13 +187,13 @@ router.post('/signin', urlParser, function(req, res) {
                 var dataSQL;
                 if (req.body.nickname) {
                     if (req.body.device_id) {
-                        dataSQL = "UPDATE `users` SET " + insert.toString() + ",`device_id`="+escapeSQL.escape(req.body.device_id)+",`nickname`=" + escapeSQL.escape(contentMessage) + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                        dataSQL = "UPDATE `users` SET " + insert.toString() + ",`device_id`=" + escapeSQL.escape(req.body.device_id) + ",`nickname`=" + escapeSQL.escape(contentMessage) + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     } else {
                         dataSQL = "UPDATE `users` SET " + insert.toString() + ",`nickname`=" + escapeSQL.escape(contentMessage) + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     }
                 } else {
                     if (req.body.device_id) {
-                        dataSQL = "UPDATE `users` SET " + insert.toString() + ",`device_id`="+escapeSQL.escape(req.body.device_id)+", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
+                        dataSQL = "UPDATE `users` SET " + insert.toString() + ",`device_id`=" + escapeSQL.escape(req.body.device_id) + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     } else {
                         dataSQL = "UPDATE `users` SET " + insert.toString() + ", `access_token`='" + token + "' WHERE `key`='" + req.body.key + "'";
                     }
@@ -701,13 +710,13 @@ router.post('/other_information', urlParser, function(req, res) {
                                 client.query("UPDATE `users` SET `email`='" + req.body.email + "' WHERE `key`='" + req.body.users_key + "'");
                             }
                             if (req.body.height && req.body.weight) {
-                                client.query("UPDATE `other_information` SET `height`="+req.body.height+",`weight`="+req.body.weight+" WHERE `users_key`='" + req.body.users_key + "'");
+                                client.query("UPDATE `other_information` SET `height`=" + req.body.height + ",`weight`=" + req.body.weight + " WHERE `users_key`='" + req.body.users_key + "'");
                             }
                             var dataSQL;
                             if (req.body.about) {
-                                dataSQL = "UPDATE `other_information` SET "+insert.toString() + ",`about`=" + escapeSQL.escape(req.body.about) + " WHERE `users_key`='" + req.body.users_key + "'";
+                                dataSQL = "UPDATE `other_information` SET " + insert.toString() + ",`about`=" + escapeSQL.escape(req.body.about) + " WHERE `users_key`='" + req.body.users_key + "'";
                             } else {
-                                dataSQL = "UPDATE `other_information` SET "+insert.toString() + " WHERE `users_key`='" + req.body.users_key + "'";
+                                dataSQL = "UPDATE `other_information` SET " + insert.toString() + " WHERE `users_key`='" + req.body.users_key + "'";
                             }
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
@@ -727,7 +736,7 @@ router.post('/other_information', urlParser, function(req, res) {
                                     value.push("'" + req.body[k] + "'");
                                 }
                             }
-                            var dataSQL = "INSERT INTO `other_information`(`height`,`weight`," + insert.toString() + ",`about`) VALUES("+req.body.height+","+req.body.weight+"," + value.toString() + "," + escapeSQL.escape(req.body.about) + ")";
+                            var dataSQL = "INSERT INTO `other_information`(`height`,`weight`," + insert.toString() + ",`about`) VALUES(" + req.body.height + "," + req.body.weight + "," + value.toString() + "," + escapeSQL.escape(req.body.about) + ")";
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);
@@ -941,7 +950,7 @@ router.post('/update', urlParser, function(req, res) {
                             } else {
                                 dataSQL = "UPDATE `users` SET " + insert.toString() + " WHERE `key`='" + req.body.key + "'";
                             }
-                            
+
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);

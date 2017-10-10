@@ -237,7 +237,7 @@ router.post('/questions/new', urlParser, function(req, res) {
                     console.log(error2);
                     return res.sendStatus(300);
                 } else {
-                    sendNotification(sender_key, receiver_key, content, "questions", data.insertId);
+                    sendNotification(sender_key, receiver_key, req.body.content, "questions", data.insertId);
                     return res.send(echoResponse(200, 'Send successfully', 'success', false));
                 }
             });
@@ -342,10 +342,10 @@ router.post('/answers/new', urlParser, function(req, res) {
                                 } else {
                                     if (sender_key == data2[0].sender_key) {
                                         client.query("UPDATE `questions` SET `sender_deleted`=0 WHERE `id`=" + questions_id + "");
-                                        sendNotification(sender_key, data2[0].receiver_key, content, "answers", questions_id);
+                                        sendNotification(sender_key, data2[0].receiver_key, req.body.content, "answers", questions_id);
                                     } else if (sender_key == data2[0].sender_key) {
                                         client.query("UPDATE `questions` SET `receiver_deleted`=0 WHERE `id`=" + questions_id + "");
-                                        sendNotification(sender_key, data2[0].sender_key, content, "answers", questions_id);
+                                        sendNotification(sender_key, data2[0].sender_key, req.body.content, "answers", questions_id);
                                     }
                                     return res.send(echoResponse(200, 'Send successfully', 'success', false));
                                 }
