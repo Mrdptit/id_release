@@ -136,9 +136,9 @@ router.post('/signup', urlParser, function(req, res) {
                         console.log(eInsert);
                         return res.sendStatus(300);
                     } else {
-                        // if (req.body.email) {
-                        //     updateUsername(req.body.email);
-                        // }
+                        var currentTime = new Date().getTime();
+                        currentTime = getRandomInt(99, 999) + "0" + currentTime;
+                        client.query("UPDATE `users` SET `username`='"+currentTime+"' WHERE `email`='"+req.body.email+"'");
                         console.log("Vừa đăng ký thành công với email " + req.body.email + " bằng thiết bị " + req.body.device_name);
                         return res.send(echoResponse(200, 'Registered successfully.', 'success', false));
                     }
@@ -149,42 +149,8 @@ router.post('/signup', urlParser, function(req, res) {
         }
     });
 });
-
-function updateUsername(email) {
-    var exists = true;
-    var i = 0;
-    var match = email.match(/@/g);
-    var username;
-    if (match.length > 0) {
-        var length = email.indexOf("@");
-        username = email.substring(0, length);
-    } else {
-        username = email;
-    }
-    while (exists == true) {
-        if (i == 0) {
-            username = username;
-        } else {
-            username = username+i;
-        }
-        client.query("SELECT * `users` WHERE `username`='" + username + "'", function(error, data, fields) {
-            if (error) {
-                i++;
-                console.log("Error username: "+username);
-                console.log(error);
-                exists = false;
-            } else {
-                if (data.length > 0) {
-                    console.log("Duplicate username: "+username);
-                    i++;
-                } else {
-                    exists = false;
-                    client.query("UPDATE `users` SET `username`='" + username + "' WHERE `email`='" + email + "'");
-                    console.log("SET username: "+username);
-                }
-            }
-        })
-    }
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /*********--------SIGNIN----------*********/
@@ -340,8 +306,6 @@ router.post('/signin', urlParser, function(req, res) {
         }
     });
 });
-
-
 
 /*********--------set point----------*********/
 router.post('/point', urlParser, function(req, res) {
