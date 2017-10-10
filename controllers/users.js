@@ -136,9 +136,9 @@ router.post('/signup', urlParser, function(req, res) {
                         console.log(eInsert);
                         return res.sendStatus(300);
                     } else {
-                        // if (req.body.email) {
-                        //     updateUsername(req.body.email);
-                        // }
+                        if (req.body.email) {
+                            updateUsername(req.body.email);
+                        }
                         console.log("Vừa đăng ký thành công với email " + req.body.email + " bằng thiết bị " + req.body.device_name);
                         return res.send(echoResponse(200, 'Registered successfully.', 'success', false));
                     }
