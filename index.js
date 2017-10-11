@@ -291,6 +291,23 @@ app.get('/listUsers', function(req, res) {
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
+app.get('/:username', urlParser, function(req, res) {
+    var username = req.params.username || req.query.username;
+    var sql = "SELECT `username`,`key`,`avatar`,`cover`,`email`,`nickname` FROM `users` WHERE `username`='" + username + "'";
+    client.query(sql, function(error, data, fields) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(300);
+        } else {
+            if (data.length > 0) {
+                return res.send(echoResponse(200, data[0], 'success', false));
+            } else {
+                return res.send(echoResponse(404, "No have any data", 'success', true));
+            }
+        }
+    });
+});
+
 
 function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
     var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
