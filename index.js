@@ -292,20 +292,7 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 app.get('/:username', urlParser, function(req, res) {
-    var username = req.params.username || req.query.username;
-    var sql = "SELECT `username`,`key`,`avatar`,`cover`,`email`,`nickname` FROM `users` WHERE `username`='" + username + "'";
-    client.query(sql, function(error, data, fields) {
-        if (error) {
-            console.log(error);
-            return res.sendStatus(300);
-        } else {
-            if (data.length > 0) {
-                return res.send(echoResponse(200, data[0], 'success', false));
-            } else {
-                return res.send(echoResponse(404, "No have any data", 'success', true));
-            }
-        }
-    });
+    res.sendFile(__dirname + '/info.php');
 });
 
 
@@ -467,6 +454,18 @@ function send(sender_key, receiver_key, noidung, kieu, message) {
         }
     });
 }
+/*********--------------------------*********
+ **********------ ECHO RESPONSE -----*********
+ **********--------------------------*********/
+function echoResponse(status, data, message, error) {
+    return JSON.stringify({
+        status: status,
+        data: data,
+        message: message,
+        error: error
+    });
+}
+
 function numberBadge(key, count) {
     var userSQL = "SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + key + "' AND members.is_deleted='0'";
     client.query(userSQL, function(qError, qData, qFiels) {
