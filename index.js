@@ -246,17 +246,6 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 incomings = _.uniqBy(incomings, 'key');
             }
         }
-        if (msg.subtype == 'close') {
-            async.forEachOf(incomings, function(el, i, callback) {
-                if (el.key == msg.to) {
-                    send(msg.from, msg.to, "You missed a call from", "close", msg);
-                    clearInterval(el.timer);
-                    _.remove(incomings, {
-                        key: msg.to
-                    });
-                }
-            });
-        }
 
         if (msg.to == 'all') {
             socket.broadcast.emit('chat message', msg);
