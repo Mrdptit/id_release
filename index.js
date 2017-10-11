@@ -292,7 +292,7 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 app.get('/:username', urlParser, function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/ask/index.html');
 });
 
 
