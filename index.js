@@ -283,7 +283,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/ask'));
 
 app.get('/listUsers', function(req, res) {
     res.end(JSON.stringify(users, censor));
@@ -292,7 +292,7 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 app.get('/:username', urlParser, function(req, res) {
-    res.sendFile(__dirname + '/ask/index.html');
+    res.sendFile(__dirname + '/index.html');
 });
 
 
