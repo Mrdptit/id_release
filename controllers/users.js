@@ -1498,7 +1498,7 @@ router.get('/:key/type=findnearby', function(req, res) {
                 var userSQL4 = "`key` IN (SELECT `users_key` FROM `users_settings` WHERE `find_nearby`=1)";
                 var userSQL5 = "AND `key` NOT IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + key + "')";
                 var userSQL6 = "AND `key` NOT IN (SELECT `friend_key` FROM `requests` WHERE `users_key`='" + key + "' OR `friend_key`='" + key + "')";
-                var userSQL10 = "AND `key` NOT IN (SELECT `friend_key` FROM `blocks` WHERE `users_key`='" + key + "' OR `friend_key`='" + key + "')";
+                var userSQL10 = "AND `key` NOT IN (SELECT `friend_key` FROM `blocks` WHERE `users_key`='" + key + "') AND `key` NOT IN (SELECT `users_key` FROM `blocks` WHERE `friend_key`='" + key + "')";
                 var userSQL7 = "AND `key`!='" + key + "'";
                 var userSQL9 = " AND ROUND(111.045* DEGREES(ACOS(COS(RADIANS(your_latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(your_longitude) - RADIANS(longitude)) + SIN(RADIANS(your_latitude)) * SIN(RADIANS(latitude)))),2) <= " + parseInt(distance, 10) + " ORDER BY distance";
                 var pp = " LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
@@ -1509,7 +1509,6 @@ router.get('/:key/type=findnearby', function(req, res) {
                 } else {
                     finalSQL = userSQL1 + userSQL2 + userSQL3 + userSQL4 + userSQL5 + userSQL10 + userSQL6 + userSQL7 + userSQL9 + pp;
                 }
-                console.log(finalSQL);
                 client.query(finalSQL, function(error, data, fields) {
                     if (error) {
                         console.log(error);
