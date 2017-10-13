@@ -975,7 +975,7 @@ router.post('/update', urlParser, function(req, res) {
                         if (data.length > 0) {
                             var insert = [];
                             for (var k in req.body) {
-                                if (k != 'access_token' && k != 'nickname') {
+                                if (k != 'access_token' && k != 'nickname' && k != 'device_id') {
                                     insert.push("`" + k + "`=" + "'" + req.body[k] + "'");
                                 }
                             }
@@ -1004,7 +1004,7 @@ router.post('/update', urlParser, function(req, res) {
                             } else {
                                 dataSQL = "UPDATE `users` SET " + insert.toString() + " WHERE `key`='" + req.body.key + "'";
                             }
-
+                            client.query("UPDATE `users` SET `device_id`="+escapeSQL.escape(decodeURIComponent(req.body.device_id))+" WHERE `key`='" + req.body.key + "'");
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);
