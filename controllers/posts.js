@@ -908,7 +908,7 @@ router.get('/:id/type=info', function(req, res) {
                                                     } else {
                                                         post[0].tags = tags;
                                                         // IMAGES ALBUMS
-                                                        var selectAlbums = "SELECT `img_url`,`img_height`,`img_width` FROM `store_images` WHERE `posts_id`='" + req.params.id + "'";
+                                                        var selectAlbums = "SELECT `id`,`img_url`,`img_height`,`img_width` FROM `store_images` WHERE `posts_id`='" + req.params.id + "'";
                                                         client.query(selectAlbums, function(eAlbums, albums, fAlbums) {
                                                             if (eAlbums) {
                                                                 console.log(eAlbums);
@@ -1267,28 +1267,8 @@ router.post('/like', urlParser, function(req, res) {
 
 
                                                                             var currentTime = new Date().getTime();
-                                                                            // console.log(currentTime);
-                                                                            // var sqlInsertNotify = "INSERT INTO `notification_feed`(`friend_key`,`avatar`,`nickname`,`type`,`time`,`users_key`,`posts_id`)";
-                                                                            // var dataNotifySQL = "VALUES('" + req.body.users_key + "','" + dL[0].avatar + "','" + dL[0].nickname + "','like','" + currentTime + "','" + dPostN[0].users_key + "','" + req.body.posts_id + "')";
-
-                                                                            // client.query(sqlInsertNotify + dataNotifySQL, function(eFEED, dFEED, fFEED) {
-                                                                            //     if (eFEED) {
-                                                                            //         console.log(eFEED);
-                                                                            //         return res.sendStatus(300);
-                                                                            //     } else {
-                                                                            //         console.log(req.body.users_key + " thích " + req.body.posts_id + "");
-                                                                            //         client.query("SELECT `id` FROM `likes` WHERE `posts_id`='" + req.body.posts_id + "'", function(e, d, fL) {
-                                                                            //             if (e) {
-                                                                            //                 console.log(e);
-                                                                            //                 return res.sendStatus(300);
-                                                                            //             } else {
-                                                                            //                 return res.send(echoResponse(200, { total_like: d.length, liked: 1 }, 'success', false));
-                                                                            //             }
-                                                                            //         });
-                                                                            //     }
-                                                                            // });
                                                                             insertNotificationNoImage(req.body.users_key, dL[0].nickname, dL[0].avatar, 'like', currentTime, dPostN[0].users_key, req.body.posts_id);
-                                                                            
+
                                                                             sendNotification(req.body.users_key, dPostN[0].users_key, "like your activity", "like", req.body.posts_id);
                                                                             var selectCurrent = "SELECT `nickname`, `avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
                                                                             client.query(selectCurrent, function(eCurrent, dCurrent, fCurrent) {
