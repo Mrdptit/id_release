@@ -463,13 +463,14 @@ function insertNotificationNoImage(friend_key, nickname, avatar, type, time, use
                     });
                 });
             } else {
-                var insert = "INSERT INTO `notification_feed`(`friend_key`,`nickname`,`avatar`,`type`, `time`, `users_key`, `questions_id`)";
-                var value = "VALUES('" + friend_key + "','" + nickname + "','" + avatar + "','" + type + "'," + time + ",'" + users_key + "','" + questions_id + "')";
+                var insert = "INSERT INTO `notification_feed`(`created_by`,`friend_key`,`nickname`,`avatar`,`type`, `time`, `users_key`, `posts_id`)";
+                var value = "VALUES('" + friend_key + "','" + friend_key + "','" + nickname + "','" + avatar + "','" + type + "','" + time + "','" + users_key + "','" + posts_id + "')";
                 client.query(insert + value, function(e, d, r) {
                     if (e) {
                         console.log(e);
+                        return res.sendStatus(300);
                     } else {
-                        console.log("OK Notification");
+                        console.log("INSERT Notification With Type: " + type);
                     }
                 });
             }
