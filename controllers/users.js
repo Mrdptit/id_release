@@ -45,8 +45,8 @@ let transporter = nodemailer.createTransport({
     port: 465,
     secure: true, // secure:true for port 465, secure:false for port 587
     auth: {
-        user: 'spitfirewar1995@gmail.com',
-        pass: 'kzjcnfgjdrjwgwhl'
+        user: config.emailAdmin,
+        pass: config.passAdmin
     }
 });
 var avatarApp = "http://i.imgur.com/rt1NU2t.png";
@@ -136,9 +136,25 @@ router.post('/signup', urlParser, function(req, res) {
                         console.log(eInsert);
                         return res.sendStatus(300);
                     } else {
-                        var currentTime = new Date().getTime();
-                        currentTime = getRandomInt(1, 9) + "0" + currentTime;
-                        client.query("UPDATE `users` SET `username`='"+currentTime+"' WHERE `email`='"+req.body.email+"'");
+                        if (req.body.email) {
+                            var email = req.body.email;
+                            if (email.indexOf("@") > -1) {
+                                var username = email.substring(0, email.indexOf("@"));
+                                client.query("SELECT `username` FROM `users` WHERE `username`='" + username + "'", function(eU, dU, fU) {
+                                    if (eU) {
+                                        console.log(eU);
+                                    } else {
+                                        if (dU.length > 0) {
+                                            var currentTime = new Date().getTime();
+                                            currentTime = getRandomInt(1, 9) + "0" + currentTime;
+                                            client.query("UPDATE `users` SET `username`='" + currentTime + "' WHERE `email`='" + req.body.email + "'");
+                                        } else {
+                                            client.query("UPDATE `users` SET `username`='" + username + "' WHERE `email`='" + req.body.email + "'");
+                                        }
+                                    }
+                                });
+                            }
+                        }
                         console.log("Vừa đăng ký thành công với email " + req.body.email + " bằng thiết bị " + req.body.device_name);
                         return res.send(echoResponse(200, 'Registered successfully.', 'success', false));
                     }
@@ -149,6 +165,7 @@ router.post('/signup', urlParser, function(req, res) {
         }
     });
 });
+
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -205,7 +222,7 @@ router.post('/signin', urlParser, function(req, res) {
                                 console.log(errorLog);
                                 return res.sendStatus(300);
                             } else {
-                                var sqlSettings = "SELECT `is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + req.body.key + "'";
+                                var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + req.body.key + "'";
                                 client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
                                     if (eSettings) {
                                         console.log(eSettings);
@@ -793,6 +810,47 @@ router.post('/email', urlParser, function(req, res) {
         return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
     }
 });
+
+/*********--------UPDATE username----------*********/
+router.post('/username', urlParser, function(req, res) {
+    if (!req.body.key) {
+        return res.sendStatus(300);
+    }
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                ///-----Check nếu tồn tại access_token thì chạy xuống dưới
+                var userSQL = "SELECT * FROM `users` WHERE `username`='" + req.body.username + "'";
+                client.query(userSQL, function(error, data, fields) {
+                    if (error) {
+                        console.log(error);
+                        return res.sendStatus(300);
+                    } else {
+                        if (data.length > 0) {
+                            return res.send(echoResponse(404, 'This username exists.', 'success', false));
+                        } else {
+                            var dataSQL = "UPDATE `users` SET `username`='" + req.body.username + "' WHERE `key`='" + req.body.key + "'";
+                            client.query(dataSQL, function(eInsert, dInsert, fInsert) {
+                                if (eInsert) {
+                                    console.log(eInsert);
+                                    return res.sendStatus(300);
+                                } else {
+                                    return res.send(echoResponse(200, 'Updated username successfully', 'success', false));
+                                }
+                            });
+                        }
+                    }
+                });
+                //---- Kết thúc đoạn xử lý data
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
 /*********-------- Signout----------*********/
 router.post('/signout', urlParser, function(req, res) {
     if (!req.body.key) {
@@ -1005,7 +1063,7 @@ router.get('/:key/type=info&access_token=:access_token', function(req, res) {
                                             return res.sendStatus(300);
                                         } else {
                                             if (infoData.length > 0) {
-                                                var sqlSettings = "SELECT `is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + req.params.key + "'";
+                                                var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + req.params.key + "'";
                                                 client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
                                                     if (eSettings) {
                                                         console.log(eSettings);
@@ -1030,7 +1088,7 @@ router.get('/:key/type=info&access_token=:access_token', function(req, res) {
                                                     }
                                                 });
                                             } else {
-                                                var sqlSettings = "SELECT `is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + req.params.key + "'";
+                                                var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + req.params.key + "'";
                                                 client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
                                                     if (eSettings) {
                                                         console.log(eSettings);
@@ -1111,7 +1169,7 @@ router.get('/:key/type=friendinfo', function(req, res) {
                                                             return res.sendStatus(300);
                                                         } else {
                                                             if (infoData.length > 0) {
-                                                                var sqlSettings = "SELECT `is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
+                                                                var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
                                                                 client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
                                                                     if (eSettings) {
                                                                         console.log(eSettings);
@@ -1136,7 +1194,7 @@ router.get('/:key/type=friendinfo', function(req, res) {
                                                                     }
                                                                 });
                                                             } else {
-                                                                var sqlSettings = "SELECT `is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
+                                                                var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
                                                                 client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
                                                                     if (eSettings) {
                                                                         console.log(eSettings);
