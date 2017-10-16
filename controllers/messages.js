@@ -96,7 +96,7 @@ var j = schedule.scheduleJob('00 00 00 */1 * *', function() {
                             console.log(error);
                         } else {
                             if (data.length > 0) {
-                                client.query("SELECT `nickname`,`email` FROM `users` WHERE `key`='" + element.users_key + "' AND `email` IS NOT NULL AND `users_key` IN (SELECT `users_key` FROM `users_settings` WHERE `on_receive_email`=1)", function(eUser, dUser, fUser) {
+                                client.query("SELECT `nickname`,`email` FROM `users` WHERE `key`='" + element.users_key + "' AND `email` IS NOT NULL AND `key` IN (SELECT `users_key` FROM `users_settings` WHERE `on_receive_email`=1)", function(eUser, dUser, fUser) {
                                     if (eUser) {
                                         console.log(eUser);
                                     } else {

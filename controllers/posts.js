@@ -277,32 +277,43 @@ function sendNotificationToFriend(posts_id) {
                                     if (dataFriend.length > 0) {
                                         if (dataPost[0].permission == 0 || dataPost[0].permission == 1) {
                                             async.forEachOf(dataFriend, function(element, i, callback) {
-                                                // Check xem bài viết dạng gì để gửi notification
-                                                if (dataPost[0].type == 'albums') {
-                                                    client.query("SELECT `img_url` FROM `store_images` WHERE `posts_id`='" + posts_id + "'", function(errorImg, dataImg, FIMG) {
-                                                        if (errorImg) {
-                                                            console.log(errorImg);
+                                                client.query("SELECT `friend_key`,`users_key` FROM `contacts` WHERE `friend_key`='" + dataPost[0].users_key + "' AND `users_key`='" + dataFriend[i].key + "' AND `is_following`=1", function(eFollow, dataFollow, fieldFollow) {
+                                                    if (eFollow) {
+                                                        console.log(eFollow);
+                                                    } else {
+                                                        if (dataFollow.length > 0) {
+                                                            // Check xem bài viết dạng gì để gửi notification
+                                                            if (dataPost[0].type == 'albums') {
+                                                                client.query("SELECT `img_url` FROM `store_images` WHERE `posts_id`='" + posts_id + "'", function(errorImg, dataImg, FIMG) {
+                                                                    if (errorImg) {
+                                                                        console.log(errorImg);
+                                                                    } else {
+                                                                        insertNotificationNoImage(postUser[0].key, postUser[0].nickname, postUser[0].avatar, dataImg.length + ' photos', currentTime, dataFollow[0].users_key, posts_id);
+                                                                        sendNotification(postUser[0].key, dataFollow[0].users_key, "posted " + dataImg.length + " photos to their album", "albums", posts_id);
+                                                                    }
+                                                                });
+                                                            } else if (dataPost[0].type == 'photo') {
+                                                                client.query("SELECT `img_url` FROM `store_images` WHERE `posts_id`='" + posts_id + "'", function(errorImg, dataImg, FIMG) {
+                                                                    if (errorImg) {
+                                                                        console.log(errorImg);
+                                                                    } else {
+                                                                        insertNotificationFeed(postUser[0].key, postUser[0].nickname, postUser[0].avatar, dataImg[0].img_url, 'photo', currentTime, dataFollow[0].users_key, posts_id);
+                                                                        sendNotification(postUser[0].key, dataFollow[0].users_key, "posted photo to their album", "photo", posts_id);
+                                                                    }
+                                                                });
+                                                            } else if (dataPost[0].type == 'url') {
+                                                                insertNotificationNoImage(postUser[0].key, postUser[0].nickname, postUser[0].avatar, 'status', currentTime, dataFollow[0].users_key, posts_id);
+                                                                sendNotification(postUser[0].key, dataFollow[0].users_key, "has shared a link", "url", posts_id);
+                                                            } else {
+                                                                insertNotificationNoImage(postUser[0].key, postUser[0].nickname, postUser[0].avatar, 'status', currentTime, dataFollow[0].users_key, posts_id);
+                                                                sendNotification(postUser[0].key, dataFollow[0].users_key, "updated their status", "status", posts_id);
+                                                            }
+                                                            // 
                                                         } else {
-                                                            insertNotificationNoImage(postUser[0].key, postUser[0].nickname, postUser[0].avatar, dataImg.length + ' photos', currentTime, dataFriend[i].key, posts_id);
-                                                            sendNotification(postUser[0].key, dataFriend[i].key, "posted " + dataImg.length + " photos to their album", "albums", posts_id);
+                                                            console.log(dataFriend[i].key+" không theo dõi người viết " + postUser[0].key);
                                                         }
-                                                    });
-                                                } else if (dataPost[0].type == 'photo') {
-                                                    client.query("SELECT `img_url` FROM `store_images` WHERE `posts_id`='" + posts_id + "'", function(errorImg, dataImg, FIMG) {
-                                                        if (errorImg) {
-                                                            console.log(errorImg);
-                                                        } else {
-                                                            insertNotificationFeed(postUser[0].key, postUser[0].nickname, postUser[0].avatar, dataImg[0].img_url, 'photo', currentTime, dataFriend[i].key, posts_id);
-                                                            sendNotification(postUser[0].key, dataFriend[i].key, "posted photo to their album", "photo", posts_id);
-                                                        }
-                                                    });
-                                                } else if (dataPost[0].type == 'url') {
-                                                    insertNotificationNoImage(postUser[0].key, postUser[0].nickname, postUser[0].avatar, 'status', currentTime, dataFriend[i].key, posts_id);
-                                                    sendNotification(postUser[0].key, dataFriend[i].key, "has shared a link", "url", posts_id);
-                                                } else {
-                                                    insertNotificationNoImage(postUser[0].key, postUser[0].nickname, postUser[0].avatar, 'status', currentTime, dataFriend[i].key, posts_id);
-                                                    sendNotification(postUser[0].key, dataFriend[i].key, "updated their status", "status", posts_id);
-                                                }
+                                                    }
+                                                });
                                             });
                                         }
                                     } else {
@@ -1684,7 +1695,7 @@ function insertNotificationNoImage(friend_key, nickname, avatar, type, time, use
                         console.log(ePost);
                     } else {
                         var insert = "INSERT INTO `notification_feed`(`created_by`,`friend_key`,`nickname`,`avatar`,`type`, `time`, `users_key`, `posts_id`)";
-                        var value = "VALUES('"+dPost[0].users_key+"','" + friend_key + "','" + nickname + "','" + avatar + "','" + type + "','" + time + "','" + users_key + "','" + posts_id + "')";
+                        var value = "VALUES('" + dPost[0].users_key + "','" + friend_key + "','" + nickname + "','" + avatar + "','" + type + "','" + time + "','" + users_key + "','" + posts_id + "')";
                         client.query(insert + value, function(e, d, r) {
                             if (e) {
                                 console.log(e);
