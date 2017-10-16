@@ -324,6 +324,51 @@ router.post('/signin', urlParser, function(req, res) {
     });
 });
 
+/*********--------Following----------*********/
+router.post('/follow', urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                var sql = "UPDATE `contacts` SET `is_following`=1 WHERE `users_key`='" + req.body.key + "' AND `friend_key`='" + req.body.friend_key + "'";
+                client.query(sql, function(error, data, fields) {
+                    if (error) {
+                        console.log(error);
+                        return res.sendStatus(300);
+                    } else {
+                        return res.send(echoResponse(200, 'Updated successfully', 'success', false));
+                    }
+                });
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
+router.post('/unfollow', urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                var sql = "UPDATE `contacts` SET `is_following`=0 WHERE `users_key`='" + req.body.key + "' AND `friend_key`='" + req.body.friend_key + "'";
+                client.query(sql, function(error, data, fields) {
+                    if (error) {
+                        console.log(error);
+                        return res.sendStatus(300);
+                    } else {
+                        return res.send(echoResponse(200, 'Updated successfully', 'success', false));
+                    }
+                });
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
 /*********--------set point----------*********/
 router.post('/point', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
@@ -1004,7 +1049,7 @@ router.post('/update', urlParser, function(req, res) {
                             } else {
                                 dataSQL = "UPDATE `users` SET " + insert.toString() + " WHERE `key`='" + req.body.key + "'";
                             }
-                            client.query("UPDATE `users` SET `device_id`="+escapeSQL.escape(decodeURIComponent(req.body.device_id))+" WHERE `key`='" + req.body.key + "'");
+                            client.query("UPDATE `users` SET `device_id`=" + escapeSQL.escape(decodeURIComponent(req.body.device_id)) + " WHERE `key`='" + req.body.key + "'");
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);
@@ -1160,60 +1205,64 @@ router.get('/:key/type=friendinfo', function(req, res) {
                                         } else {
                                             moiquanhe(key, friend_key, function(ketqua) {
                                                 if (ketqua) {
-                                                    data[0].mutual_friend = contact2.length;
-                                                    data[0].relation_ship = ketqua;
-                                                    var userInfoSQL = "SELECT * FROM `other_information` WHERE `users_key`='" + friend_key + "'";
-                                                    client.query(userInfoSQL, function(infoError, infoData, infoFields) {
-                                                        if (infoError) {
-                                                            console.log(infoError);
-                                                            return res.sendStatus(300);
-                                                        } else {
-                                                            if (infoData.length > 0) {
-                                                                var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
-                                                                client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
-                                                                    if (eSettings) {
-                                                                        console.log(eSettings);
-                                                                    } else {
-                                                                        if (dataSettings.length > 0) {
-                                                                            return res.send(JSON.stringify({
-                                                                                status: 200,
-                                                                                data: data,
-                                                                                users_settings: dataSettings,
-                                                                                other: infoData,
-                                                                                message: "success",
-                                                                                error: false
-                                                                            }));
+                                                    isFollowing(key, friend_key, function(isFollowing) {
+                                                        data[0].mutual_friend = contact2.length;
+                                                        data[0].relation_ship = ketqua;
+                                                        data[0].is_following = isFollowing;
+                                                        var userInfoSQL = "SELECT * FROM `other_information` WHERE `users_key`='" + friend_key + "'";
+                                                        client.query(userInfoSQL, function(infoError, infoData, infoFields) {
+                                                            if (infoError) {
+                                                                console.log(infoError);
+                                                                return res.sendStatus(300);
+                                                            } else {
+                                                                if (infoData.length > 0) {
+                                                                    var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
+                                                                    client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
+                                                                        if (eSettings) {
+                                                                            console.log(eSettings);
+                                                                        } else {
+                                                                            if (dataSettings.length > 0) {
+                                                                                return res.send(JSON.stringify({
+                                                                                    status: 200,
+                                                                                    data: data,
+                                                                                    users_settings: dataSettings,
+                                                                                    other: infoData,
+                                                                                    message: "success",
+                                                                                    error: false
+                                                                                }));
+                                                                            } else {
+                                                                                return res.send(JSON.stringify({
+                                                                                    status: 200,
+                                                                                    data: data,
+                                                                                    message: "success",
+                                                                                    error: false
+                                                                                }));
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
+                                                                    client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
+                                                                        if (eSettings) {
+                                                                            console.log(eSettings);
                                                                         } else {
                                                                             return res.send(JSON.stringify({
                                                                                 status: 200,
                                                                                 data: data,
+                                                                                users_settings: dataSettings,
                                                                                 message: "success",
                                                                                 error: false
                                                                             }));
                                                                         }
-                                                                    }
-                                                                });
-                                                            } else {
-                                                                var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
-                                                                client.query(sqlSettings, function(eSettings, dataSettings, fieldsSettings) {
-                                                                    if (eSettings) {
-                                                                        console.log(eSettings);
-                                                                    } else {
-                                                                        return res.send(JSON.stringify({
-                                                                            status: 200,
-                                                                            data: data,
-                                                                            users_settings: dataSettings,
-                                                                            message: "success",
-                                                                            error: false
-                                                                        }));
-                                                                    }
-                                                                });
+                                                                    });
+                                                                }
                                                             }
-                                                        }
+                                                        });
+                                                        // END CHẸCK
                                                     });
-                                                    // END CHẸCK
                                                 }
                                             });
+                                            // 
                                         }
                                     });
                                 }
@@ -3088,70 +3137,21 @@ function removeNotification(res, users_key, friend_key, type) {
         }
     });
 }
-// function sendNotification(sender_key, receiver_key, noidung, kieu){
-//     var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='"+sender_key+"'";
-//     client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG){
-//         if (loiNguoiGui) {
-//             console.log(loiNguoiGui);
-//         } else {
-//             var badgeSQL = "SELECT * FROM `notification_count` WHERE `users_key`='" +receiver_key+ "'";
-//             client.query(badgeSQL, function (loiSoThongBao, dataThongBao, FTB) {
-//                 if (loiSoThongBao) {
-//                     console.log(loiSoThongBao);
-//                 } else {
-//                     var updateBadge = parseInt(dataThongBao[0].activity, 10) + 1;
-//                     client.query("UPDATE `notification_count` SET `activity`='" + updateBadge + "' WHERE `users_key`='" +receiver_key+ "'");
-//                     var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='"+receiver_key+"'";
-//                     client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN){
-//                         if (loiNguoiNhan) {
-//                             console.log(loiNguoiNhan);
-//                         } else {
-//                             if (dataNguoiNhan[0].device_type == 'ios') {
-//                                 //--------APNS
-//                                 var note = new apn.Notification();
-//                                 note.alert = dataNguoiGui[0].nickname + " "+noidung;
-//                                 note.sound = 'default';
-//                                 note.topic = "config.ios";
-//                                 note.badge = parseInt(dataThongBao[0].chat, 10) + updateBadge;
-//                                 note.payload = {
-//                                     "sender_id": sender_key,
-//                                     "receiver_id": receiver_key,
-//                                     "content": dataNguoiGui[0].nickname + " "+noidung,
-//                                     "type": kieu
-//                                 };
-//                                 apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
-//                                     console.log("sent:", result.sent.length);
-//                                     console.log("failed:", result.failed.length);
-//                                     console.log(result.failed);
-//                                 });
-//                             } else {
-//                                 var message = {
-//                                     to: dataNguoiNhan[0].device_token,
-//                                     collapse_key: collapse_key, 
-//                                     data: {
-//                                         sender_id: sender_key,
-//                                         receiver_id: receiver_key,
-//                                         content: dataNguoiGui[0].nickname + " "+noidung,
-//                                         type: kieu,
-//                                     }
-//                                 };
-//                                 //callback style
-//                                 fcm.send(message, function(err, response){
-//                                     if (err) {
-//                                         console.log("Something has gone wrong!");
-//                                     } else {
-//                                         console.log("Successfully sent with response: ", response);
-//                                     }
-//                                 });
-//                             }
-//                             //----
-//                         }
-//                     });
-//                 }
-//             });  
-//         }
-//     });
-// }
+
+function isFollowing(key, friend_key, callback) {
+    client.query("SELECT * FROM `contacts` WHERE `users_key`='" + key + "' AND `friend_key`='" + friend_key + "' AND `is_following`=1", function(e, d, f) {
+        if (e) {
+            console.log(e);
+            callback(0);
+        } else {
+            if (d.length > 0) {
+                callback(1);
+            } else {
+                callback(0);
+            }
+        }
+    });
+}
 
 function moiquanhe(users_key, friend_key, ketqua) {
     var userSQL = "SELECT * FROM `blocks` WHERE `friend_key`='" + friend_key + "' AND `users_key`='" + users_key + "'";
