@@ -786,7 +786,7 @@ router.get('/type=feeds', function(req, res) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
                 var key = req.body.key || req.query.key || req.params.key;
-                var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + key + "' OR `users_key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + key + "') AND `is_active`='1'";
+                var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + key + "' OR `users_key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + key + "' AND `is_following`=1) AND `is_active`='1'";
                 var tagsSQL = " OR `id` IN (SELECT `posts_id` FROM `tags` WHERE `users_key`='" + key + "')";
                 var orderBy = "ORDER BY `posted_time` DESC";
                 client.query(selectSQL + tagsSQL + orderBy, function(ePost, post, fPost) {
