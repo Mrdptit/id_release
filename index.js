@@ -280,9 +280,20 @@ app.get('/listUsers', function(req, res) {
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-app.get('/:username', urlParser, function(req, res) {
-    res.sendFile(__dirname + '/ask/index.html');
+
+/*********--------GET Version----------*********/
+app.get('/type=version', urlParser, function(req, res) {
+    var sql = "SELECT * FROM `versions` ORDER BY `id` DESC LIMIT 1";
+    client.query(sql, function(error, data, fields) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(300);
+        } else {
+            return res.send(echoResponse(200, data, 'success', false));
+        }
+    });
 });
+
 
 
 function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
@@ -364,6 +375,7 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
         }
     });
 }
+
 function send(sender_key, receiver_key, noidung, kieu, message) {
     var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
     client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
@@ -379,7 +391,7 @@ function send(sender_key, receiver_key, noidung, kieu, message) {
                         if (dataNguoiNhan[0].device_type == 'ios') {
                             //--------APNS
                             var note = new apn.Notification();
-                            note.alert =  noidung + " " + dataNguoiGui[0].nickname;
+                            note.alert = noidung + " " + dataNguoiGui[0].nickname;
                             note.sound = 'dong.aiff';
                             note.topic = config.ios;
                             note.badge = count;
