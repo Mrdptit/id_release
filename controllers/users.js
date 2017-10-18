@@ -153,6 +153,10 @@ router.post('/signup', urlParser, function(req, res) {
                                         }
                                     }
                                 });
+                            } else {
+                                var currentTime = new Date().getTime();
+                                currentTime = getRandomInt(1, 9) + "0" + currentTime;
+                                client.query("UPDATE `users` SET `username`='" + currentTime + "' WHERE `email`='" + req.body.email + "'");
                             }
                         }
                         console.log("Vừa đăng ký thành công với email " + req.body.email + " bằng thiết bị " + req.body.device_name);
