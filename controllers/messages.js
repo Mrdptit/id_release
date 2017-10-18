@@ -153,14 +153,16 @@ router.post('/new', urlParser, function(req, res) {
                         } else {
                             var dataMessage = req.body;
                             var currentTime = new Date().getTime();
-                            var contentMessage = decodeURIComponent(req.body.content);
-                            var insert = [];
-                            for (var k in req.body) {
-                                if (k != 'access_token' && k != 'content') {
-                                    insert.push("`" + k + "`='" + req.body[k] + "'");
-                                }
-                            }
-                            var insertSQL = escapeSQL.format("INSERT INTO `messages` SET " + insert.toString() + " ,`time_server`='" + currentTime + "', `content`=" + escapeSQL.escape(contentMessage) + "", req.body);
+                            // var contentMessage = decodeURIComponent(req.body.content);
+                            // var insert = [];
+                            // for (var k in req.body) {
+                            //     if (k != 'access_token' && k != 'content') {
+                            //         insert.push("`" + k + "`='" + req.body[k] + "'");
+                            //     }
+                            // }
+                            delete req.body.access_token;
+                            req.body.time_server = currentTime;
+                            var insertSQL = escapeSQL.format("INSERT INTO `messages` SET ?", req.body);
                             client.query(insertSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);
