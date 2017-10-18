@@ -153,7 +153,7 @@ router.post('/new', urlParser, function(req, res) {
                         } else {
                             var dataMessage = req.body;
                             var currentTime = new Date().getTime();
-                            // var contentMessage = decodeURIComponent(req.body.content);
+                            var contentMessage = decodeURIComponent(req.body.content);
                             // var insert = [];
                             // for (var k in req.body) {
                             //     if (k != 'access_token' && k != 'content') {
