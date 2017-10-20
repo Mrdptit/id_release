@@ -1427,7 +1427,7 @@ router.get('/:key/type=syncunread', function(req, res) {
             if (err) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
-                var userSQLConversation = "SELECT * FROM `messages` WHERE `conversations_key` IN (SELECT `conversations_key` FROM `message_status` WHERE `conversations_key` IN (SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + req.params.key + "' ORDER BY `last_action_time`) AND `status`=0 AND `users_key`='" + req.params.key + "') ORDER BY `time` DESC";
+                var userSQLConversation = "SELECT * FROM `messages` WHERE `key` IN (SELECT `messages_key` FROM `message_status` WHERE `status`=0 AND `users_key`='"+req.params.key+"' AND `conversations_key` IN (SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '"+req.params.key+"')) ORDER BY `time` DESC";
                 client.query(userSQLConversation, function(error, data, fields) {
                     if (error) {
                         console.log(error);
