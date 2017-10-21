@@ -430,6 +430,48 @@ router.get('/type=like', function(req, res) {
         return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
     }
 });
+router.get('/type=check', function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                ///-- Check nếu tồn tại access_token thì chạy xuống dưới
+                var key = req.body.key || req.query.key || req.params.key;
+                var friend_key = req.body.friend_key || req.query.friend_key || req.params.friend_key;
+                var sql = "SELECT * FROM `couple_like` WHERE `users_key`='"+key+"' AND `friend_key`='"+friend_key+"'";
+                client.query(sql, function(error, data, fields){
+                    if (error) {
+                        console.log(error);
+                        return res.sendStatus(300);
+                    } else {
+                        if (data.length > 0) {
+                            var sql2 = "SELECT * FROM `couple_like` WHERE `users_key`='"+friend_key+"' AND `friend_key`='"+key+"'";
+                            client.query(sql2, function(e,d,f){
+                                if (e) {
+                                    console.log(e);
+                                    return res.sendStatus(300);
+                                } else {
+                                    if (d.length > 0) {
+                                        return res.send(echoResponse(200, 'A pair', 'success', true));
+                                    } else {
+                                        return res.send(echoResponse(301, 'Not a pair', 'success', true));
+                                    }
+                                }
+                            });
+                        } else {
+                            return res.send(echoResponse(301, 'Not a pair', 'success', true));
+                        }
+                    }
+                });
+                //--
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
 router.post('/type=deletelike', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     if (token) {
