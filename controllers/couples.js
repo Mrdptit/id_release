@@ -566,7 +566,7 @@ router.get('/type=me', function(req, res) {
                 var page = req.body.page || req.query.page || req.params.page;
                 var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
                 var orderby = "LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10);
-                var selectUser = "SELECT `users_key` FROM `couple_like` WHERE `friend_key`='" + key + "'" + orderby;
+                var selectUser = "SELECT * FROM `couple_like` WHERE `friend_key`='" + key + "'" + orderby;
                 client.query(selectUser, function(eSelect, dSelect, fSelect) {
                     if (eSelect) {
                         console.log(eSelect);
