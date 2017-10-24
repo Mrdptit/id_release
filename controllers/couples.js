@@ -566,14 +566,33 @@ router.get('/type=me', function(req, res) {
                 var page = req.body.page || req.query.page || req.params.page;
                 var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
                 var orderby = "LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10);
-                var selectUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `couple_like` WHERE `friend_key`='" + key + "') " + orderby;
+                var selectUser = "SELECT `users_key` FROM `couple_like` WHERE `friend_key`='" + key + "'" + orderby;
                 client.query(selectUser, function(eSelect, dSelect, fSelect) {
                     if (eSelect) {
                         console.log(eSelect);
                         return res.send(echoResponse(300, 'error', JSON.stringify(eSelect), true));
                     } else {
                         if (dSelect.length > 0) {
-                            return res.send(echoResponse(200, dSelect, 'success', true));
+                            var arrayMembers = [];
+                            async.forEachOf(dSelect, function(dataElement, i, callback) {
+                                var memberSelect = "SELECT * FROM `users` WHERE `key`='" + dSelect[i].users_key + "'";
+                                client.query(memberSelect, function(errorMember, dataMember, fieldMember) {
+                                    if (errorMember) {
+                                        console.log(errorMember);
+                                    } else {
+                                        if (dataMember.length > 0) {
+                                            var caseData = dSelect[i];
+                                            var currentTime = moment().tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD hh:mm:ss');
+                                            dataMember[0].time_like = caseData.time;
+                                            dataMember[0].time_request = currentTime;
+                                            arrayMembers.push(dataMember[0]);
+                                            if (i === dSelect.length - 1) {
+                                                return res.send(echoResponse(200, arrayMembers, 'success', false));
+                                            }
+                                        }
+                                    }
+                                });
+                            });
                         } else {
                             return res.send(echoResponse(404, 'No user', 'success', true));
                         }
