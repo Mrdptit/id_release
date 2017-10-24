@@ -407,7 +407,7 @@ router.get('/type=like', function(req, res) {
                                     } else {
                                         if (dataMember.length > 0) {
                                             var caseData = dSelect[i];
-                                            var currentTime = moment().tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD hh:mm:ss');
+                                            var currentTime = moment().tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD hh:mm:ss a');
                                             dataMember[0].time_like = caseData.time;
                                             dataMember[0].time_request = currentTime;
                                             arrayMembers.push(dataMember[0]);
@@ -582,7 +582,7 @@ router.get('/type=me', function(req, res) {
                                     } else {
                                         if (dataMember.length > 0) {
                                             var caseData = dSelect[i];
-                                            var currentTime = moment().tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD hh:mm:ss');
+                                            var currentTime = moment().tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD hh:mm:ss a');
                                             dataMember[0].time_like = caseData.time;
                                             dataMember[0].time_request = currentTime;
                                             arrayMembers.push(dataMember[0]);
