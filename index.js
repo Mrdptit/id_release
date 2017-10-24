@@ -215,15 +215,16 @@ io.on('connection', function(socket) { // Incoming connections from clients
     });
     socket.on('chat message', function(msg) {
         console.log(JSON.stringify(msg));
+        var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
             if (incomings.length > 0) {
                 async.forEachOf(incomings, function(el, i, callback) {
                     if (el.key != msg.to) {
-                        sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
+                        sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
                         var current = 0;
                         var timer = setInterval(function() {
                             current++;
-                            sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
+                            sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
                             if (current == 3) {
                                 clearInterval(timer);
                             }
@@ -233,11 +234,11 @@ io.on('connection', function(socket) { // Incoming connections from clients
                     }
                 });
             } else {
-                sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
+                sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
                 var current = 0;
                 var timer = setInterval(function() {
                     current++;
-                    sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
+                    sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
                     if (current == 3) {
                         clearInterval(timer);
                     }
@@ -328,8 +329,7 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
                                     "type": kieu
                                 };
                             }
-                            console.log("--"+message);
-                            console.log("--"+note.payload);
+
                             apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
                                 console.log("sent:", result.sent.length);
                             });
