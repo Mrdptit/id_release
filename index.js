@@ -219,11 +219,11 @@ io.on('connection', function(socket) { // Incoming connections from clients
             if (incomings.length > 0) {
                 async.forEachOf(incomings, function(el, i, callback) {
                     if (el.key != msg.to) {
-                        sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                        sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
                         var current = 0;
                         var timer = setInterval(function() {
                             current++;
-                            sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                            sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
                             if (current == 3) {
                                 clearInterval(timer);
                             }
@@ -233,11 +233,11 @@ io.on('connection', function(socket) { // Incoming connections from clients
                     }
                 });
             } else {
-                sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
                 var current = 0;
                 var timer = setInterval(function() {
                     current++;
-                    sendNotification(msg.from, msg.to, "is calling", "calling", msg);
+                    sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
                     if (current == 3) {
                         clearInterval(timer);
                     }
@@ -317,7 +317,7 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
                             note.badge = count;
                             if (message) {
                                 note.payload = {
-                                    "message": message,
+                                    "time": message,
                                     "content": dataNguoiGui[0].nickname + " " + noidung,
                                     "type": kieu
                                 };
