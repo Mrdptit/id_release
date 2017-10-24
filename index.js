@@ -315,20 +315,21 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
                             note.sound = 'dong.aiff';
                             note.topic = config.ios;
                             note.badge = count;
-                            // if (message) {
+                            if (message) {
                                 note.payload = {
                                     "time": message,
                                     "content": dataNguoiGui[0].nickname + " " + noidung,
                                     "type": kieu
                                 };
-                            // } else {
-                            //     note.payload = {
-                            //         "sender_id": sender_key,
-                            //         "content": dataNguoiGui[0].nickname + " " + noidung,
-                            //         "type": kieu
-                            //     };
-                            // }
-
+                            } else {
+                                note.payload = {
+                                    "sender_id": sender_key,
+                                    "content": dataNguoiGui[0].nickname + " " + noidung,
+                                    "type": kieu
+                                };
+                            }
+                            console.log("--"+message);
+                            console.log("--"+note.payload);
                             apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
                                 console.log("sent:", result.sent.length);
                             });
