@@ -218,24 +218,52 @@ io.on('connection', function(socket) { // Incoming connections from clients
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
             // sendNotification(msg.from, msg.to, "is calling", "calling", "Thành đẹp trai");
-            var note = new apn.Notification();
-            note.alert = "Thành Ken Calling";
-            note.sound = 'dong.aiff';
-            note.topic = config.ios;
-            note.badge = 999;
-            note.payload = {
-                "object": msg,
-                "content": "calling",
-                "type": "calling"
-            };
-            var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + msg.to + "'";
-            client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
-                if (loiNguoiNhan) {
-                    console.log(loiNguoiNhan);
+
+            client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
+                if (loiNguoiGui) {
+                    console.log(loiNguoiGui);
                 } else {
-                    apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
-                        console.log("Calling: ", result.sent.length);
-                        console.log(JSON.stringify(result));
+                    var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + msg.to + "'";
+                    client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
+                        if (loiNguoiNhan) {
+                            console.log(loiNguoiNhan);
+                        } else {
+                            if (dataNguoiNhan[0].device_type == 'ios') {
+                                var note = new apn.Notification();
+                                note.alert = dataNguoiGui[0].nickname + " calling";
+                                note.sound = 'dong.aiff';
+                                note.topic = config.ios;
+                                note.badge = 999;
+                                note.payload = {
+                                    "object": msg,
+                                    "content": dataNguoiGui[0].nickname + " calling",
+                                    "type": "calling"
+                                };
+                                apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
+                                    console.log("Calling: ", result.sent.length);
+                                    console.log(JSON.stringify(result));
+                                });
+                            } else {
+                                var mes = {
+                                    to: dataNguoiNhan[0].device_token,
+                                    collapse_key: collapse_key,
+                                    data: {
+                                        content: dataNguoiGui[0].nickname + " calling",
+                                        type: "calling",
+                                        title: 'IUDI',
+                                        body: msg
+                                    }
+                                };
+                                //callback style
+                                fcm.send(mes, function(err, response) {
+                                    if (err) {
+                                        console.log("Something has gone wrong!");
+                                    } else {
+                                        console.log("Successfully sent with response: ", response);
+                                    }
+                                });
+                            }
+                        }
                     });
                 }
             });
@@ -320,166 +348,166 @@ app.get('/type=version', urlParser, function(req, res) {
 
 
 
-function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
-    var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
-    client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
-        if (loiNguoiGui) {
-            console.log(loiNguoiGui);
-        } else {
-            numberBadge(receiver_key, function(count) {
-                var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + receiver_key + "'";
-                client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
-                    if (loiNguoiNhan) {
-                        console.log(loiNguoiNhan);
-                    } else {
-                        if (dataNguoiNhan[0].device_type == 'ios') {
-                            //--------APNS
-                            var note = new apn.Notification();
-                            note.alert = dataNguoiGui[0].nickname + " " + noidung;
-                            note.sound = 'dong.aiff';
-                            note.topic = config.ios;
-                            note.badge = count;
-                            if (message) {
-                                note.payload = {
-                                    "time": message,
-                                    "content": dataNguoiGui[0].nickname + " " + noidung,
-                                    "type": kieu
-                                };
-                            } else {
-                                note.payload = {
-                                    "sender_id": sender_key,
-                                    "content": dataNguoiGui[0].nickname + " " + noidung,
-                                    "type": kieu
-                                };
-                            }
+// function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
+//     var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
+//     client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
+//         if (loiNguoiGui) {
+//             console.log(loiNguoiGui);
+//         } else {
+//             numberBadge(receiver_key, function(count) {
+//                 var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + receiver_key + "'";
+//                 client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
+//                     if (loiNguoiNhan) {
+//                         console.log(loiNguoiNhan);
+//                     } else {
+//                         if (dataNguoiNhan[0].device_type == 'ios') {
+//                             //--------APNS
+//                             var note = new apn.Notification();
+//                             note.alert = dataNguoiGui[0].nickname + " " + noidung;
+//                             note.sound = 'dong.aiff';
+//                             note.topic = config.ios;
+//                             note.badge = count;
+//                             if (message) {
+//                                 note.payload = {
+//                                     "time": message,
+//                                     "content": dataNguoiGui[0].nickname + " " + noidung,
+//                                     "type": kieu
+//                                 };
+//                             } else {
+//                                 note.payload = {
+//                                     "sender_id": sender_key,
+//                                     "content": dataNguoiGui[0].nickname + " " + noidung,
+//                                     "type": kieu
+//                                 };
+//                             }
 
-                            apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
-                                console.log("Calling: ", result.sent.length);
-                                console.log(JSON.stringify(result));
-                            });
-                        } else {
-                            var message;
-                            if (message) {
-                                message = {
-                                    to: dataNguoiNhan[0].device_token,
-                                    collapse_key: collapse_key,
-                                    data: {
-                                        message: message,
-                                        content: dataNguoiGui[0].nickname + " " + noidung,
-                                        type: kieu,
-                                        title: 'IUDI',
-                                        body: dataNguoiGui[0].nickname + " " + noidung
-                                    }
-                                };
-                            } else {
-                                message = {
-                                    to: dataNguoiNhan[0].device_token,
-                                    collapse_key: collapse_key,
-                                    data: {
-                                        sender_id: sender_key,
-                                        content: dataNguoiGui[0].nickname + " " + noidung,
-                                        type: kieu,
-                                        title: 'IUDI',
-                                        body: dataNguoiGui[0].nickname + " " + noidung
-                                    }
-                                };
-                            }
+//                             apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
+//                                 console.log("Calling: ", result.sent.length);
+//                                 console.log(JSON.stringify(result));
+//                             });
+//                         } else {
+//                             var message;
+//                             if (message) {
+//                                 message = {
+//                                     to: dataNguoiNhan[0].device_token,
+//                                     collapse_key: collapse_key,
+//                                     data: {
+//                                         message: message,
+//                                         content: dataNguoiGui[0].nickname + " " + noidung,
+//                                         type: kieu,
+//                                         title: 'IUDI',
+//                                         body: dataNguoiGui[0].nickname + " " + noidung
+//                                     }
+//                                 };
+//                             } else {
+//                                 message = {
+//                                     to: dataNguoiNhan[0].device_token,
+//                                     collapse_key: collapse_key,
+//                                     data: {
+//                                         sender_id: sender_key,
+//                                         content: dataNguoiGui[0].nickname + " " + noidung,
+//                                         type: kieu,
+//                                         title: 'IUDI',
+//                                         body: dataNguoiGui[0].nickname + " " + noidung
+//                                     }
+//                                 };
+//                             }
 
-                            //callback style
-                            fcm.send(message, function(err, response) {
-                                if (err) {
-                                    console.log("Something has gone wrong!");
-                                } else {
-                                    console.log("Successfully sent with response: ", response);
-                                }
-                            });
-                        }
-                    }
-                });
-            });
-        }
-    });
-}
+//                             //callback style
+//                             fcm.send(message, function(err, response) {
+//                                 if (err) {
+//                                     console.log("Something has gone wrong!");
+//                                 } else {
+//                                     console.log("Successfully sent with response: ", response);
+//                                 }
+//                             });
+//                         }
+//                     }
+//                 });
+//             });
+//         }
+//     });
+// }
 
-function send(sender_key, receiver_key, noidung, kieu, message) {
-    var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
-    client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
-        if (loiNguoiGui) {
-            console.log(loiNguoiGui);
-        } else {
-            numberBadge(receiver_key, function(count) {
-                var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + receiver_key + "'";
-                client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
-                    if (loiNguoiNhan) {
-                        console.log(loiNguoiNhan);
-                    } else {
-                        if (dataNguoiNhan[0].device_type == 'ios') {
-                            //--------APNS
-                            var note = new apn.Notification();
-                            note.alert = noidung + " " + dataNguoiGui[0].nickname;
-                            note.sound = 'dong.aiff';
-                            note.topic = config.ios;
-                            note.badge = count;
-                            if (message) {
-                                note.payload = {
-                                    "message": message,
-                                    "content": noidung + " " + dataNguoiGui[0].nickname,
-                                    "type": kieu
-                                };
-                            } else {
-                                note.payload = {
-                                    "sender_id": sender_key,
-                                    "content": noidung + " " + dataNguoiGui[0].nickname,
-                                    "type": kieu
-                                };
-                            }
+// function send(sender_key, receiver_key, noidung, kieu, message) {
+//     var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
+//     client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
+//         if (loiNguoiGui) {
+//             console.log(loiNguoiGui);
+//         } else {
+//             numberBadge(receiver_key, function(count) {
+//                 var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + receiver_key + "'";
+//                 client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
+//                     if (loiNguoiNhan) {
+//                         console.log(loiNguoiNhan);
+//                     } else {
+//                         if (dataNguoiNhan[0].device_type == 'ios') {
+//                             //--------APNS
+//                             var note = new apn.Notification();
+//                             note.alert = noidung + " " + dataNguoiGui[0].nickname;
+//                             note.sound = 'dong.aiff';
+//                             note.topic = config.ios;
+//                             note.badge = count;
+//                             if (message) {
+//                                 note.payload = {
+//                                     "message": message,
+//                                     "content": noidung + " " + dataNguoiGui[0].nickname,
+//                                     "type": kieu
+//                                 };
+//                             } else {
+//                                 note.payload = {
+//                                     "sender_id": sender_key,
+//                                     "content": noidung + " " + dataNguoiGui[0].nickname,
+//                                     "type": kieu
+//                                 };
+//                             }
 
-                            apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
-                                console.log("sent:", result.sent.length);
-                            });
-                        } else {
-                            var message;
-                            if (message) {
-                                message = {
-                                    to: dataNguoiNhan[0].device_token,
-                                    collapse_key: collapse_key,
-                                    data: {
-                                        message: message,
-                                        content: noidung + " " + dataNguoiGui[0].nickname,
-                                        type: kieu,
-                                        title: 'IUDI',
-                                        body: noidung + " " + dataNguoiGui[0].nickname
-                                    }
-                                };
-                            } else {
-                                message = {
-                                    to: dataNguoiNhan[0].device_token,
-                                    collapse_key: collapse_key,
-                                    data: {
-                                        sender_id: sender_key,
-                                        content: noidung + " " + dataNguoiGui[0].nickname,
-                                        type: kieu,
-                                        title: 'IUDI',
-                                        body: noidung + " " + dataNguoiGui[0].nickname
-                                    }
-                                };
-                            }
+//                             apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
+//                                 console.log("sent:", result.sent.length);
+//                             });
+//                         } else {
+//                             var message;
+//                             if (message) {
+//                                 message = {
+//                                     to: dataNguoiNhan[0].device_token,
+//                                     collapse_key: collapse_key,
+//                                     data: {
+//                                         message: message,
+//                                         content: noidung + " " + dataNguoiGui[0].nickname,
+//                                         type: kieu,
+//                                         title: 'IUDI',
+//                                         body: noidung + " " + dataNguoiGui[0].nickname
+//                                     }
+//                                 };
+//                             } else {
+//                                 message = {
+//                                     to: dataNguoiNhan[0].device_token,
+//                                     collapse_key: collapse_key,
+//                                     data: {
+//                                         sender_id: sender_key,
+//                                         content: noidung + " " + dataNguoiGui[0].nickname,
+//                                         type: kieu,
+//                                         title: 'IUDI',
+//                                         body: noidung + " " + dataNguoiGui[0].nickname
+//                                     }
+//                                 };
+//                             }
 
-                            //callback style
-                            fcm.send(message, function(err, response) {
-                                if (err) {
-                                    console.log("Something has gone wrong!");
-                                } else {
-                                    console.log("Successfully sent with response: ", response);
-                                }
-                            });
-                        }
-                    }
-                });
-            });
-        }
-    });
-}
+//                             //callback style
+//                             fcm.send(message, function(err, response) {
+//                                 if (err) {
+//                                     console.log("Something has gone wrong!");
+//                                 } else {
+//                                     console.log("Successfully sent with response: ", response);
+//                                 }
+//                             });
+//                         }
+//                     }
+//                 });
+//             });
+//         }
+//     });
+// }
 /*********--------------------------*********
  **********------ ECHO RESPONSE -----*********
  **********--------------------------*********/
