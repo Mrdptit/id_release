@@ -218,7 +218,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
             // sendNotification(msg.from, msg.to, "is calling", "calling", "Thành đẹp trai");
-
+            var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + msg.from + "'";
             client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
                 if (loiNguoiGui) {
                     console.log(loiNguoiGui);
