@@ -300,7 +300,6 @@ router.post('/type=params', urlParser, function(req, res) {
                     } else {
                         if (rsss.length > 0) {
                             var arrayMembers = [];
-                            console.log(rsss);
                             async.forEachOf(rsss, function(dataElement, i, callback) {
                                 var fullSql;
                                 var sqlOther = "SELECT * FROM `other_information` WHERE `users_key`='" + rsss[i].key + "'";
