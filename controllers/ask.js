@@ -399,7 +399,8 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, questions_id)
                             }
 
                             apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
-                                console.log("sent:", result.sent.length);
+                                console.log("ASK iOS Send:", result.sent.length);
+                                console.log(JSON.stringify(result));
                             });
                         } else {
                             var message;
