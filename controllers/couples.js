@@ -631,7 +631,7 @@ router.post('/like', urlParser, function(req, res) {
                                     console.log(eDelete);
                                     return res.sendStatus(300);
                                 } else {
-                                    var currentTime = moment().tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD hh:mm:ss');
+                                    var currentTime = moment().tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD hh:mm:ss a');
                                     var sqlLike = "INSERT INTO `couple_like`(`users_key`,`time`, `friend_key`) VALUES ('" + req.body.users_key + "','" + currentTime + "','" + req.body.friend_key + "')";
                                     client.query(sqlLike, function(eIn, dIn, fIn) {
                                         if (eIn) {
