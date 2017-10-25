@@ -199,90 +199,92 @@ router.post('/type=params', urlParser, function(req, res) {
                 var dk5 = "AND `key` NOT IN (SELECT `friend_key` FROM `blocks` WHERE `users_key`='" + key + "') ";
 
                 var param1;
-                if (req.body.annual_income != '-1') {
+                if (req.body.annual_income != 0) {
                     param1 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `annual_income`='" + req.body.annual_income + "') ";
                 } else {
                     param1 = "";
                 }
 
                 var param2;
-                if (req.body.body_type != '-1') {
+                if (req.body.body_type != 0) {
                     param2 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `body_type`='" + req.body.body_type + "') ";
                 } else {
                     param2 = "";
                 }
 
                 var param3;
-                if (req.body.blood_group != '-1') {
+                if (req.body.blood_group != 0) {
                     param3 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `blood_group`='" + req.body.blood_group + "') ";
                 } else {
                     param3 = "";
                 }
 
                 var param4;
-                if (req.body.race != '-1') {
+                if (req.body.race != 0) {
                     param4 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `race`='" + req.body.race + "') ";
                 } else {
                     param4 = "";
                 }
 
                 var param5;
-                if (req.body.smoking != '-1') {
+                if (req.body.smoking != 0) {
                     param5 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `smoking`='" + req.body.smoking + "') ";
                 } else {
                     param5 = "";
                 }
 
                 var param6;
-                if (req.body.have_children != '-1') {
+                if (req.body.have_children != 0) {
                     param6 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `have_children`='" + req.body.have_children + "') ";
                 } else {
                     param6 = "";
                 }
 
                 var param7;
-                if (req.body.married != '-1') {
+                if (req.body.married != 0) {
                     param7 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `married`='" + req.body.married + "') ";
                 } else {
                     param7 = "";
                 }
 
                 var param8;
-                if (req.body.religion != '-1') {
+                if (req.body.religion != 0) {
                     param8 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `religion`='" + req.body.religion + "') ";
                 } else {
                     param8 = "";
                 }
 
                 var param9;
-                if (req.body.industry != '-1') {
+                if (req.body.industry != 0) {
                     param9 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `industry`='" + req.body.industry + "') ";
                 } else {
                     param9 = "";
                 }
 
                 var param10;
-                if (req.body.academic_level != '-1') {
+                if (req.body.academic_level != 0) {
                     param10 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `academic_level`='" + req.body.academic_level + "') ";
                 } else {
                     param10 = "";
                 }
 
                 var param11;
-                if (req.body.country != '-1') {
+                if (req.body.country != 0) {
                     param11 = " AND `country`='" + req.body.country + "'";
                 } else {
                     param11 = "";
                 }
                 var param12;
-                if (req.body.same_city == '1') {
+                if (req.body.same_city == 1) {
                     param12 = " AND `city`='" + req.body.city + "'";
+                } else if (req.body.same_city == 2) {
+                    param12 = " AND `city`!='" + req.body.city + "'";
                 } else {
                     param12 = "";
                 }
 
                 var param13;
-                if (req.body.gender == '2' || req.body.gender == '-1') {
+                if (req.body.gender == 0) {
                     param13 = "";
                 } else {
                     param13 = " AND `sex`='" + req.body.gender + "'";
