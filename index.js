@@ -217,35 +217,36 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log(JSON.stringify(msg));
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
-            if (incomings.length > 0) {
-                async.forEachOf(incomings, function(el, i, callback) {
-                    if (el.key != msg.to) {
-                        sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
-                        var current = 0;
-                        var timer = setInterval(function() {
-                            current++;
-                            sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
-                            if (current == 3) {
-                                clearInterval(timer);
-                            }
-                        }, 5500);
-                        incomings.push({ key: msg.to, timer: timer });
-                        incomings = _.uniqBy(incomings, 'key');
-                    }
-                });
-            } else {
-                sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
-                var current = 0;
-                var timer = setInterval(function() {
-                    current++;
-                    sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
-                    if (current == 3) {
-                        clearInterval(timer);
-                    }
-                }, 5500);
-                incomings.push({ key: msg.to, timer: timer });
-                incomings = _.uniqBy(incomings, 'key');
-            }
+            sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
+            // if (incomings.length > 0) {
+            //     async.forEachOf(incomings, function(el, i, callback) {
+            //         if (el.key != msg.to) {
+            //             sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
+            //             var current = 0;
+            //             var timer = setInterval(function() {
+            //                 current++;
+            //                 sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
+            //                 if (current == 3) {
+            //                     clearInterval(timer);
+            //                 }
+            //             }, 5500);
+            //             incomings.push({ key: msg.to, timer: timer });
+            //             incomings = _.uniqBy(incomings, 'key');
+            //         }
+            //     });
+            // } else {
+            //     sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
+            //     var current = 0;
+            //     var timer = setInterval(function() {
+            //         current++;
+            //         sendNotification(msg.from, msg.to, "is calling", "calling", currentTime);
+            //         if (current == 3) {
+            //             clearInterval(timer);
+            //         }
+            //     }, 5500);
+            //     incomings.push({ key: msg.to, timer: timer });
+            //     incomings = _.uniqBy(incomings, 'key');
+            // }
         }
 
         if (msg.to == 'all') {
@@ -331,7 +332,8 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, message) {
                             }
 
                             apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
-                                console.log("sent:", result.sent.length);
+                                console.log("Calling: ", result.sent.length);
+                                console.log(JSON.stringify(result));
                             });
                         } else {
                             var message;
