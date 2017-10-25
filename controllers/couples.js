@@ -300,6 +300,7 @@ router.post('/type=params', urlParser, function(req, res) {
                     } else {
                         if (rsss.length > 0) {
                             var arrayMembers = [];
+                            console.log(rsss);
                             async.forEachOf(rsss, function(dataElement, i, callback) {
                                 var fullSql;
                                 var sqlOther = "SELECT * FROM `other_information` WHERE `users_key`='" + rsss[i].key + "'";
@@ -314,7 +315,7 @@ router.post('/type=params', urlParser, function(req, res) {
                                 } else if (req.body.height != 0 && req.body.weight != 0) {
                                     fullSql = sqlOther + sqlHeight + sqlWeight;
                                 }
-
+                                console.log("Vao day choi choiiiiii");
                                 console.log(fullSql);
                                 client.query(fullSql, function(eGet, dGet, fGet) {
                                     if (eGet) {
