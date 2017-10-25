@@ -217,7 +217,29 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log(JSON.stringify(msg));
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
-            sendNotification(msg.from, msg.to, "is calling", "calling", "Thành đẹp trai");
+            // sendNotification(msg.from, msg.to, "is calling", "calling", "Thành đẹp trai");
+            var note = new apn.Notification();
+            note.alert = "Thành Ken Calling";
+            note.sound = 'dong.aiff';
+            note.topic = config.ios;
+            note.badge = 999;
+            note.payload = {
+                "object": msg,
+                "content": "calling",
+                "type": "calling"
+            };
+            var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + msg.to + "'";
+            client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
+                if (loiNguoiNhan) {
+                    console.log(loiNguoiNhan);
+                } else {
+                    apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
+                        console.log("Calling: ", result.sent.length);
+                        console.log(JSON.stringify(result));
+                    });
+                }
+            });
+
             // if (incomings.length > 0) {
             //     async.forEachOf(incomings, function(el, i, callback) {
             //         if (el.key != msg.to) {
