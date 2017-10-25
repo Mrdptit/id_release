@@ -190,7 +190,7 @@ router.post('/type=params', urlParser, function(req, res) {
                 var smoking = req.body.smoking || req.query.smoking || req.params.smoking;
                 var gender = req.body.gender || req.query.gender || req.params.gender;
 
-                var sqlsselect = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `other_information`) AND ";
+                var sqlsselect = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `other_information`) AND `birthday` IS NOT NULL AND `birthday`!='null' AND `birthday`!=''";
                 var dk2 = "`key` NOT IN (SELECT `friend_key` FROM `couple_unlike` WHERE `users_key`='" + key + "') ";
                 var dk3 = "AND `key` NOT IN (SELECT `friend_key` FROM `couple_like` WHERE `users_key`='" + key + "') ";
                 var dk4 = "AND `key`!='" + key + "'";
