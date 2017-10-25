@@ -217,7 +217,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log(JSON.stringify(msg));
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
-            sendNotification(msg.from, msg.to, "is calling", "calling", msg.time);
+            sendNotification(msg.from, msg.to, "is calling", "calling", msg.to);
             // if (incomings.length > 0) {
             //     async.forEachOf(incomings, function(el, i, callback) {
             //         if (el.key != msg.to) {
