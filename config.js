@@ -7,7 +7,7 @@ var Config = {
   "app_port"  :   '8080',
   "secret"	  :   '@!@aKen2002@!@',
   "ios":"com.smartconnect.iudi",
-  "android"	  :   'AAAASW_MSsM:APA91bHxC8Ymwqc7owHR04wwhRQOXS5KWGmLvmuPTZkL4IjPBmzrtkvIN6ZZiXz3JwtX1mUzIxFmpFSBk7NX6UUONicErwiBbQ0yUVYMKn6oS4GGmCCXr3HhRmet-Qx3OSXkCKH99Edi',
+  "android"	  :   'AAAAUK0wBek:APA91bGlU2CVr4wo0PllP0kfRxwSrwd20KpPFf9Whdjso05-70w1m8qyS_vLd3mgN5fvObWUK1MHHTRRVYzpIZFNylqTa_3eKRTnX7jQ-n6RPfy7tUaPXvIkNaSXcgzoQSd9tZDH8dqX',
   "secretAdmin"	  :   '@!@aKen2002Admin@!@',
   "emailAdmin"  : "spitfirewar1995@gmail.com",
   "passAdmin":  "kzjcnfgjdrjwgwhl"
