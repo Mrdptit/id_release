@@ -1557,7 +1557,7 @@ router.get('/:key/type=findnearby', function(req, res) {
                 var pp = " LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
 
                 var finalSQL;
-                if (gender == '2') {
+                if (gender == 0) {
                     finalSQL = userSQL1 + userSQL2 + userSQL4 + userSQL5 + userSQL6 + userSQL10 + userSQL7 + userSQL9 + pp;
                 } else {
                     finalSQL = userSQL1 + userSQL2 + userSQL3 + userSQL4 + userSQL5 + userSQL10 + userSQL6 + userSQL7 + userSQL9 + pp;
@@ -1621,7 +1621,7 @@ router.get('/:key/type=findonline', function(req, res) {
                 var userSQL8 = "AND `sex`='" + sex + "'";
                 var pp = " LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
                 var finalSQL;
-                if (sex == "2") {
+                if (sex == 0) {
                     finalSQL = userSQL1 + userSQL4 + userSQL5 + userSQL6 + userSQL9 + userSQL7 + pp;
                 } else {
                     finalSQL = userSQL1 + userSQL4 + userSQL5 + userSQL6 + userSQL9 + userSQL7 + userSQL8 + pp;
