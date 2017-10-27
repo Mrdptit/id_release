@@ -222,7 +222,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
 
-             if (msg.content.sdp) {
+             if (msg.content) {
                  //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "'";
 
@@ -230,7 +230,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                    
                     if (err) {
                            
-                        console.log(isNotExit);
+                        console.log(err);
                     
                     }else{
                         //channel is exist , response to client busy
