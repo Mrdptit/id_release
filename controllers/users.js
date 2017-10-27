@@ -329,8 +329,8 @@ router.post('/signin', urlParser, function(req, res) {
 });
 
 /*********--------get information channel call----------*********/
-router.get('/:idChannel/type=channel_information', urlParser, function(req, res) {
-    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+router.get('/:idChannel/type=channel_information&access_token=:access_token',urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     if (token) {
         jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
