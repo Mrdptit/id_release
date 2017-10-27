@@ -231,13 +231,15 @@ io.on('connection', function(socket) { // Incoming connections from clients
                  }
             });
         }
+        
 
         var currentTime = new Date().getTime();
-        if (msg.subtype == 'candidate') {
+        if (msg.subtype == 'offer') {
 
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
             console.log("value sdp --------------------- --------- " + contentJson.sdp + "\n\n data " + contentJson);
+            
              if (contentJson.sdp) {
 
                 console.log(JSON.stringify(msg));
