@@ -267,7 +267,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
 
                             }else{
                                 //create channel call here
-                                var queryInsertChannel = "UPDATE `channels` SET `candidate`='"+msg.content+"' WHERE `idChannel`='"+ msg.to +"'";
+                                var queryInsertChannel = "UPDATE `channels` SET `candidate`='"+contentJson+"' WHERE `idChannel`='"+ msg.to +"'";
                                 console.log(queryInsertChannel);
                                 client.query(queryInsertChannel,function(err,data,FNN){
                                     if (err) {
@@ -321,7 +321,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
 
                         }else{
                             //create channel call here
-                                var queryInsertChannel = "UPDATE `channels` SET `offer`='"+msg.content+"',`subType`='"+msg.subtype+"' WHERE `idChannel`='"+ msg.to +"'";
+                                var queryInsertChannel = "UPDATE `channels` SET `offer`='"+contentJson+"',`subType`='"+msg.subtype+"' WHERE `idChannel`='"+ msg.to +"'";
                                 console.log(queryInsertChannel);
                                 client.query(queryInsertChannel,function(err,data,FNN){
                                     if (err) {
