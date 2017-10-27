@@ -218,12 +218,15 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log("Disconnected: %s sockets connected", connections.length);
     });
     socket.on('chat message', function(msg) {
-        console.log(JSON.stringify(msg));
+        
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
 
             var contentJson = JSON.stringify(msg.content);
+            var objectValue = JSON.parse(contentJson);
              if (contentJson.sdp) {
+
+                console.log(JSON.stringify(msg));
                  //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "'";
 
