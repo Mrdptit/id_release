@@ -237,8 +237,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
 
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
-            console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + objectValue);
-             if (objectValue['sdp']) {
+            console.log("value sdp --------------------- --------- " + contentJson.sdp + "\n\n data " + contentJson);
+             if (contentJson.sdp) {
 
                 console.log(JSON.stringify(msg));
                  //save current channel
