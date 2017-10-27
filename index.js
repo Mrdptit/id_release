@@ -222,7 +222,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
 
-             if (msg.content) {
+            var contentJson = JSON.stringify(msg.content);
+             if (contentJson) {
                  //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "'";
 
@@ -237,7 +238,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         if (dataChannel.length==0){
 
                             //create channel call here
-                            var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='"+ msg.to +"', `fromKey`='"+ msg.from +"', `toKey` = '" + msg.to + "', `senderAvatar`='"+msg.senderAvatar+"',`senderName`='"+ msg.senderName +"', `receiverAvatar`='"+msg.receiverAvatar+"',`receiverName`='"+msg.receiverName+"',`content`='"+msg.content+"',`conversationId`='"+msg.conversationId+"',`type`='"+msg.type+"',`subType`='"+msg.subtype+"'";
+                            var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='"+ msg.to +"', `fromKey`='"+ msg.from +"', `toKey` = '" + msg.to + "', `senderAvatar`='"+msg.senderAvatar+"',`senderName`='"+ msg.senderName +"', `receiverAvatar`='"+msg.receiverAvatar+"',`receiverName`='"+msg.receiverName+"',`content`='"+contentJson+"',`conversationId`='"+msg.conversationId+"',`type`='"+msg.type+"',`subType`='"+msg.subtype+"'";
                             console.log(queryInsertChannel);
                             client.query(queryInsertChannel,function(err,data,FNN){
                                 if (err) {
