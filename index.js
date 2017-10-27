@@ -219,6 +219,19 @@ io.on('connection', function(socket) { // Incoming connections from clients
     });
     socket.on('chat message', function(msg) {
         
+        if(msg.subtype == 'close'){
+             //remove channel 
+            var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.to + "'";
+            
+            client.query(deleteSQL, function(eDelete, dDelete, fDelete) {
+                 if (eDelete) {
+                    console.log("Fails Delete channel call"+msg.to);
+                } else {
+                    console.log("Delete channel call"+msg.to);
+                 }
+            });
+        }
+        
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
 
