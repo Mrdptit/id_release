@@ -223,7 +223,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
         if (msg.subtype == 'candidate') {
 
             var contentJson = JSON.stringify(msg.content);
-             if (contentJson) {
+             if (contentJson.sdp) {
                  //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "'";
 
