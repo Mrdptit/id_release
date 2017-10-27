@@ -175,6 +175,10 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var usr = users[index];
             users.splice(index, 1);
             socket.broadcast.emit('user leave', { id: usr.id, key: usr.key });
+
+             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + usr.key + "'";
+            
+             client.query(deleteSQL, function(eDelete, dDelete, fDelete) { }); 
         }
         // END CALL VIDEO
         var checkquery = "SELECT * FROM `users` WHERE `socket_id`='" + socket.id + "'";
@@ -217,6 +221,42 @@ io.on('connection', function(socket) { // Incoming connections from clients
         console.log(JSON.stringify(msg));
         var currentTime = new Date().getTime();
         if (msg.subtype == 'candidate') {
+
+             if (msg.content.sdp) {
+                 //save current channel
+                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "'";
+
+                client.query(queryChannel,function(err,dataChannel,FNN){
+                   
+                    if (err) {
+                           
+                        console.log(isNotExit);
+                    
+                    }else{
+                        //channel is exist , response to client busy
+                        if (dataChannel.length==0){
+
+                            //create channel call here
+                            var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='"+ msg.to +"', `fromKey`='"+ msg.from +"', `toKey` = '" + msg.to + "', `senderAvatar`='"+msg.senderAvatar+"',`senderName`='"+ msg.senderName +"', `receiverAvatar`='"+msg.receiverAvatar+"',`receiverName`='"+msg.receiverName+"',`content`='"+msg.content+"',`conversationId`='"+msg.conversationId+"',`type`='"+msg.type+"',`subType`='"+msg.subtype+"'";
+                            console.log(queryInsertChannel);
+                            client.query(queryInsertChannel,function(err,data,FNN){
+                                if (err) {
+                                    console.log("Insert New Channel call FAILED");
+                                }else{
+                                    console.log("Insert New Channel call success");
+                                }
+                            });
+
+                        }else{
+                            console.log(dataChannel);    
+                        }
+                        
+                    }
+
+                });
+
+            }
+
             // sendNotification(msg.from, msg.to, "is calling", "calling", "Thành đẹp trai");
             var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + msg.from + "'";
             client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
