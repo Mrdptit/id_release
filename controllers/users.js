@@ -328,6 +328,30 @@ router.post('/signin', urlParser, function(req, res) {
     });
 });
 
+/*********--------get information channel call----------*********/
+router.get('/:idChannel/type=channel_information&access_token=:access_token',urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                var sql = "SELECT * FROM `channels` WHERE `idChannel` = '" + req.params.idChannel + "'";
+                client.query(sql, function(error, data, fields) {
+                    if (error) {
+                        console.log(error);
+                        return res.sendStatus(300);
+                    } else {
+                        return res.send(echoResponse(200, data, 'success', false));
+                    }
+                });
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
+
 /*********--------Following----------*********/
 router.post('/follow', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
