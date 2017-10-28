@@ -131,6 +131,7 @@ router.post('/signup', urlParser, function(req, res) {
                         value.push("'" + req.body[k] + "'");
                     }
                 }
+                delete req.body.created_at;
                 var currentTime = new Date().getTime();
                 var sql = escapeSQL.format('INSERT INTO `users` SET ? , `created_at`='+ currentTime, req.body);
                 //var dataSQL = "INSERT INTO `users`(" + insert.toString() + ") VALUES(" + value.toString() + ")";
