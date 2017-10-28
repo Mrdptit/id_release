@@ -289,6 +289,21 @@ router.post('/type=params', urlParser, function(req, res) {
                 } else {
                     param13 = " AND `sex`='" + req.body.gender + "'";
                 }
+
+                var param14;
+                if (req.body.weight) {
+                    param14 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `weight`>='" + req.body.weight + "') ";
+                } else {
+                    param14 = "";
+                }
+
+                var param15;
+                if (req.body.height) {
+                    param15 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `height`>='" + req.body.height + "') ";
+                } else {
+                    param15 = "";
+                }
+
                 console.log(JSON.stringify(req.body));
                 var orderby = "LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10);
                 var sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + orderby;
@@ -301,22 +316,8 @@ router.post('/type=params', urlParser, function(req, res) {
                         if (rsss.length > 0) {
                             var arrayMembers = [];
                             async.forEachOf(rsss, function(dataElement, i, callback) {
-                                var fullSql;
                                 var sqlOther = "SELECT * FROM `other_information` WHERE `users_key`='" + rsss[i].key + "'";
-                                var sqlHeight = " AND `height` IS NOT NULL AND `height` >= " + heightInt;
-                                var sqlWeight = " AND `weight` IS NOT NULL AND `weight` >= " + weightInt;
-                                if (req.body.height == 0 && req.body.weight == 0) {
-                                    fullSql = sqlOther;
-                                } else if (req.body.height == 0 && req.body.weight != 0) {
-                                    fullSql = sqlOther + sqlWeight;
-                                } else if (req.body.height != 0 && req.body.weight == 0) {
-                                    fullSql = sqlOther + sqlHeight;
-                                } else if (req.body.height != 0 && req.body.weight != 0) {
-                                    fullSql = sqlOther + sqlHeight + sqlWeight;
-                                }
-                                console.log("Vao day choi choiiiiii");
-                                console.log(fullSql);
-                                client.query(fullSql, function(eGet, dGet, fGet) {
+                                client.query(sqlOther, function(eGet, dGet, fGet) {
                                     if (eGet) {
                                         console.log(eGet);
                                         return res.send(echoResponse(300, 'error', JSON.stringify(eGet), true));
