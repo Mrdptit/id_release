@@ -126,10 +126,13 @@ router.post('/signup', urlParser, function(req, res) {
                 var value = [];
                 var insert = [];
                 for (var k in req.body) {
-                    insert.push("`" + k + "`");
-                    value.push("'" + req.body[k] + "'");
+                    if (k != 'created_at') {
+                        insert.push("`" + k + "`");
+                        value.push("'" + req.body[k] + "'");
+                    }
                 }
-                var sql = escapeSQL.format('INSERT INTO `users` SET ?', req.body);
+                var currentTime = new Date().getTime();
+                var sql = escapeSQL.format('INSERT INTO `users` SET ? , `created_at`=' + currentTime + '', req.body);
                 //var dataSQL = "INSERT INTO `users`(" + insert.toString() + ") VALUES(" + value.toString() + ")";
                 client.query(sql, function(eInsert, dInsert, fInsert) {
                     if (eInsert) {
@@ -154,7 +157,6 @@ router.post('/signup', urlParser, function(req, res) {
                                     }
                                 });
                             } else {
-                                var currentTime = new Date().getTime();
                                 currentTime = getRandomInt(1, 9) + "0" + currentTime;
                                 client.query("UPDATE `users` SET `username`='" + currentTime + "' WHERE `email`='" + req.body.email + "'");
                             }
@@ -173,6 +175,43 @@ router.post('/signup', urlParser, function(req, res) {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+/*********--------Following----------*********/
+router.get('/:key/type=newest', urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                var key = req.body.key || req.query.key || req.params.key;
+                var page = req.body.page || req.query.page || req.params.page;
+                var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
+                var sql = "SELECT * FROM `users` WHERE `key` NOT IN (SELECT `friend_key` FROM `blocks` WHERE `users_key`='" + key + "') AND `key` NOT IN (SELECT `users_key` FROM `blocks` WHERE `friend_key`='" + key + "')";
+                var pp = " ORDER BY `created_at` LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
+                if ((parseInt(page, 10) * parseInt(per_page, 10)) <= 100) {
+                    client.query(sql + pp, function(error, data, fields) {
+                        if (error) {
+                            console.log(error);
+                            return res.sendStatus(300);
+                        } else {
+                            if (data.length > 0) {
+                                return res.send(echoResponse(200, data, 'success', false));
+                            } else {
+                                return res.send(echoResponse(404, 'Nobody.', 'success', true));
+                            }
+                        }
+                    });
+                } else {
+                    return res.send(echoResponse(404, "Nobody.", 'success', true));
+                }
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
+
 
 /*********--------SIGNIN----------*********/
 router.post('/signin', urlParser, function(req, res) {
@@ -326,30 +365,6 @@ router.post('/signin', urlParser, function(req, res) {
             }
         }
     });
-});
-
-/*********--------get information channel call----------*********/
-router.get('/:idChannel/type=channel_information&access_token=:access_token',urlParser, function(req, res) {
-    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
-    if (token) {
-        jwt.verify(token, config.secret, function(err, decoded) {
-            if (err) {
-                return res.json({ success: false, message: 'Failed to authenticate token.' });
-            } else {
-                var sql = "SELECT * FROM `channels` WHERE `idChannel` = '" + req.params.idChannel + "'";
-                client.query(sql, function(error, data, fields) {
-                    if (error) {
-                        console.log(error);
-                        return res.sendStatus(300);
-                    } else {
-                        return res.send(echoResponse(200, data, 'success', false));
-                    }
-                });
-            }
-        });
-    } else {
-        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
-    }
 });
 
 /*********--------Following----------*********/
@@ -1451,7 +1466,7 @@ router.get('/:key/type=syncunread', function(req, res) {
             if (err) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
-                var userSQLConversation = "SELECT * FROM `messages` WHERE `key` IN (SELECT `messages_key` FROM `message_status` WHERE `status`=0 AND `users_key`='"+req.params.key+"' AND `conversations_key` IN (SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '"+req.params.key+"')) ORDER BY `time` DESC";
+                var userSQLConversation = "SELECT * FROM `messages` WHERE `key` IN (SELECT `messages_key` FROM `message_status` WHERE `status`=0 AND `users_key`='" + req.params.key + "' AND `conversations_key` IN (SELECT `key` FROM conversations INNER JOIN members ON members.conversations_key = conversations.key AND members.users_key = '" + req.params.key + "')) ORDER BY `time` DESC";
                 client.query(userSQLConversation, function(error, data, fields) {
                     if (error) {
                         console.log(error);
