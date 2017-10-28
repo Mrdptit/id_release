@@ -189,7 +189,7 @@ router.get('/:key/type=newest', urlParser, function(req, res) {
                 var page = req.body.page || req.query.page || req.params.page;
                 var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
                 var sql = "SELECT * FROM `users` WHERE `key` NOT IN (SELECT `friend_key` FROM `blocks` WHERE `users_key`='" + key + "') AND `key` NOT IN (SELECT `users_key` FROM `blocks` WHERE `friend_key`='" + key + "')";
-                var pp = " ORDER BY `created_at` LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
+                var pp = " ORDER BY `created_at` DESC LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10) + "";
                 if ((parseInt(page, 10) * parseInt(per_page, 10)) <= 100) {
                     client.query(sql + pp, function(error, data, fields) {
                         if (error) {
