@@ -132,7 +132,7 @@ router.post('/signup', urlParser, function(req, res) {
                     }
                 }
                 var currentTime = new Date().getTime();
-                var sql = escapeSQL.format('INSERT INTO `users` SET ? , `created_at`=' + currentTime + '', req.body);
+                var sql = escapeSQL.format('INSERT INTO `users` SET ? , `created_at`='+ currentTime, req.body);
                 //var dataSQL = "INSERT INTO `users`(" + insert.toString() + ") VALUES(" + value.toString() + ")";
                 client.query(sql, function(eInsert, dInsert, fInsert) {
                     if (eInsert) {
