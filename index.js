@@ -402,19 +402,21 @@ io.on('connection', function(socket) { // Incoming connections from clients
         } else {
             var target = findUserByUID(msg.to);
             // console.log("Socket id cloud: ---------------------:  " + target.socketid);
+            //emit for android
              socket.broadcast.emit('chat message', msg);
-             console.log("Calllllll--------------- to user:" + msg.to + "Socket id : ");
+             console.log("Calling--------------- to user:" + msg.to + "Socket id : ");
 
+             //emit for ios
             if (target) {
                 // Send notifications
                 // socket.broadcast.to(target.socketid).emit('chat message', msg);
-                socket.broadcast.to(target.socketid).emit('chat', msg);
+                socket.broadcast.to(target.socketid).emit('K_Signal_Call', msg);
 
                  console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: "+target.socketid);
 
                 //socket_to.emit("chat message", msg);
             } else {
-                socket.broadcast.emit("chat message", msg);
+                //socket.broadcast.emit("chat message", msg);
 
                 console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
 
