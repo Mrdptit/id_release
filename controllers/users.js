@@ -2577,163 +2577,163 @@ router.post('/facebook_point', urlParser, function(req, res) {
     }
 });
 
-router.post('/syncFeedFacebook', urlParser, function(req, res) {
-    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
-    if (token) {
-        jwt.verify(token, config.secret, function(err, decoded) {
-            if (err) {
-                return res.json({ success: false, message: 'Failed to authenticate token.' });
-            } else {
+// router.post('/syncFeedFacebook', urlParser, function(req, res) {
+//     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+//     if (token) {
+//         jwt.verify(token, config.secret, function(err, decoded) {
+//             if (err) {
+//                 return res.json({ success: false, message: 'Failed to authenticate token.' });
+//             } else {
 
-                //check facebook sync
-                var queryUser = "SELECT * FROM `users` WHERE `key`='"+req.body.key+"' AND `is_sync_feed_facebook` = '0'";
-                client.query(queryUser,function(err,dataUser,FCheck){
-                    if (err) {
-                        console.log("server issue");
-                        return res.send(echoResponse(300,"server problem", 'success', false));
-                    }else{
+//                 //check facebook sync
+//                 var queryUser = "SELECT * FROM `users` WHERE `key`='"+req.body.key+"' AND `is_sync_feed_facebook` = '0'";
+//                 client.query(queryUser,function(err,dataUser,FCheck){
+//                     if (err) {
+//                         console.log("server issue");
+//                         return res.send(echoResponse(300,"server problem", 'success', false));
+//                     }else{
                         
-                        var json;
-                        var bodydata = unescape(req.body.data);
-                        if (isJsonString(bodydata)) {
-                            var arrayJson = bodydata;
-                            json = JSON.parse(arrayJson);
+//                         var json;
+//                         var bodydata = unescape(req.body.data);
+//                         if (isJsonString(bodydata)) {
+//                             var arrayJson = bodydata;
+//                             json = JSON.parse(arrayJson);
 
-                            console.log(json);
+//                             console.log(json);
 
-                        // data_timeline
-                            if (json.data_timeline) {
-                                var data = json.data_timeline;
-                                console.log(JSON.stringify(data));
-                                var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "'";
-                                client.query(usersql, function(e, d, f) {
-                                    if (e) {
-                                        console.log(e);
-                                        return res.sendStatus(300);
-                                    } else {
-                                        if (d.length > 0) {
-                                            async.forEachOf(data, function(ele, i, call) {
-                                                var dataImage = ele.images;
-                                                if (dataImage.length == 0) {
-                                                    var currentTime = parseInt(ele.time, 10) * 1000;
-                                                    var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                    var caption;
-                                                    if (ele.content == 0) {
-                                                        caption = ele.title;
-                                                    } else {
-                                                        caption = ele.title + ' ' + ele.content;
-                                                    }
-                                                    var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','text','1','" + d[0].key + "')";
-                                                    client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                        if (eInsert) {
-                                                            console.log(eInsert);
-                                                            if (i === data.length - 1) {
-                                                                return res.sendStatus(300);
-                                                            }
-                                                        } else {
-                                                            if (i === data.length - 1) {
-                                                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                                if (dataImage.length == 1) {
-                                                    ///-------
-                                                    var currentTime = parseInt(ele.time, 10) * 1000;
-                                                    var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                    var caption;
-                                                    if (ele.content == 0) {
-                                                        caption = ele.title;
-                                                    } else {
-                                                        caption = ele.title + ' ' + ele.content;
-                                                    }
-                                                    var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','photo','1','" + d[0].key + "')";
-                                                    client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                        if (eInsert) {
-                                                            console.log(eInsert);
-                                                            if (i === data.length - 1) {
-                                                                return res.sendStatus(300);
-                                                            }
-                                                        } else {
-                                                            async.forEachOf(dataImage, function(currentData, n, callback) {
-                                                                var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                                                                var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
-                                                                client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                                    if (eMember) {
-                                                                        console.log(eMember);
-                                                                        if (i === data.length - 1) {
-                                                                            return res.sendStatus(300);
-                                                                        }
-                                                                    } else {
-                                                                        console.log("INSERT ALBUMS SUCCESS");
-                                                                        if (i === data.length - 1) {
-                                                                            return res.send(echoResponse(200, 'SUCCESS', 'success', false));
-                                                                        }
-                                                                    }
-                                                                });
-                                                            });
-                                                        }
-                                                    });
-                                                    //--------
-                                                } else {
-                                                    //--------
-                                                    if (ele.content == 0) {
-                                                        caption = ele.title;
-                                                    } else {
-                                                        caption = ele.title + ' ' + ele.content;
-                                                    }
-                                                    var currentTime = parseInt(ele.time, 10) * 1000;
-                                                    var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                    var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','albums','1','" + d[0].key + "')";
-                                                    client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                        if (eInsert) {
-                                                            console.log(eInsert);
-                                                            if (i === data.length - 1) {
-                                                                return res.sendStatus(300);
-                                                            }
-                                                        } else {
-                                                            async.forEachOf(dataImage, function(currentData, n, callback) {
-                                                                var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                                                                var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
-                                                                client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                                    if (eMember) {
-                                                                        console.log(eMember);
-                                                                        if (i === data.length - 1) {
-                                                                            return res.sendStatus(300);
-                                                                        }
-                                                                    } else {
-                                                                        console.log("INSERT ALBUMS SUCCESS");
-                                                                    }
-                                                                });
-                                                                if (i === data.length - 1) {
-                                                                    return res.send(echoResponse(200, 'SUCCESS', 'success', false));
-                                                                }
-                                                            });
-                                                        }
-                                                    });
-                                                    //---------
-                                                }
-                                            });
+//                         // data_timeline
+//                             if (json.data_timeline) {
+//                                 var data = json.data_timeline;
+//                                 console.log(JSON.stringify(data));
+//                                 var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "'";
+//                                 client.query(usersql, function(e, d, f) {
+//                                     if (e) {
+//                                         console.log(e);
+//                                         return res.sendStatus(300);
+//                                     } else {
+//                                         if (d.length > 0) {
+//                                             async.forEachOf(data, function(ele, i, call) {
+//                                                 var dataImage = ele.images;
+//                                                 if (dataImage.length == 0) {
+//                                                     var currentTime = parseInt(ele.time, 10) * 1000;
+//                                                     var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+//                                                     var caption;
+//                                                     if (ele.content == 0) {
+//                                                         caption = ele.title;
+//                                                     } else {
+//                                                         caption = ele.title + ' ' + ele.content;
+//                                                     }
+//                                                     var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','text','1','" + d[0].key + "')";
+//                                                     client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+//                                                         if (eInsert) {
+//                                                             console.log(eInsert);
+//                                                             if (i === data.length - 1) {
+//                                                                 return res.sendStatus(300);
+//                                                             }
+//                                                         } else {
+//                                                             if (i === data.length - 1) {
+//                                                                 return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+//                                                             }
+//                                                         }
+//                                                     });
+//                                                 }
+//                                                 if (dataImage.length == 1) {
+//                                                     ///-------
+//                                                     var currentTime = parseInt(ele.time, 10) * 1000;
+//                                                     var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+//                                                     var caption;
+//                                                     if (ele.content == 0) {
+//                                                         caption = ele.title;
+//                                                     } else {
+//                                                         caption = ele.title + ' ' + ele.content;
+//                                                     }
+//                                                     var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','photo','1','" + d[0].key + "')";
+//                                                     client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+//                                                         if (eInsert) {
+//                                                             console.log(eInsert);
+//                                                             if (i === data.length - 1) {
+//                                                                 return res.sendStatus(300);
+//                                                             }
+//                                                         } else {
+//                                                             async.forEachOf(dataImage, function(currentData, n, callback) {
+//                                                                 var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+//                                                                 var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+//                                                                 client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+//                                                                     if (eMember) {
+//                                                                         console.log(eMember);
+//                                                                         if (i === data.length - 1) {
+//                                                                             return res.sendStatus(300);
+//                                                                         }
+//                                                                     } else {
+//                                                                         console.log("INSERT ALBUMS SUCCESS");
+//                                                                         if (i === data.length - 1) {
+//                                                                             return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+//                                                                         }
+//                                                                     }
+//                                                                 });
+//                                                             });
+//                                                         }
+//                                                     });
+//                                                     //--------
+//                                                 } else {
+//                                                     //--------
+//                                                     if (ele.content == 0) {
+//                                                         caption = ele.title;
+//                                                     } else {
+//                                                         caption = ele.title + ' ' + ele.content;
+//                                                     }
+//                                                     var currentTime = parseInt(ele.time, 10) * 1000;
+//                                                     var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+//                                                     var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','albums','1','" + d[0].key + "')";
+//                                                     client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+//                                                         if (eInsert) {
+//                                                             console.log(eInsert);
+//                                                             if (i === data.length - 1) {
+//                                                                 return res.sendStatus(300);
+//                                                             }
+//                                                         } else {
+//                                                             async.forEachOf(dataImage, function(currentData, n, callback) {
+//                                                                 var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+//                                                                 var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+//                                                                 client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+//                                                                     if (eMember) {
+//                                                                         console.log(eMember);
+//                                                                         if (i === data.length - 1) {
+//                                                                             return res.sendStatus(300);
+//                                                                         }
+//                                                                     } else {
+//                                                                         console.log("INSERT ALBUMS SUCCESS");
+//                                                                     }
+//                                                                 });
+//                                                                 if (i === data.length - 1) {
+//                                                                     return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+//                                                                 }
+//                                                             });
+//                                                         }
+//                                                     });
+//                                                     //---------
+//                                                 }
+//                                             });
 
-                                        }else{
-                                            console.log(e);
-                                            return res.sendStatus(300);
-                                        }
-                                    }
-                                });
-                            }
+//                                         }else{
+//                                            console.log(e);
+//                                             return res.sendStatus(300);
+//                                         }
+//                                     }
+//                                 });
+//                             }
 
-                        }else{
-                            return res.send(echoResponse(200,"User had sync facebook", 'success', false));
-                        }
-                    }
-                });
-            }
-        });
-    } else {
-        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
-    }
-});
+//                         }else{
+//                             return res.send(echoResponse(200,"User had sync facebook", 'success', false));
+//                         }
+//                     }
+//                 });
+//             }
+//         });
+//     } else {
+//         return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+//     }
+// });
 
 /*********--------Facebook Database----------*********/
 router.post('/facebook', urlParser, function(req, res) {
