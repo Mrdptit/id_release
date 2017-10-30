@@ -107,6 +107,9 @@ client.query("SET CHARACTER SET utf8mb4", function(error, results, fields) {
 io.on('connection', function(socket) { // Incoming connections from clients
     var peer;
     socket.on('online', function(user) {
+
+        console.log("User online : " + user.uuid);
+        
         if (findUserByUID(user.uuid) == null) {
             var usr = { id: user.uuid, key: user.key, socketid: socket.id };
             users.push(usr);
