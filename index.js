@@ -402,20 +402,21 @@ io.on('connection', function(socket) { // Incoming connections from clients
         } else {
             var target = findUserByUID(msg.to);
             console.log("Socket id cloud: ---------------------:  " + target.socketid);
-            if (target) {
-                // Send notifications
-                socket.broadcast.to(target.socketid).emit('chat message', msg);
+             socket.broadcast.emit('chat message', msg);
+            // if (target) {
+            //     // Send notifications
+            //     socket.broadcast.to(target.socketid).emit('chat message', msg);
 
-                 console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: "+target.socketid);
+            //      console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: "+target.socketid);
 
-                //socket_to.emit("chat message", msg);
-            } else {
-                socket.broadcast.emit("chat message", msg);
+            //     //socket_to.emit("chat message", msg);
+            // } else {
+            //     socket.broadcast.emit("chat message", msg);
 
-                console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
+            //     console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
 
 
-            }
+           // }
         }
     });
     //end socket
