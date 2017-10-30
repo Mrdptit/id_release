@@ -3219,12 +3219,13 @@ router.post('/facebook_client', urlParser, function(req, res) {
                          return res.sendStatus(300);
                     }else{
                         var bodydata = unescape(req.body.data);
+                        console.log(req.body.data);
                          var arrayJson = bodydata;
                               
                           json = JSON.parse(arrayJson);
                             if (json) {
                                
-                                console.log(json);
+                                
                                 // data_timeline
                                 if (json.data_timeline) {
                                     var data = json.data_timeline;
