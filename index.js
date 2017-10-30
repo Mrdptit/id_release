@@ -405,20 +405,14 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 // Send notifications
                 socket.broadcast.to(target.socketid).emit('chat message', msg);
 
-                  if (msg.from == 'He9Y3AA7xtVQahaKGuon5HYSAqy1') {
+                 console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: "+target.socketid);
 
-                    console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
-
-                    }   
                 //socket_to.emit("chat message", msg);
             } else {
                 socket.broadcast.emit("chat message", msg);
 
-                  if (msg.from == 'He9Y3AA7xtVQahaKGuon5HYSAqy1') {
+                console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
 
-                    console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
-
-                  }
 
             }
         }
