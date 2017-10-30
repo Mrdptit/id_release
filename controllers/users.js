@@ -3221,8 +3221,8 @@ router.post('/facebook_client', urlParser, function(req, res) {
                         var bodydata = unescape(req.body.data);
                         var json;
                             // if (isJsonString(bodydata)) {
-                               
-                                json = JSON.parse(bodydata);
+                               var c = JSON.stringify(req.body.data);
+                                json = JSON.parse(c);
                                 console.log(json);
                                 // data_timeline
                                 if (json.data_timeline) {
