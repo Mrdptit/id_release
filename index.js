@@ -110,11 +110,11 @@ io.on('connection', function(socket) { // Incoming connections from clients
 
         console.log("User online : " + user.uuid + "Key:" + user.key);
         
-        if (findUserByUID(user.uuid) == null) {
-            var usr = { id: user.uuid, key: user.key, socketid: socket.id };
+        if (findUserByUID(user.key) == null) {
+            var usr = { id: user.key, key: user.key, socketid: socket.id };
             users.push(usr);
-            socket.emit('register succeed', { id: user.uuid, key: user.key });
-            socket.broadcast.emit('new user', { id: user.uuid, key: user.key });
+            socket.emit('register succeed', { id: user.key, key: user.key });
+            socket.broadcast.emit('new user', { id: user.key, key: user.key });
             peer = usr;
         }
         // 
