@@ -2715,6 +2715,9 @@ router.post('/syncFeedFacebook', urlParser, function(req, res) {
                                                 }
                                             });
 
+                                        }else{
+                                            console.log(e);
+                                            return res.sendStatus(300);
                                         }
                                     }
                                 });
