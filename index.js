@@ -403,7 +403,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var target = findUserByUID(msg.to);
             // console.log("Socket id cloud: ---------------------:  " + target.socketid);
              socket.broadcast.emit('chat message', msg);
-             console.log("Calllllll--------------- to user:" + msg.to + "Socket id: "+target.socketid);
+             console.log("Calllllll--------------- to user:" + msg.to + "Socket id : ");
 
             // if (target) {
             //     // Send notifications
