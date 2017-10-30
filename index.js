@@ -108,7 +108,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
     var peer;
     socket.on('online', function(user) {
 
-        console.log("User online : " + user.uuid + "Key:" + user.key);
+        
         
         if (findUserByUID(user.key) == null) {
             var usr = { id: user.key, key: user.key, socketid: socket.id };
@@ -116,6 +116,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
             socket.emit('register succeed', { id: user.key, key: user.key });
             socket.broadcast.emit('new user', { id: user.key, key: user.key });
             peer = usr;
+
+           console.log("User online : " + user.key + "Key:" + user.key);
         }
         // 
         var keyUser = "";
