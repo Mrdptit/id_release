@@ -3211,7 +3211,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
 
-                 check facebook sync
+                // check facebook sync
                 var queryUser = "SELECT * FROM `users` WHERE `key`='"+req.body.key+"' AND `is_sync_feed_facebook` = '0'";
                 client.query(queryUser,function(err,dataUser,FCheck){
 
