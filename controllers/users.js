@@ -3220,7 +3220,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                     }else{
                         var bodydata = unescape(req.body.data);
                         var json;
-                            if (isJsonString(bodydata)) {
+                            // if (isJsonString(bodydata)) {
                                
                                 json = JSON.parse(bodydata);
                                 console.log(json);
@@ -3365,10 +3365,10 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 }
                                 
 
-                            } else {
-                                console.log("ERROR JSON");
-                                return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
-                            }
+                            // } else {
+                            //     console.log("ERROR JSON");
+                            //     return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
+                            // }
 
                     }
 
