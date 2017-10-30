@@ -2593,11 +2593,13 @@ router.post('/syncFeedFacebook', urlParser, function(req, res) {
                         return res.send(echoResponse(300,"server problem", 'success', false));
                     }else{
                         
-                                 var json;
+                        var json;
                         var bodydata = unescape(req.body.data);
                         if (isJsonString(bodydata)) {
                             var arrayJson = bodydata;
                             json = JSON.parse(arrayJson);
+
+                            console.log(json);
 
                         // data_timeline
                             if (json.data_timeline) {
