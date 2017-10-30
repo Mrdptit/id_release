@@ -3220,9 +3220,9 @@ router.post('/facebook_client', urlParser, function(req, res) {
                     }else{
                         var bodydata = unescape(req.body.data);
 
-                         var arrayJson = bodydata;
+                         // var arrayJson = bodydata;
                               
-                          json = JSON.parse(arrayJson);
+                          var json = JSON.parse(JSON.stringify(bodydata));
                           console.log(json);
                             if (json) {
                                
