@@ -3222,15 +3222,15 @@ router.post('/facebook_client', urlParser, function(req, res) {
 
                          // var arrayJson = bodydata;
                               
-                          var json = JSON.parse(bodydata);
-                          console.log(json);
+                          var json = JSON.parse(JSON.stringify(bodydata));
+                          // console.log(json);
                             if (json) {
                                
-                                
+                                console.log(json.data_timeline);
                                 // data_timeline
                                 if (json.data_timeline) {
                                     var data = json.data_timeline;
-                                    console.log(JSON.stringify(data));
+                                    
                                     var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
                                     client.query(usersql, function(e, d, f) {
                                         if (e) {
