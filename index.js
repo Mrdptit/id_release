@@ -401,7 +401,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             socket.broadcast.emit('chat message', msg);
         } else {
             var target = findUserByUID(msg.to);
-            console.log("Socket id cloud: ---------------------:  ",target.socketid);
+            console.log("Socket id cloud: ---------------------:  " + target.socketid);
             if (target) {
                 // Send notifications
                 socket.broadcast.to(target.socketid).emit('chat message', msg);
