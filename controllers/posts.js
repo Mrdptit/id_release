@@ -92,7 +92,7 @@ router.post('/syncFeedFacebook', urlParser, function(req, res) {
             } else {
 
                 //check facebook sync
-                var queryUser = "SELECT * FROM `users` WHERE 'key'='"+req.body.key+"' AND `is_sync_feed_facebook` = '0'";
+                var queryUser = "SELECT * FROM `users` WHERE `key`='"+req.body.key+"' AND `is_sync_feed_facebook` = '0'";
                 client.query(queryUser,function(err,dataUser,FCheck){
                     if (err) {
                         console.log("server issue");
@@ -107,6 +107,8 @@ router.post('/syncFeedFacebook', urlParser, function(req, res) {
                                             id: contentJson
                                         }, 'success', false));
 
+                        }else{
+                            return res.send(echoResponse(200,"User had sync facebook", 'success', false));
                         }
                     }
                 });
