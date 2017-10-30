@@ -3218,8 +3218,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                         console.log(e);
                          return res.sendStatus(300);
                     }else{
-                        if (dataUser.length>0) {
-                            var bodydata = unescape(req.body.data);
+                        var bodydata = unescape(req.body.data);
                             if (isJsonString(bodydata)) {
                                 var arrayJson = bodydata;
                                 json = JSON.parse(arrayJson);
@@ -3369,10 +3368,6 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 console.log("ERROR JSON");
                                 return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
                             }
-                      
-                        }else{
-                            return res.send(echoResponse(300, 'User had been sync faebook', 'success', true));
-                        }
                     }
 
                 
