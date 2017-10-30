@@ -3221,17 +3221,19 @@ router.post('/facebook_client', urlParser, function(req, res) {
                         var bodydata = unescape(req.body.data);
 
                          // var arrayJson = bodydata;
+                         var contentJson = JSON.stringify(req.body.data);
+                          var objectValue = JSON.parse(contentJson);
                               
-                          var json = JSON.parse(JSON.stringify(bodydata));
+                          // var json = JSON.parse(JSON.stringify(bodydata));
                           // console.log(json);
-                            if (json) {
+                            if (objectValue) {
                                
-                                console.log(json.data_timeline);
+                                console.log(objectValue['data_timeline']);
                                 // data_timeline
-                                if (json.data_timeline) {
+                                if (objectValue['data_timeline']) {
                                     var data = json.data_timeline;
                                     
-                                    var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
+                                    var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + objectValue['facebook'] + "' AND `is_sync_feed_facebook` = '0'";
                                     client.query(usersql, function(e, d, f) {
                                         if (e) {
                                             console.log(e);
@@ -3259,7 +3261,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                             } else {
                                                                 if (i === data.length - 1) {
                                                                     
-                                                                     var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                                                     var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" +  objectValue['facebook'] + "'";
                                                                     console.log(queryInsertChannel);
                                                                     client.query(queryInsertChannel,function(err,data,FNN){
                                                                         return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
@@ -3300,7 +3302,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                                             console.log("INSERT ALBUMS SUCCESS");
                                                                             if (i === data.length - 1) {
                                                                                                                                                     
-                                                                               var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                                                               var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" +  objectValue['facebook'] + "'";
                                                                                   console.log(queryInsertChannel);
                                                                                 client.query(queryInsertChannel,function(err,data,FNN){
                                                                                     return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
@@ -3345,7 +3347,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                                     });
                                                                     if (i === data.length - 1) {
                                                                                                                                             
-                                                                        var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                                                        var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + objectValue['facebook']+ "'";
                                                                         console.log(queryInsertChannel);
                                                                         client.query(queryInsertChannel,function(err,data,FNN){
                                                                             return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
