@@ -83,7 +83,79 @@ var fs = require('fs');
 var request = require('request');
 var path = require('path');
 
+router.post('/syncFeedFacebook', urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
 
+                //check facebook sync
+                var queryUser = "SELECT * FROM `users` WHERE 'key'='"+req.body.key+"' AND ` is_sync_feed_facebook` == '0'";
+                client.query(queryUser,function(err,dataUser,FCheck){
+                    if (err) {
+                        console.log("server issue");
+                        return res.send(echoResponse(300,"server problem", 'success', false));
+                    }else{
+                        if (dataUser.length > 0) {
+                            var listFeed = req.body.data;
+                            var contentJson = JSON.stringify(req.body.data);
+                            console.log("test api:"+contentJson);
+
+                              return res.send(echoResponse(200, {
+                                            id: contentJson
+                                        }, 'success', false));
+
+                        }
+                    }
+                });
+
+                // var value = [];
+                // var insert = [];
+                // for (var k in req.body) {
+                //     if (k != 'access_token' && k != 'video' && k != 'albums' && k != 'photo' && k != 'users' && k != 'tags' && k != 'caption' && k != 'posted_time' && k != 'edited_time') {
+                //         insert.push("`" + k + "`");
+                //         value.push("'" + req.body[k] + "'");
+                //     }
+                // }
+                // var currentTime = new Date().getTime();
+                // var insertSQL = "INSERT INTO `posts`(" + insert.toString() + ",`caption`,`posted_time`,`edited_time`) VALUES(" + value.toString() + "," + escapeSQL.escape(req.body.caption) + ",'" + currentTime + "','" + currentTime + "')";
+                // client.query(insertSQL, function(eInsert, dInsert, fInsert) {
+                //     if (eInsert) {
+                //         console.log(eInsert);
+                //         return res.sendStatus(300);
+                //     } else {
+                //         console.log("Vừa thêm bài viết thành công với caption " + req.body.caption);
+                //         var permis = "INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + dInsert.insertId + "','" + req.body.users_key + "')";
+                //         client.query(permis);
+                //         addRelate(req.body.users_key, dInsert.insertId, function(successCall) {
+                //             addPermission(dInsert.insertId, req.body.users, function(successPermission) {
+                //                 addPhotoAlbum(dInsert.insertId, req.body.users_key, req.body.albums, function(successAlbum) {
+                //                     addTags(dInsert.insertId, req.body.tags, function(successTags) {
+                //                         sendNotificationToFriend(dInsert.insertId);
+                //                         return res.send(echoResponse(200, {
+                //                             id: dInsert.insertId,
+                //                             caption: req.body.caption,
+                //                             location: req.body.location,
+                //                             posted_time: req.body.posted_time,
+                //                             edited_time: req.body.edited_time,
+                //                             permission: req.body.permission,
+                //                             type: req.body.type,
+                //                             users_key: req.body.users_key
+                //                         }, 'success', false));
+                //                     });
+                //                 });
+                //             });
+                //         });
+                //     }
+                // });
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
 
 router.post('/new', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
