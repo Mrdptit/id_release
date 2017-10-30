@@ -2717,7 +2717,6 @@ router.post('/syncFeedFacebook', urlParser, function(req, res) {
                                     }
                                 });
                             }
-                        }
 
                         }else{
                             return res.send(echoResponse(200,"User had sync facebook", 'success', false));
