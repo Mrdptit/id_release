@@ -3220,9 +3220,9 @@ router.post('/facebook_client', urlParser, function(req, res) {
                     }else{
                         var bodydata = unescape(req.body.data);
                         var json;
-                            // if (isJsonString(bodydata)) {
-                               var c = JSON.stringify(req.body.data);
-                                json = JSON.parse(c);
+                            if (isJsonString(bodydata)) {
+                               
+                                json = JSON.parse(arrayJson);
                                 console.log(json);
                                 // data_timeline
                                 if (json.data_timeline) {
@@ -3365,10 +3365,10 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 }
                                 
 
-                            // } else {
-                            //     console.log("ERROR JSON");
-                            //     return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
-                            // }
+                            } else {
+                                console.log("ERROR JSON");
+                                return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
+                            }
 
                     }
 
