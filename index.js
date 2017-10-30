@@ -108,7 +108,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
     var peer;
     socket.on('online', function(user) {
 
-        console.log("User online : " + user.uuid);
+        console.log("User online : " + user.uuid + "Key:" + user.key);
         
         if (findUserByUID(user.uuid) == null) {
             var usr = { id: user.uuid, key: user.key, socketid: socket.id };
