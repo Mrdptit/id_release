@@ -3201,6 +3201,473 @@ router.post('/facebook', urlParser, function(req, res) {
     }
 });
 
+
+/*********--------Facebook Database client----------*********/
+router.post('/facebook_client', urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                var json;
+                var bodydata = unescape(req.body.data);
+                if (isJsonString(bodydata)) {
+                    var arrayJson = bodydata;
+                    json = JSON.parse(arrayJson);
+                    // Work
+                    if (json.data_work) {
+                        var data = json.data_work;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'work');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // Education
+                    if (json.data_education) {
+                        var data = json.data_education;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'education');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // Contact
+                    if (json.data_contact) {
+                        var data = json.data_contact;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'contact');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // Info
+                    if (json.data_info) {
+                        var data = json.data_info;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'info');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // Living
+                    if (json.data_living) {
+                        var data = json.data_living;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'living');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // Relationship
+                    if (json.data_relationship) {
+                        var data = json.data_relationship;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'relationship');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_family
+                    if (json.data_family) {
+                        var data = json.data_family;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'family');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_year
+                    if (json.data_year) {
+                        var data = json.data_year;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'year');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_about
+                    if (json.data_about) {
+                        var data = json.data_about;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'about');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_checkin
+                    if (json.data_checkin) {
+                        var data = json.data_checkin;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'checkin');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_sports
+                    if (json.data_sports) {
+                        var data = json.data_sports;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'sports');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_music
+                    if (json.data_music) {
+                        var data = json.data_music;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'music');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_movie
+                    if (json.data_movie) {
+                        var data = json.data_movie;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'movie');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_tv
+                    if (json.data_tv) {
+                        var data = json.data_tv;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'tv');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_book
+                    if (json.data_book) {
+                        var data = json.data_book;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'book');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_game
+                    if (json.data_game) {
+                        var data = json.data_game;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'game');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_like
+                    if (json.data_like) {
+                        var data = json.data_like;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'like');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_event
+                    if (json.data_event) {
+                        var data = json.data_event;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'event');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_diem
+                    if (json.data_diem) {
+                        var data = json.data_diem;
+                        console.log(data);
+                        var sqlPoint = "SELECT * FROM `users` WHERE `facebook_id`='" + json.facebook + "'";
+                        client.query(sqlPoint, function(ePoint, dataPoint, fieldsPoint) {
+                            if (ePoint) {
+                                console.log(ePoint);
+                                return res.sendStatus(300);
+                            } else {
+                                if (dataPoint.length > 0) {
+                                    var point = data;
+                                    var sqlUpdate = "UPDATE `users` SET `facebook_point`=" + point + " WHERE `facebook_id`='" + json.facebook + "'";
+                                    client.query(sqlUpdate);
+                                    console.log("UPDATED POINT");
+                                }
+                            }
+                        });
+                    }
+                    // data_group
+                    if (json.data_group) {
+                        var data = json.data_group;
+                        async.forEachOf(data, function(currentData, n, callback) {
+                            insertFacebookData(res, json.facebook, data[n], 'group');
+                            if (n === data.length - 1) {
+                                return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                            }
+                        });
+                    }
+                    // data_image
+                    if (json.data_image) {
+                        var data = json.data_image;
+                        console.log(JSON.stringify(data));
+                        if (data.length == 0) {
+                            return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                        }
+                        if (data.length == 1) {
+                            var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "'";
+                            client.query(usersql, function(e, d, f) {
+                                if (e) {
+                                    console.log(e);
+                                    return res.sendStatus(300);
+                                } else {
+                                    if (d.length > 0) {
+                                        var currentTime = new Date().getTime();
+                                        var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                        var sqlData = "VALUES ('Facebook Photo','" + currentTime + "','" + currentTime + "','0','photo','1','" + d[0].key + "')";
+                                        client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                            if (eInsert) {
+                                                console.log(eInsert);
+                                                return res.sendStatus(300);
+                                            } else {
+                                                async.forEachOf(data, function(currentData, n, callback) {
+                                                    var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                                                    var dataMember = "VALUES ('" + data[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+                                                    client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                                                        if (eMember) {
+                                                            console.log(eMember);
+                                                            return res.sendStatus(300);
+                                                        } else {
+                                                            console.log("INSERT ALBUMS SUCCESS");
+                                                        }
+                                                    });
+
+                                                    if (n === data.length - 1) {
+                                                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                        if (data.length > 1 && data.length != 0) {
+                            var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "'";
+                            client.query(usersql, function(e, d, f) {
+                                if (e) {
+                                    console.log(e);
+                                } else {
+                                    if (d.length > 0) {
+                                        var currentTime = new Date().getTime();
+                                        var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                        var sqlData = "VALUES ('Facebook Albums','" + currentTime + "','" + currentTime + "','0','albums','1','" + d[0].key + "')";
+                                        client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                            if (eInsert) {
+                                                console.log(eInsert);
+                                                return res.sendStatus(300);
+                                            } else {
+                                                async.forEachOf(data, function(currentData, n, callback) {
+                                                    var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                                                    var dataMember = "VALUES ('" + data[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+                                                    client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                                                        if (eMember) {
+                                                            console.log(eMember);
+                                                            return res.sendStatus(300);
+                                                        } else {
+                                                            console.log("INSERT ALBUMS SUCCESS");
+                                                        }
+                                                    });
+                                                    if (n === data.length - 1) {
+                                                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        } else {
+
+                        }
+
+                    }
+
+                    // data_timeline
+                    if (json.data_timeline) {
+                        var data = json.data_timeline;
+                        console.log(JSON.stringify(data));
+                        var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "'";
+                        client.query(usersql, function(e, d, f) {
+                            if (e) {
+                                console.log(e);
+                                return res.sendStatus(300);
+                            } else {
+                                if (d.length > 0) {
+                                    async.forEachOf(data, function(ele, i, call) {
+                                        var dataImage = ele.images;
+                                        if (dataImage.length == 0) {
+                                            var currentTime = parseInt(ele.time, 10) * 1000;
+                                            var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                            var caption;
+                                            if (ele.content == 0) {
+                                                caption = ele.title;
+                                            } else {
+                                                caption = ele.title + ' ' + ele.content;
+                                            }
+                                            var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','text','1','" + d[0].key + "')";
+                                            client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                if (eInsert) {
+                                                    console.log(eInsert);
+                                                    if (i === data.length - 1) {
+                                                        return res.sendStatus(300);
+                                                    }
+                                                } else {
+                                                    if (i === data.length - 1) {
+                                                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        if (dataImage.length == 1) {
+                                            ///-------
+                                            var currentTime = parseInt(ele.time, 10) * 1000;
+                                            var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                            var caption;
+                                            if (ele.content == 0) {
+                                                caption = ele.title;
+                                            } else {
+                                                caption = ele.title + ' ' + ele.content;
+                                            }
+                                            var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','photo','1','" + d[0].key + "')";
+                                            client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                if (eInsert) {
+                                                    console.log(eInsert);
+                                                    if (i === data.length - 1) {
+                                                        return res.sendStatus(300);
+                                                    }
+                                                } else {
+                                                    async.forEachOf(dataImage, function(currentData, n, callback) {
+                                                        var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                                                        var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+                                                        client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                                                            if (eMember) {
+                                                                console.log(eMember);
+                                                                if (i === data.length - 1) {
+                                                                    return res.sendStatus(300);
+                                                                }
+                                                            } else {
+                                                                console.log("INSERT ALBUMS SUCCESS");
+                                                                if (i === data.length - 1) {
+                                                                    return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                                }
+                                                            }
+                                                        });
+                                                    });
+                                                }
+                                            });
+                                            //--------
+                                        } else {
+                                            //--------
+                                            if (ele.content == 0) {
+                                                caption = ele.title;
+                                            } else {
+                                                caption = ele.title + ' ' + ele.content;
+                                            }
+                                            var currentTime = parseInt(ele.time, 10) * 1000;
+                                            var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                            var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','albums','1','" + d[0].key + "')";
+                                            client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                if (eInsert) {
+                                                    console.log(eInsert);
+                                                    if (i === data.length - 1) {
+                                                        return res.sendStatus(300);
+                                                    }
+                                                } else {
+                                                    async.forEachOf(dataImage, function(currentData, n, callback) {
+                                                        var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                                                        var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+                                                        client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                                                            if (eMember) {
+                                                                console.log(eMember);
+                                                                if (i === data.length - 1) {
+                                                                    return res.sendStatus(300);
+                                                                }
+                                                            } else {
+                                                                console.log("INSERT ALBUMS SUCCESS");
+                                                            }
+                                                        });
+                                                        if (i === data.length - 1) {
+                                                            return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                            //---------
+                                        }
+                                    });
+
+                                }
+                            }
+                        });
+                    }
+                    if (json.data_listfriend) {
+                        var data = json.data_listfriend;
+                        var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "'";
+                        client.query(usersql, function(e, d, f) {
+                            if (e) {
+                                console.log(e);
+                            } else {
+                                if (d.length > 0) {
+                                    async.forEachOf(data, function(ele, n, callback) {
+                                        var sqlInsert = "INSERT INTO `facebook_friends`(`nickname`,`facebook_id`,`url_facebook`,`users_key`)";
+                                        var sqlData = "VALUES (" + escapeSQL.escape(ele.name) + ",'" + ele.id + "','" + ele.linkFB + "','" + d[0].key + "')";
+                                        client.query(sqlInsert + sqlData, function(eMember, rMember, fMember) {
+                                            if (eMember) {
+                                                console.log(eMember);
+                                                return res.sendStatus(300);
+                                            } else {
+                                                console.log("INSERT SUCCESS");
+                                            }
+                                        });
+                                        if (n === data.length - 1) {
+                                            return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
+                    }
+                } else {
+                    console.log("ERROR JSON");
+                    return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
+                }
+
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
+
 function insertFacebookData(res, facebook_id, name, type) {
     var insertSQL = "SELECT * FROM `facebook_informations` WHERE `users_key` IN (SELECT `key` FROM `users` WHERE `facebook_id`='" + facebook_id + "')";
     client.query(insertSQL, function(error, data, fields) {
