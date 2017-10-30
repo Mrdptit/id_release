@@ -99,13 +99,39 @@ router.post('/syncFeedFacebook', urlParser, function(req, res) {
                         return res.send(echoResponse(300,"server problem", 'success', false));
                     }else{
                         if (dataUser.length > 0) {
-                            var listFeed = req.body.data;
+                            var listFeeds = req.body.data;
                             var contentJson = JSON.stringify(req.body.data);
                             console.log("test api:"+contentJson);
+                            if (listFeed.length>0) {
+                                for (var post in listFeeds) {
+                                    var currentTime = new Date().getTime();
+                                    var insertSQL = "INSERT INTO `posts`(" + insert.toString() + ",`caption`,`posted_time`,`edited_time`) VALUES(" + value.toString() + "," + escapeSQL.escape(req.body.caption) + ",'" + currentTime + "','" + currentTime + "')";
+                                    client.query(insertSQL, function(eInsert, dInsert, fInsert) {
+                                        if (eInsert) {
+                                            console.log(eInsert);
+                                            return res.sendStatus(300);
+                                        } else {
+                                            console.log("Vừa thêm bài viết thành công với caption " + req.body.caption);
+                                            var permis = "INSERT INTO `permissions`(`posts_id`,`users_key`) VALUES('" + dInsert.insertId + "','" + req.body.users_key + "')";
+                                            client.query(permis);
+                                            addRelate(req.body.users_key, dInsert.insertId, function(successCall) {
+                                                addPermission(dInsert.insertId, req.body.users, function(successPermission) {
+                                                    addPhotoAlbum(dInsert.insertId, req.body.users_key, req.body.albums, function(successAlbum) {
+                                                        addTags(dInsert.insertId, req.body.tags, function(successTags) {
+                                                           
 
-                              return res.send(echoResponse(200, {
-                                            id: contentJson
-                                        }, 'success', false));
+                                                            return res.send(echoResponse(200, 'success', false));
+
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        }
+                                    });
+                                }
+                            }else{
+                                
+                            }
 
                         }else{
                             return res.send(echoResponse(200,"User had sync facebook", 'success', false));
