@@ -219,6 +219,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
     });
     socket.on('chat message', function(msg) {
         
+
+
         if(msg.subtype == 'close'){
              //remove channel 
             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.to + "'";
@@ -296,7 +298,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
 
                 console.log(JSON.stringify(msg));
                  //save current channel
-                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "'";
+                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='"+msg.from+"'";
 
                 client.query(queryChannel,function(err,dataChannel,FNN){
                    
@@ -397,9 +399,22 @@ io.on('connection', function(socket) { // Incoming connections from clients
             if (target) {
                 // Send notifications
                 socket.broadcast.to(target.socketid).emit('chat message', msg);
+
+                  if (msg.from == 'He9Y3AA7xtVQahaKGuon5HYSAqy1') {
+
+                    console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
+
+                    }   
                 //socket_to.emit("chat message", msg);
             } else {
                 socket.broadcast.emit("chat message", msg);
+
+                  if (msg.from == 'He9Y3AA7xtVQahaKGuon5HYSAqy1') {
+
+                    console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
+
+                  }
+
             }
         }
     });
