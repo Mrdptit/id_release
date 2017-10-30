@@ -416,8 +416,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
 
                 //socket_to.emit("chat message", msg);
             } else {
-                //socket.broadcast.emit("chat message", msg);
-
+                
+                socket.broadcast.emit("K_Signal_Call", msg);
                 console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
 
 
