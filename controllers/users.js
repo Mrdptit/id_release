@@ -3212,8 +3212,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
             } else {
 
                 // check facebook sync
-                var queryUser = "SELECT * FROM `users` WHERE `key`='"+req.body.key+"' AND `is_sync_feed_facebook` = '0'";
-                client.query(queryUser,function(err,dataUser,FCheck){
+           
 
                     if (err) {
                         console.log(e);
@@ -3229,7 +3228,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 if (json.data_timeline) {
                                     var data = json.data_timeline;
                                     console.log(JSON.stringify(data));
-                                    var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "'";
+                                    var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
                                     client.query(usersql, function(e, d, f) {
                                         if (e) {
                                             console.log(e);
@@ -3356,6 +3355,8 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     }
                                                 });
 
+                                            }else{
+                                                return res.send(echoResponse(300, 'User had been sync facebook', 'success', true));
                                             }
                                         }
                                     });
@@ -3374,7 +3375,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                         }
                     }
 
-                });
+                
 
                 
 
