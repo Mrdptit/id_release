@@ -3097,7 +3097,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
                                                         
-                                                        if (feed['content'].length == 0) {
+                                                        if (feed['content'] == 0) {
                                                             caption = feed['title'];
                                                         } else {
                                                             caption = feed['title'] + ' ' + feed['content'];
@@ -3128,7 +3128,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
-                                                        if (feed['content'].length == 0) {
+                                                        if (feed['content'] == 0) {
                                                             caption = feed['title'];
                                                         } else {
                                                             caption = feed['title'] + ' ' + feed['content'];
@@ -3170,7 +3170,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     } else {
                                                         //--------
                                                         var caption;
-                                                        if (feed['content'].length == 0) {
+                                                        if (feed['content'] == 0) {
                                                             caption = feed['title'];
                                                         } else {
                                                             caption = feed['title'] + ' ' + feed['content'];
