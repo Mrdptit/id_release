@@ -225,6 +225,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
     // Roi vao disconnect
     socket.on('signout', function(msg) {
        
+       console.log("user signout " + msg);
+
         var index = users.findUserByUID(msg.key);
         if (index != -1) {
             var usr = users[index];
