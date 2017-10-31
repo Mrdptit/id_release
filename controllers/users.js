@@ -3242,9 +3242,9 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                             if (d.length > 0) {
                                                 async.forEachOf(data, function(ele, i, call) {
                                                     // var stringJson = JSON.stringify(ele, null, 2);
-                                                    var feed = JSON.parse(ele);
-                                                    var dataImage = JSON.parse(feed.images);
-                                                    console.log("data FEED -------- - - - -  "+feed);
+                                                    // var feed = JSON.parse(ele);
+                                                    var dataImage = ele.images;
+                                                    console.log("data FEED -------- - - - -  "+ele);
                                                     if (dataImage.length == 0) {
                                                         var currentTime = parseInt(feed.time, 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
