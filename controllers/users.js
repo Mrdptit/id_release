@@ -3244,123 +3244,123 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     var stringJson = JSON.stringify(ele, null, 2);
                                                     var feed = JSON.parse(stringJson);
                                                     var dataImage = feed.images;
-                                                    console.log("data FEED -------- - - - -  "+stringJson);
-                                                    if (dataImage.length == 0) {
-                                                        var currentTime = parseInt(feed.time, 10) * 1000;
-                                                        var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                        var caption;
-                                                        if (feed.content == 0) {
-                                                            caption = feed.title;
-                                                        } else {
-                                                            caption = feed.title + ' ' + feed.content;
-                                                        }
-                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','text','1','" + d[0].key + "')";
-                                                        client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                            if (eInsert) {
-                                                                console.log(eInsert);
-                                                                if (i === data.length - 1) {
-                                                                    return res.sendStatus(300);
-                                                                }
-                                                            } else {
-                                                                if (i === data.length - 1) {
+                                                    console.log("data FEED -------- - - - -  "+stringJson + "ele: " + ele);
+                                                    // if (dataImage.length == 0) {
+                                                    //     var currentTime = parseInt(feed.time, 10) * 1000;
+                                                    //     var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                                    //     var caption;
+                                                    //     if (feed.content == 0) {
+                                                    //         caption = feed.title;
+                                                    //     } else {
+                                                    //         caption = feed.title + ' ' + feed.content;
+                                                    //     }
+                                                    //     var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','text','1','" + d[0].key + "')";
+                                                    //     client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                    //         if (eInsert) {
+                                                    //             console.log(eInsert);
+                                                    //             if (i === data.length - 1) {
+                                                    //                 return res.sendStatus(300);
+                                                    //             }
+                                                    //         } else {
+                                                    //             if (i === data.length - 1) {
                                                                     
-                                                                     var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
-                                                                    console.log(queryInsertChannel);
-                                                                    client.query(queryInsertChannel,function(err,data,FNN){
-                                                                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
-                                                                    }); 
+                                                    //                  var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                                    //                 console.log(queryInsertChannel);
+                                                    //                 client.query(queryInsertChannel,function(err,data,FNN){
+                                                    //                     return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
+                                                    //                 }); 
                                                                     
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                    if (dataImage.length == 1) {
-                                                        ///-------
-                                                        var currentTime = parseInt(ele.time, 10) * 1000;
-                                                        var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                        var caption;
-                                                        if (ele.content == 0) {
-                                                            caption = ele.title;
-                                                        } else {
-                                                            caption = ele.title + ' ' + ele.content;
-                                                        }
-                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','photo','1','" + d[0].key + "')";
-                                                        client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                            if (eInsert) {
-                                                                console.log(eInsert);
-                                                                if (i === data.length - 1) {
-                                                                    return res.sendStatus(300);
-                                                                }
-                                                            } else {
-                                                                async.forEachOf(dataImage, function(currentData, n, callback) {
-                                                                    var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                                                                    var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
-                                                                    client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                                        if (eMember) {
-                                                                            console.log(eMember);
-                                                                            if (i === data.length - 1) {
-                                                                                return res.sendStatus(300);
-                                                                            }
-                                                                        } else {
-                                                                            console.log("INSERT ALBUMS SUCCESS");
-                                                                            if (i === data.length - 1) {
+                                                    //             }
+                                                    //         }
+                                                    //     });
+                                                    // }
+                                                    // if (dataImage.length == 1) {
+                                                    //     ///-------
+                                                    //     var currentTime = parseInt(ele.time, 10) * 1000;
+                                                    //     var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                                    //     var caption;
+                                                    //     if (ele.content == 0) {
+                                                    //         caption = ele.title;
+                                                    //     } else {
+                                                    //         caption = ele.title + ' ' + ele.content;
+                                                    //     }
+                                                    //     var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','photo','1','" + d[0].key + "')";
+                                                    //     client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                    //         if (eInsert) {
+                                                    //             console.log(eInsert);
+                                                    //             if (i === data.length - 1) {
+                                                    //                 return res.sendStatus(300);
+                                                    //             }
+                                                    //         } else {
+                                                    //             async.forEachOf(dataImage, function(currentData, n, callback) {
+                                                    //                 var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                                                    //                 var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+                                                    //                 client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                                                    //                     if (eMember) {
+                                                    //                         console.log(eMember);
+                                                    //                         if (i === data.length - 1) {
+                                                    //                             return res.sendStatus(300);
+                                                    //                         }
+                                                    //                     } else {
+                                                    //                         console.log("INSERT ALBUMS SUCCESS");
+                                                    //                         if (i === data.length - 1) {
                                                                                                                                                     
-                                                                               var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
-                                                                                  console.log(queryInsertChannel);
-                                                                                client.query(queryInsertChannel,function(err,data,FNN){
-                                                                                    return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
-                                                                                }); 
+                                                    //                            var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                                    //                               console.log(queryInsertChannel);
+                                                    //                             client.query(queryInsertChannel,function(err,data,FNN){
+                                                    //                                 return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
+                                                    //                             }); 
 
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                });
-                                                            }
-                                                        });
-                                                        //--------
-                                                    } else {
-                                                        //--------
-                                                        if (ele.content == 0) {
-                                                            caption = ele.title;
-                                                        } else {
-                                                            caption = ele.title + ' ' + ele.content;
-                                                        }
-                                                        var currentTime = parseInt(ele.time, 10) * 1000;
-                                                        var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','albums','1','" + d[0].key + "')";
-                                                        client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                            if (eInsert) {
-                                                                console.log(eInsert);
-                                                                if (i === data.length - 1) {
-                                                                    return res.sendStatus(300);
-                                                                }
-                                                            } else {
-                                                                async.forEachOf(dataImage, function(currentData, n, callback) {
-                                                                    var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                                                                    var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
-                                                                    client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                                        if (eMember) {
-                                                                            console.log(eMember);
-                                                                            if (i === data.length - 1) {
-                                                                                return res.sendStatus(300);
-                                                                            }
-                                                                        } else {
-                                                                            console.log("INSERT ALBUMS SUCCESS");
-                                                                        }
-                                                                    });
-                                                                    if (i === data.length - 1) {
+                                                    //                         }
+                                                    //                     }
+                                                    //                 });
+                                                    //             });
+                                                    //         }
+                                                    //     });
+                                                    //     //--------
+                                                    // } else {
+                                                    //     //--------
+                                                    //     if (ele.content == 0) {
+                                                    //         caption = ele.title;
+                                                    //     } else {
+                                                    //         caption = ele.title + ' ' + ele.content;
+                                                    //     }
+                                                    //     var currentTime = parseInt(ele.time, 10) * 1000;
+                                                    //     var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                                    //     var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','albums','1','" + d[0].key + "')";
+                                                    //     client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                    //         if (eInsert) {
+                                                    //             console.log(eInsert);
+                                                    //             if (i === data.length - 1) {
+                                                    //                 return res.sendStatus(300);
+                                                    //             }
+                                                    //         } else {
+                                                    //             async.forEachOf(dataImage, function(currentData, n, callback) {
+                                                    //                 var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                                                    //                 var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+                                                    //                 client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                                                    //                     if (eMember) {
+                                                    //                         console.log(eMember);
+                                                    //                         if (i === data.length - 1) {
+                                                    //                             return res.sendStatus(300);
+                                                    //                         }
+                                                    //                     } else {
+                                                    //                         console.log("INSERT ALBUMS SUCCESS");
+                                                    //                     }
+                                                    //                 });
+                                                    //                 if (i === data.length - 1) {
                                                                                                                                             
-                                                                        var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
-                                                                        console.log(queryInsertChannel);
-                                                                        client.query(queryInsertChannel,function(err,data,FNN){
-                                                                            return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
-                                                                        }); 
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
-                                                        //---------
-                                                    }
+                                                    //                     var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                                    //                     console.log(queryInsertChannel);
+                                                    //                     client.query(queryInsertChannel,function(err,data,FNN){
+                                                    //                         return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
+                                                    //                     }); 
+                                                    //                 }
+                                                    //             });
+                                                    //         }
+                                                    //     });
+                                                    //     //---------
+                                                    // }
                                                 });
 
                                             }else{
