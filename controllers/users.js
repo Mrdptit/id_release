@@ -3220,7 +3220,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                     }else{
                         var bodydata = unescape(req.body.data);
                         var json;
-                        console.log(bodydata);
+                        console.log(JSON.stringify(bodydata));
                             if (isJsonString(bodydata)) {
                                
                                 json = JSON.parse(arrayJson);
@@ -3228,7 +3228,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 // data_timeline
                                 if (json.data_timeline) {
                                     var data = json.data_timeline;
-                                    console.log(JSON.stringify(data));
+                                    
                                     var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
                                     client.query(usersql, function(e, d, f) {
                                         if (e) {
