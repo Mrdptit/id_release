@@ -3044,6 +3044,10 @@ router.post('/facebook', urlParser, function(req, res) {
 });
 
 
+function isEmpty(val){
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
+}
+
 /*********--------Facebook Database client----------*********/
 router.post('/facebook_client', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
@@ -3095,15 +3099,13 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     if (dataImage.length == 0) {
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                        
                                                         var caption;
-                                                        if (feed['content'] == 0) {
-                                                            caption = JSON.stringify(feed['title'], null, 2);
-                                                        } else {
-                                                            caption = JSON.stringify(feed['title'], null, 2) + ' ' + JSON.stringify(feed['content'], null, 2);
+                                                        
+                                                        if (isEmpty(feed['title'])) {
+                                                             caption = "Facebook";
+                                                        }else{
+                                                             caption = feed['title'];
                                                         }
-
-                                                        console.log("Caption: " + caption);
 
                                                         var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','text','1','" + d[0].key + "')";
                                                         client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
@@ -3130,10 +3132,10 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
-                                                        if (feed['content'] == 0) {
-                                                            caption = JSON.stringify(feed['title'], null, 2);
-                                                        } else {
-                                                            caption = JSON.stringify(feed['title'], null, 2) + ' ' + JSON.stringify(feed['content'], null, 2);
+                                                        if (isEmpty(feed['title'])) {
+                                                             caption = "Facebook Photo";
+                                                        }else{
+                                                             caption = feed['title'];
                                                         }
 
                                                         console.log("Caption: " + caption);
@@ -3175,13 +3177,12 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     } else {
                                                         //--------
                                                         var caption;
-                                                        if (feed['content'] == 0) {
-                                                            caption = JSON.stringify(feed['title'], null, 2);
-                                                        } else {
-                                                            caption = JSON.stringify(feed['title'], null, 2) + ' ' + JSON.stringify(feed['content'], null, 2);
+                                                        if (isEmpty(feed['title'])) {
+                                                             caption = "Facebook";
+                                                        }else{
+                                                             caption = feed['title'];
                                                         }
-
-                                                        console.log("Caption: " + caption);
+                                                        
 
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
