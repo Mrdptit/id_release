@@ -227,18 +227,6 @@ io.on('connection', function(socket) { // Incoming connections from clients
        
        console.log("user signout" + msg);
 
-        var index = findUserByUID(msg.key);
-        if (index != -1) {
-            var usr = users[index];
-            users.splice(index, 1);
-            socket.broadcast.emit('user leave', { id: usr.id, key: usr.key });
-
-             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + usr.key + "'";
-            
-             client.query(deleteSQL, function(eDelete, dDelete, fDelete) { }); 
-        }
-
-        // END CALL VIDEO
         var checkquery = "SELECT * FROM `users` WHERE `key`='" + msg.key + "'";
         client.query(checkquery, function(errorrr, resultsss, fieldsss) {
             if (errorrr) {
@@ -272,6 +260,18 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 }
             }
         });
+
+        var index = findUserByUID(msg.key);
+        if (index != -1) {
+            var usr = users[index];
+            users.splice(index, 1);
+            socket.broadcast.emit('user leave', { id: msg.key, key: msg.key });
+
+             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + usr.key + "'";
+            
+             client.query(deleteSQL, function(eDelete, dDelete, fDelete) { }); 
+        }
+
         connections.splice(connections.indexOf(socket), 1);
         console.log("Disconnected: %s sockets connected", connections.length);
     });
