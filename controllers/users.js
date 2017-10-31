@@ -3241,15 +3241,17 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                         } else {
                                             if (d.length > 0) {
                                                 async.forEachOf(data, function(ele, i, call) {
-                                                    var dataImage = ele.images;
+                                                    var stringJson = JSON.stringify(ele, null, 2);
+                                                    var feed = JSON.parse(stringJson);
+                                                    var dataImage = feed.images;
                                                     if (dataImage.length == 0) {
-                                                        var currentTime = parseInt(ele.time, 10) * 1000;
+                                                        var currentTime = parseInt(feed.time, 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
-                                                        if (ele.content == 0) {
-                                                            caption = ele.title;
+                                                        if (feed.content == 0) {
+                                                            caption = feed.title;
                                                         } else {
-                                                            caption = ele.title + ' ' + ele.content;
+                                                            caption = feed.title + ' ' + feed.content;
                                                         }
                                                         var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','text','1','" + d[0].key + "')";
                                                         client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
