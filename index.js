@@ -222,6 +222,58 @@ io.on('connection', function(socket) { // Incoming connections from clients
         connections.splice(connections.indexOf(socket), 1);
         console.log("Disconnected: %s sockets connected", connections.length);
     });
+    // Roi vao disconnect
+    socket.on('signout', function(msg) {
+       
+        var index = users.findUserByUID(msg.key);
+        if (index != -1) {
+            var usr = users[index];
+            users.splice(index, 1);
+            socket.broadcast.emit('user leave', { id: usr.id, key: usr.key });
+
+             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + usr.key + "'";
+            
+             client.query(deleteSQL, function(eDelete, dDelete, fDelete) { }); 
+        }
+
+        // END CALL VIDEO
+        var checkquery = "SELECT * FROM `users` WHERE `key`='" + msg.key + "'";
+        client.query(checkquery, function(errorrr, resultsss, fieldsss) {
+            if (errorrr) {
+                console.log(errorrr);
+            } else {
+                if (resultsss.length > 0) {
+                    //-- CHANGE STATUS TYPING
+                    /*var ref = firebase.database().ref("ChatApp/Chat/Typing");
+                    ref.orderByChild(resultsss[0]['key']+'/sender_id').equalTo(resultsss[0]['key']).on("child_added", function(snapshot) {
+                          snapshot.ref.child(resultsss[0]['key']).update({status:"0"});
+                    });
+                    console.log('typing status is updated: '+resultsss[0]['key']);*/
+                    //-- END CHANGE
+                    var currentTime = new Date().getTime();
+                    var query = "UPDATE `users` SET `status`='offline',`last_active`='" + currentTime + "' WHERE `socket_id`='" + socket.id + "'";
+                    client.query(query, function(error, results, fields) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            var sq = "UPDATE `users` SET `socket_id`='null' WHERE `status`='offline'";
+                            client.query(sq, function(err, ress, fie) {
+                                if (err) {
+                                    console.log(err);
+                                } else {
+                                    socket.emit('reload', resultsss[0].key);
+                                    console.log("last_active is updated");
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+        connections.splice(connections.indexOf(socket), 1);
+        console.log("Disconnected: %s sockets connected", connections.length);
+    });
+
     socket.on('chat message', function(msg) {
         
 
@@ -249,7 +301,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
 
                     console.log(JSON.stringify(msg));
                      //save current channel
-                    var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='"+msg.from+"' AND `candidate` != '"+contentJson+"'";
+                    var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='"+msg.from+"' AND `offer` != '"+contentJson+"'";
 
                     client.query(queryChannel,function(err,dataChannel,FNN){
                        
