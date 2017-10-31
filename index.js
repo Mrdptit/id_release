@@ -225,7 +225,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
     // Roi vao disconnect
     socket.on('signout', function(msg) {
        
-       console.log("user signout" + msg);
+       console.log("user signout: " + JSON.stringify(msg));
 
         var checkquery = "SELECT * FROM `users` WHERE `key`='" + msg.key + "'";
         client.query(checkquery, function(errorrr, resultsss, fieldsss) {
