@@ -241,7 +241,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                     console.log('typing status is updated: '+resultsss[0]['key']);*/
                     //-- END CHANGE
                     var currentTime = new Date().getTime();
-                    var query = "UPDATE `users` SET `status`='offline',`last_active`='" + currentTime + "' WHERE `socket_id`='" + socket.id + "'";
+                    var query = "UPDATE `users` SET `status`='offline',`last_active`='" + currentTime + "' WHERE `key`='" + msg.key + "'";
                     client.query(query, function(error, results, fields) {
                         if (error) {
                             console.log(error);
@@ -267,7 +267,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             users.splice(index, 1);
             socket.broadcast.emit('user leave', { id: msg.key, key: msg.key });
 
-             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + usr.key + "'";
+             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.key + "'";
             
              client.query(deleteSQL, function(eDelete, dDelete, fDelete) { }); 
         }
