@@ -3157,7 +3157,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                              caption = feed['title'];
                                                         }
 
-                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "',"+feed['permission']+",'text','1','" + d[0].key + "')";
+                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','"+feed['permission']+"','text','1','" + d[0].key + "')";
                                                         client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
                                                             if (eInsert) {
                                                                 console.log(eInsert);
@@ -3190,7 +3190,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
 
                                                         console.log("Caption: " + caption);
 
-                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "',"+feed['permission']+",'photo','1','" + d[0].key + "')";
+                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','"+feed['permission']+"','photo','1','" + d[0].key + "')";
                                                         client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
                                                             if (eInsert) {
                                                                 console.log(eInsert);
@@ -3236,7 +3236,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
 
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "',"+feed['permission']+",'albums','1','" + d[0].key + "')";
+                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','"+feed['permission']+"','albums','1','" + d[0].key + "')";
                                                         client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
                                                             if (eInsert) {
                                                                 console.log(eInsert);
