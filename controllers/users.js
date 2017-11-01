@@ -120,8 +120,9 @@ router.get('/:key/type=bot', urlParser, function(req, res) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
                 var key = req.body.key || req.query.key || req.params.key;
-                var sql = "SELECT * FROM `users` WHERE `key`='" + key + "'";
-                client.query(sql, function(error, data, fields) {
+                var sql = "SELECT `key`,`email`,`username`,`nickname`,`created_at`,`avatar`,`cover`,`sex`,`birthday`,`last_active`,`status`,`facebook_point`,`img_width`,`img_height`,`is_bot`";
+                var data = " FROM `users` WHERE `key`='" + key + "'";
+                client.query(sql+data, function(error, data, fields) {
                     if (error) {
                         console.log(error);
                         return res.sendStatus(300);
