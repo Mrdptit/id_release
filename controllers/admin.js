@@ -115,6 +115,7 @@ router.post('/send', urlParser, function(req, res) {
             if (i == list_email.length - 1) {
                 while (arrayTmp.length) {
                     totalArray.push(arrayTmp.splice(0, 500));
+                    console.log(totalArray.length);
                 }
             }
         });
@@ -126,6 +127,7 @@ router.post('/send', urlParser, function(req, res) {
                     subject: title,
                     html: content
                 };
+                console.log(sbj);
                 trans.sendMail(tinnhan, (error, info) => {
                     if (error) {
                         console.log(error.message);
