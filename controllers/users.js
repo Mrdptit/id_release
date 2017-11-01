@@ -109,6 +109,55 @@ function fillPointDate() {
     });
 }
 
+
+
+/*********--------BOT----------*********/
+router.get('/:key/type=bot', urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                var key = req.body.key || req.query.key || req.params.key;
+                var sql = "SELECT * FROM `users` WHERE `key`='" + key + "'";
+                client.query(sql, function(error, data, fields) {
+                    if (error) {
+                        console.log(error);
+                        return res.sendStatus(300);
+                    } else {
+                        if (data.length > 0) {
+                            var sqlBot;
+                            if (data[0].sex == 1) {
+                                sqlBot = "SELECT * FROM `users` WHERE `is_bot`=1 AND `sex`=2";
+                            } else {
+                                sqlBot = "SELECT * FROM `users` WHERE `is_bot`=1 AND `sex`=1";
+                            }
+                            client.query(sqlBot, function(e, d, f) {
+                                if (e) {
+                                    console.log(e);
+                                    return res.sendStatus(300);
+                                } else {
+                                    if (d.length > 0) {
+                                        return res.send(echoResponse(200, d[0], 'success', true));
+                                    } else {
+                                        return res.send(echoResponse(404, 'This bot not exists', 'success', true));
+                                    }
+                                }
+                            });
+                        } else {
+                            return res.send(echoResponse(404, 'This user not exists', 'success', true));
+                        }
+                    }
+                });
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
+
+
 /*********--------SIGNUP----------*********/
 router.post('/signup', urlParser, function(req, res) {
     if (!req.body.key) {
