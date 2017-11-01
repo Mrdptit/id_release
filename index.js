@@ -37,7 +37,13 @@ var async = require('async');
 var _ = require('lodash');
 var moment = require('moment-timezone');
 
-var urlParser = bodyParser.urlencoded({ extended: false });
+
+app.use(bodyParser.json({limit: "50mb"}));
+var urlParser = bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000});
+
+
+
+
 
 var configFirebase = {
     apiKey: "AIzaSyAmYRokQALuWuM53U3O2n2d58N3vdml8uc",
