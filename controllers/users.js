@@ -130,9 +130,9 @@ router.get('/:key/type=bot', urlParser, function(req, res) {
                         if (data.length > 0) {
                             var sqlBot;
                             if (data[0].sex == 1) {
-                                sqlBot = "SELECT * FROM `users` WHERE `is_bot`=1 AND `sex`=2 ORDER BY RAND() LIMIT 1";
+                                sqlBot = sql+" FROM `users` WHERE `is_bot`=1 AND `sex`=2 ORDER BY RAND() LIMIT 1";
                             } else {
-                                sqlBot = "SELECT * FROM `users` WHERE `is_bot`=1 AND `sex`=1 ORDER BY RAND() LIMIT 1";
+                                sqlBot = sql+" FROM `users` WHERE `is_bot`=1 AND `sex`=1 ORDER BY RAND() LIMIT 1";
                             }
                             client.query(sqlBot, function(e, d, f) {
                                 if (e) {
