@@ -108,23 +108,36 @@ router.post('/send', urlParser, function(req, res) {
 
     var list_email = list.split(",");
     if (list_email.length > 0) {
+        var arrayTmp = [];
+        var totalArray = [];
         async.forEachOf(list_email, function(element, i, callback) {
-            var tinnhan = {
-                to: '<' + element + '>',
-                subject: title,
-                html: content
-            };
-            trans.sendMail(tinnhan, (error, info) => {
-                if (error) {
-                    console.log(error.message);
-                } else {
-                    console.log('Server responded with "%s"', info.response);
-                    trans.close();
+            arrayTmp.push("<" + element + ">");
+            if (i == list_email.length - 1) {
+                while (arrayTmp.length) {
+                    totalArray.push(arrayTmp.splice(0, 500));
                 }
-                if (i == list_email.length - 1) {
-                    return res.send(echoResponse(200, "OK", "success", false));
-                }
-            });
+            }
+        });
+        async.forEachOf(totalArray, function(element, i, callback) {
+            if (element instanceof Array) {
+                var sbj = element.toString();
+                var tinnhan = {
+                    to: sbj,
+                    subject: title,
+                    html: content
+                };
+                trans.sendMail(tinnhan, (error, info) => {
+                    if (error) {
+                        console.log(error.message);
+                    } else {
+                        console.log('Server responded with "%s"', info.response);
+                        trans.close();
+                    }
+                    if (i == list_email.length - 1) {
+                        return res.send(echoResponse(200, "OK", "success", false));
+                    }
+                });
+            }
         });
     } else {
         return res.send(echoResponse(404, "No Email", "success", false));
