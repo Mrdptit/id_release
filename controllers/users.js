@@ -541,8 +541,8 @@ router.post('/settings', urlParser, function(req, res) {
 
 
 
-                                    if (req.body.is_visible == '0') {
-                                        console.log("status in visiale 1 ----------:" + req.body.is_visible);
+                                    if (req.body.is_visible == '1') {
+                                        console.log("status in visiale  ----------:" + req.body.is_visible);
                                        var dataSQLStaus = "UPDATE `users` SET `status` = 'online' WHERE `key`='" + req.body.key + "'";
                                          client.query(dataSQLStaus, function(eInsert, dInsert, fInsert) {
                                                 console.log("Vừa update users_settings thành công cho users_key " + req.body.key);
