@@ -3116,7 +3116,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                     }else{
                         var bodydata = unescape(req.body.data);
                         var stringJson = JSON.stringify(req.body.data, null, 2);//.replace(/\, "");
-                     console.log(stringJson);
+                     console.log(bodydata);
                         var json = JSON.parse(stringJson);
 
                         // console.log(JSON.stringify(req.body.data, null, 2));
