@@ -3133,7 +3133,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                      return res.send(echoResponse(300, 'No data time line', 'error', true));
                                 }else{
 
-                                    if (isJsonString(json['data_timeline']) == false) {
+                                    if (isJsonString(json['data_timeline']) == true) {
                                         return res.send(echoResponse(300, 'No data time line', 'error', true));
                                     }
 
