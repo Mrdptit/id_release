@@ -539,6 +539,8 @@ router.post('/settings', urlParser, function(req, res) {
                                     return res.sendStatus(300);
                                 } else {
 
+                                    console.log("status in visiale ----------:" + req.body.is_visible);
+
                                     if (req.body.is_visible == '1') {
                                        var dataSQLStaus = "UPDATE `users` SET `status` = 'online' WHERE `users_key`='" + req.body.key + "'";
                                          client.query(dataSQLStaus, function(eInsert, dInsert, fInsert) {
