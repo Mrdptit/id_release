@@ -130,7 +130,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
         if (user.key !== null && typeof user === 'object') {
             keyUser = user.key;
             socket.emit('reload', keyUser);
-            var sqlCheckVisible = "SELECT `is_visible` FROM `users_settings` WHERE `users_key`='" + keyUser + "'";
+            var sqlCheckVisible = "SELECT `is_visible`,`nickname` FROM `users_settings` WHERE `users_key`='" + keyUser + "'";
             client.query(sqlCheckVisible, function(eCheck, dCheck, fCheck) {
                 if (eCheck) {
                     console.log(eCheck);
@@ -143,7 +143,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                 if (error) {
                                     console.log(error);
                                 } else {
-                                    console.log("Fill last_active is updated");
+                                    // console.log("Fill last_active is updated");
                                 }
                             });
                             var query = "UPDATE `users` SET `status`='online', `socket_id`='" + socket.id + "' WHERE `key`='" + keyUser + "'";
@@ -151,7 +151,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                 if (error) {
                                     console.log(error);
                                 } else {
-                                    console.log(keyUser + " vừa online");
+                                    console.log(keyUser + " " + dCheck[0].nickname + " vừa online");
                                 }
                             });
                         } else {
@@ -161,7 +161,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                 if (error) {
                                     console.log(error);
                                 } else {
-                                    console.log("last_active is updated");
+                                    // console.log("last_active is updated");
+                                    console.log(keyUser + " " + dCheck[0].nickname + " vừa offline");
                                 }
                             });
                         }
