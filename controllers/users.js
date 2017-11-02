@@ -3116,8 +3116,16 @@ router.post('/facebook_client', urlParser, function(req, res) {
                     }else{
                         var bodydata = unescape(req.body.data);
                         var stringJson = JSON.stringify(req.body.data, null, 2);//.replace(/\, "");
-                     console.log(bodydata);
-                        var json = JSON.parse(bodydata);
+                        console.log(bodydata);
+                        
+                        var json;
+                        if (isJsonString(bodydata)) {
+                            json = JSON.parse(bodydata);
+                        }else{
+                            var stringJson = JSON.stringify(req.body.data, null, 2);
+                            json = JSON.parse(stringJson);
+                        }
+                        
 
                         // console.log(JSON.stringify(req.body.data, null, 2));
                         // console.log(JSON.stringify(bodydata));
