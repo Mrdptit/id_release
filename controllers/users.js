@@ -3116,7 +3116,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                     }else{
                         var bodydata = unescape(req.body.data);
                         var stringJson = JSON.stringify(req.body.data, null, 2);//.replace(/\, "");
-                     console.log(bodydata);
+                     //console.log(bodydata);
 
                     var  json;  
 
@@ -3140,15 +3140,19 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                     console.log("No data time line -------------------------------- : " + json['data_timeline']);
                                      return res.send(echoResponse(300, 'No data time line', 'error', true));
                                 }else{
-                                    // var stringJson1 = JSON.stringify(json['data_timeline'], null, 2);
+                                    // 
                                     var data;
+                                    var stringJson1;
                                     if (isJsonString(json['data_timeline'])) {
-                                        data = JSON.parse(json['data_timeline'])
+                                         stringJson1 = JSON.stringify(json['data_timeline'], null, 2);
+                                        data = JSON.parse(stringJson1)
                                      }else if(isJsonString(json.data_timeline)){
-                                        json = JSON.parse(json.data_timeline); 
+                                        stringJson1 = JSON.stringify(json.data_timeline, null, 2);
+                                        data = JSON.parse(stringJson1); 
                                      }
 
                                     if (isEmpty(data)) {
+                                        console.log(stringJson1)
                                         return res.send(echoResponse(300, 'No data time line', 'error', true));
                                     }
 
