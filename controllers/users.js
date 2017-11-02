@@ -3116,16 +3116,8 @@ router.post('/facebook_client', urlParser, function(req, res) {
                     }else{
                         var bodydata = unescape(req.body.data);
                         var stringJson = JSON.stringify(req.body.data, null, 2);//.replace(/\, "");
-                     //console.log(bodydata);
-
-                    var  json;  
-
-                     if (isJsonString(bodydata)) {
-                        json = JSON.parse(bodydata); 
-                     }else if(isJsonString(stringJson)){
-                        json = JSON.parse(stringJson); 
-                     }
-                        
+                   
+                        var json = JSON.parse(bodydata);
 
                         // console.log(JSON.stringify(req.body.data, null, 2));
                         // console.log(JSON.stringify(bodydata));
@@ -3136,27 +3128,13 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 // console.log(json);
                                 // data_timeline
                                
-                                if (isEmpty(json['data_timeline'] || isEmpty(json))) {
+                                if (isEmpty(json['data_timeline'])) {
                                     console.log("No data time line -------------------------------- : " + json['data_timeline']);
-                                     return res.send(echoResponse(300, 'No data time line', 'error', true));
+                                     return res.send(echoResponse(300, 'No data time line', 'success', true));
                                 }else{
-                                    // 
-                                    var data;
-                                    var stringJson1;
-                                    if (isJsonString(json['data_timeline'])) {
-                                         stringJson1 = JSON.stringify(json['data_timeline'], null, 2);
-                                        data = JSON.parse(stringJson1)
-                                     }else if(isJsonString(json.data_timeline)){
-                                        stringJson1 = JSON.stringify(json.data_timeline, null, 2);
-                                        data = JSON.parse(stringJson1); 
-                                     }
-
-                                    if (isEmpty(data)) {
-                                        console.log(stringJson1)
-                                        return res.send(echoResponse(300, 'No data time line', 'error', true));
-                                    }
-
-                                    //console.log("data timeline -------- - - - -  "+data);
+                                    var stringJson1 = JSON.stringify(json['data_timeline'], null, 2);
+                                    var data = JSON.parse(stringJson1);
+                                    console.log("data timeline -------- - - - -  "+data);
                                     var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
                                     client.query(usersql, function(e, d, f) {
                                         if (e) {
