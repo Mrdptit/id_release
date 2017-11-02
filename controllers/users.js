@@ -3128,6 +3128,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 // data_timeline
                                 console.log(stringJson);
                                 if (isEmpty(json['data_timeline'])) {
+                                    console.log("No data time line --------------------------------");
                                      return res.send(echoResponse(300, 'No data time line', 'success', true));
                                 }else{
                                     var data = JSON.parse(json.data_timeline);
