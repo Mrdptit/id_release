@@ -2989,7 +2989,7 @@ router.post('/facebook', urlParser, function(req, res) {
                                                 }
                                             });
                                         }
-                                        if (dataImage.length == 1) {
+                                        else if (dataImage.length == 1) {
                                             ///-------
                                             var currentTime = parseInt(ele.time, 10) * 1000;
                                             var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
@@ -3215,7 +3215,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                             }
                                                         });
                                                     }
-                                                    if (dataImage.length == 1) {
+                                                    else if (dataImage.length == 1) {
                                                         ///-------
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
