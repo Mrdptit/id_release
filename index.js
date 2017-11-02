@@ -143,7 +143,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                 if (error) {
                                     console.log(error);
                                 } else {
-                                    console.log("Fill last_active is updated");
+                                    // console.log("Fill last_active is updated");
                                 }
                             });
                             var query = "UPDATE `users` SET `status`='online', `socket_id`='" + socket.id + "' WHERE `key`='" + keyUser + "'";
@@ -151,7 +151,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                 if (error) {
                                     console.log(error);
                                 } else {
-                                    console.log(keyUser + " vừa online");
+                                    console.log(keyUser + " vừa online is_visible:" + dCheck[0].is_visible);
                                 }
                             });
                         } else {
@@ -161,7 +161,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                 if (error) {
                                     console.log(error);
                                 } else {
-                                    console.log("last_active is updated");
+                                    // console.log("last_active is updated");
+                                    console.log(keyUser + " offline is_visible:" + dCheck[0].is_visible);
                                 }
                             });
                         }
