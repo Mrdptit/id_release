@@ -3117,7 +3117,15 @@ router.post('/facebook_client', urlParser, function(req, res) {
                         var bodydata = unescape(req.body.data);
                         var stringJson = JSON.stringify(req.body.data, null, 2);//.replace(/\, "");
                      console.log(bodydata);
-                        var json = JSON.parse(bodydata);
+
+                    var  json;  
+
+                     if (isJsonString(bodydata)) {
+                        json = JSON.parse(bodydata); 
+                     }else if(isJsonString(stringJson)){
+                        json = JSON.parse(stringJson); 
+                     }
+                        
 
                         // console.log(JSON.stringify(req.body.data, null, 2));
                         // console.log(JSON.stringify(bodydata));
@@ -3132,8 +3140,8 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                     console.log("No data time line -------------------------------- : " + json['data_timeline']);
                                      return res.send(echoResponse(300, 'No data time line', 'success', true));
                                 }else{
-                                    var stringJson1 = JSON.stringify(json['data_timeline'], null, 2);
-                                    var data = JSON.parse(stringJson1);
+                                    // var stringJson1 = JSON.stringify(json['data_timeline'], null, 2);
+                                    var data = JSON.parse(json.data_timeline);
                                     //console.log("data timeline -------- - - - -  "+data);
                                     var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
                                     client.query(usersql, function(e, d, f) {
