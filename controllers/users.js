@@ -538,8 +538,22 @@ router.post('/settings', urlParser, function(req, res) {
                                     console.log(eInsert);
                                     return res.sendStatus(300);
                                 } else {
-                                    console.log("Vừa update users_settings thành công cho users_key " + req.body.key);
-                                    return res.send(echoResponse(200, 'Updated successfully', 'success', false));
+
+                                    if (parseInt(req.body.is_visible) = 1) {
+                                       var dataSQLStaus = "UPDATE `users` SET `status` = 'online' WHERE `users_key`='" + req.body.key + "'";
+                                         client.query(dataSQLStaus, function(eInsert, dInsert, fInsert) {
+                                                console.log("Vừa update users_settings thành công cho users_key " + req.body.key);
+                                                return res.send(echoResponse(200, 'Updated successfully', 'success', false));
+                                          });
+                                    }else{
+                                         var dataSQLStaus = "UPDATE `users` SET `status` = 'offline' WHERE `users_key`='" + req.body.key + "'";
+                                         client.query(dataSQLStaus, function(eInsert, dInsert, fInsert) {
+                                                console.log("Vừa update users_settings thành công cho users_key " + req.body.key);
+                                                 return res.send(echoResponse(200, 'Updated successfully', 'success', false));
+                                          });
+                                    }
+
+                                    
                                 }
                             });
                         } else {
