@@ -3132,9 +3132,20 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                     console.log("No data time line -------------------------------- : " + json['data_timeline']);
                                      return res.send(echoResponse(300, 'No data time line', 'success', true));
                                 }else{
+                                    
+                                    var data;
+                                    
+                                    if (isJsonString(json['data_timeline'])) {
+                                        data = JSON.parse(json['data_timeline']);
+                                        console.log("data timeline -------- - - - -  "+json['data_timeline']);
+                                    }else if (isJsonString(stringJson)) {
+                                        data = JSON.parse(stringJson);
+                                        console.log("data timeline -------- - - - -  "+stringJson);
+                                    }
+
                                     var stringJson1 = JSON.stringify(json['data_timeline'], null, 2);
-                                    var data = JSON.parse(stringJson1);
-                                    console.log("data timeline -------- - - - -  "+data);
+                                    
+                                    
                                     var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
                                     client.query(usersql, function(e, d, f) {
                                         if (e) {
