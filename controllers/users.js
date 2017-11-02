@@ -3126,9 +3126,10 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 // json = JSON.parse(arrayJson);
                                 // console.log(json);
                                 // data_timeline
+                                console.log(stringJson);
                                 if (json.data_timeline) {
                                     var data = JSON.parse(json.data_timeline);
-                                    console.log("data timeline -------- - - - -  "+data);
+                                    //console.log("data timeline -------- - - - -  "+data);
                                     var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
                                     client.query(usersql, function(e, d, f) {
                                         if (e) {
@@ -3145,7 +3146,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     if (feed['images']) {
                                                         dataImage = feed['images'];
                                                     }
-                                                    console.log("data image -------- - - - -  "+stringJson);
+                                                    //console.log("data image -------- - - - -  "+stringJson);
                                                     if (dataImage.length == 0) {
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";

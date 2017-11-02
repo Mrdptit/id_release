@@ -233,6 +233,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
        
        console.log("user signout: " + JSON.stringify(msg));
 
+       if (isEmpty(msg.key)) {
+        console.log("User signout with key null");
+       }else{
         var checkquery = "SELECT * FROM `users` WHERE `key`='" + msg.key + "'";
         client.query(checkquery, function(errorrr, resultsss, fieldsss) {
             if (errorrr) {
@@ -280,6 +283,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
 
         connections.splice(connections.indexOf(socket), 1);
         console.log("Disconnected: %s sockets connected", connections.length);
+       }
+        
     });
 
     socket.on('chat message', function(msg) {
@@ -608,6 +613,10 @@ function isJsonString(str) {
         return false;
     }
     return true;
+}
+
+function isEmpty(val){
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
 }
 
 /*********--------------------------*********
