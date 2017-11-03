@@ -3182,9 +3182,11 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                    
 
                                                     var dataImage = [];
-                                                    if (feed['images']) {
-                                                        dataImage = feed['images'];
-                                                    }
+                                                    // if (feed['images']) {
+                                                    //     dataImage = feed['images'];
+                                                    // }
+
+                                                    dataImage = JSON.parse(feed['images']);
 
 
                                                     console.log("data image -------- - - - -  "+dataImage);
