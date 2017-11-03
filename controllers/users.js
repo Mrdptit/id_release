@@ -3154,8 +3154,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 // console.log(json);
                                 // data_timeline
                                
-                               //console.log("<-------->:" + JSON.stringify(json));
-                               //console.log("<-------->: 2" + JSON.stringify(bodydata));
+                               console.log("<-------->:" + JSON.stringify(json));
                                 if (isEmpty(json['data_timeline'])) {
                                     console.log("No data time line 1111 -------------------------------- : " + json['data_timeline']);
                                      return res.send(echoResponse(300, 'No data time line', 'err', true));
@@ -3181,18 +3180,12 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     var feed = JSON.parse(stringJson);
                                                    
 
-                                                    var dataImage;
-                                                    if (isEmpty(feed['images']) == false) {
-                                                        var stringJ = JSON.stringify(feed['images'], null, 2);
-                                                        var j = stringJ.replace(/([a-zA-Z0-9]+?):/g, '"$1":').replace(/'/g,'"'),
-                                                        dataImage = JSON.parse(stringJ);
+                                                    var dataImage = [];
+                                                    if (feed['images']) {
+                                                        dataImage = feed['images'];
                                                     }
-
-                                                    
+                                                    //console.log("data image -------- - - - -  "+stringJson);
                                                     if (dataImage.length == 0) {
-
-                                                        console.log("data image 0 -------- - - - -  "+dataImage);
-
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
@@ -3225,7 +3218,6 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     }
                                                     else if (dataImage.length == 1) {
                                                         ///-------
-                                                        console.log("data image 1 -------- - - - -  "+dataImage);
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
@@ -3280,7 +3272,6 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                              caption = feed['title'];
                                                         }
                                                         
-                                                        console.log("data image 2-------- - - - -  "+dataImage); 
 
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
