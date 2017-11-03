@@ -226,6 +226,10 @@ io.on('connection', function(socket) { // Incoming connections from clients
     // Roi vao disconnect
     socket.on('signout', function(msg) {
 
+        if (isEmpty(msg)) {
+            return;
+        }
+        
         console.log("user signout: " + JSON.stringify(msg));
 
         if (isEmpty(msg.key)) {
