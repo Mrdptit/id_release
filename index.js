@@ -291,9 +291,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
         if (msg.subtype == 'candidate') {
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
-            console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
+            // console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
             if (objectValue['candidate']) {
-                console.log(JSON.stringify(msg));
+                // console.log(JSON.stringify(msg));
                 //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
@@ -304,7 +304,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         if (dataChannel.length == 0) {
                             //create channel call here
                             var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='" + msg.to + "', `fromKey`='" + msg.from + "', `toKey` = '" + msg.to + "', `senderAvatar`='" + msg.senderAvatar + "',`senderName`='" + msg.senderName + "', `receiverAvatar`='" + msg.receiverAvatar + "',`receiverName`='" + msg.receiverName + "',`candidate`='" + contentJson + "',`conversationId`='" + msg.conversationId + "',`type`='" + msg.type + "'";
-                            console.log(queryInsertChannel);
+                            // console.log(queryInsertChannel);
                             client.query(queryInsertChannel, function(err, data, FNN) {
                                 if (err) {
                                     console.log("Insert New Channel call FAILED");
@@ -323,10 +323,10 @@ io.on('connection', function(socket) { // Incoming connections from clients
         if (msg.subtype == 'offer') {
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
-            console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
+            // console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
 
             if (objectValue['sdp']) {
-                console.log(JSON.stringify(msg));
+                // console.log(JSON.stringify(msg));
                 //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
@@ -337,7 +337,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         if (dataChannel.length == 0) {
                             //create channel call here
                             var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='" + msg.to + "', `fromKey`='" + msg.from + "', `toKey` = '" + msg.to + "', `senderAvatar`='" + msg.senderAvatar + "',`senderName`='" + msg.senderName + "', `receiverAvatar`='" + msg.receiverAvatar + "',`receiverName`='" + msg.receiverName + "',`offer`='" + contentJson + "',`conversationId`='" + msg.conversationId + "',`type`='" + msg.type + "',`subType`='" + msg.subtype + "'";
-                            console.log(queryInsertChannel);
+                            // console.log(queryInsertChannel);
                             client.query(queryInsertChannel, function(err, data, FNN) {
                                 if (err) {
                                     console.log("Insert New Channel call FAILED");
@@ -410,7 +410,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             // console.log("Socket id cloud: ---------------------:  " + target.socketid);
             //emit for android
             socket.broadcast.emit('chat message', msg);
-            console.log("Calling--------------- to user:" + msg.to + "Socket id : ");
+            console.log("Calling --------------- to user:" + msg.to + "Socket id : ");
 
             //emit for ios
             if (target) {
@@ -418,7 +418,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 // socket.broadcast.to(target.socketid).emit('chat message', msg);
                 socket.broadcast.to(target.socketid).emit('K_Signal_Call', msg);
 
-                console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
+                console.log("User call online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
 
                 //socket_to.emit("chat message", msg);
             } else {
