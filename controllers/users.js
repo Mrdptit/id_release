@@ -3310,7 +3310,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                      //        }
                                                      //    });
                                                         //---------
-                                                    }
+                                                    //}
                                                 });
 
                                             }else{
