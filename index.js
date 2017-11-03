@@ -298,7 +298,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             // console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
             console.log(JSON.stringify(msg));
                 //save current channel
-                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
+                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `candidate` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
                     if (err) {
                         console.log(err);
