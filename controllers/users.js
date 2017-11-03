@@ -3154,8 +3154,8 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                 // console.log(json);
                                 // data_timeline
                                
-                               console.log("<-------->:" + JSON.stringify(json));
-                               console.log("<-------->: 2" + JSON.stringify(bodydata));
+                               //console.log("<-------->:" + JSON.stringify(json));
+                               //console.log("<-------->: 2" + JSON.stringify(bodydata));
                                 if (isEmpty(json['data_timeline'])) {
                                     console.log("No data time line 1111 -------------------------------- : " + json['data_timeline']);
                                      return res.send(echoResponse(300, 'No data time line', 'err', true));
@@ -3185,7 +3185,9 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     if (feed['images']) {
                                                         dataImage = feed['images'];
                                                     }
-                                                    //console.log("data image -------- - - - -  "+stringJson);
+
+
+                                                    console.log("data image -------- - - - -  "+dataImage);
                                                     if (dataImage.length == 0) {
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
