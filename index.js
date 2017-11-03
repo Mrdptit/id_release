@@ -229,7 +229,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
         if (isEmpty(msg)) {
             return;
         }
-        
+
         console.log("user signout: " + JSON.stringify(msg));
 
         if (isEmpty(msg.key)) {
@@ -296,8 +296,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
             // console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
-            if (objectValue['candidate']) {
-                console.log(JSON.stringify(msg));
+            console.log(JSON.stringify(msg));
                 //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
@@ -320,7 +319,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         }
                     }
                 });
-            }
+
         }
 
         var currentTime = new Date().getTime();
@@ -328,9 +327,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
             // console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
-
-            if (objectValue['sdp']) {
-                 console.log(JSON.stringify(msg));
+            
+            console.log(JSON.stringify(msg));
                 //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
@@ -352,8 +350,6 @@ io.on('connection', function(socket) { // Incoming connections from clients
                         }
                     }
                 });
-
-            }
 
             // sendNotification(msg.from, msg.to, "is calling", "calling", "Thành đẹp trai");
             var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + msg.from + "'";
