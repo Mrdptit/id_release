@@ -3184,6 +3184,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     var dataImage;
                                                     if (isEmpty(feed['images']) == false) {
                                                         var stringJ = JSON.stringify(feed['images'], null, 2);
+                                                        var j = stringJ.replace(/([a-zA-Z0-9]+?):/g, '"$1":').replace(/'/g,'"'),
                                                         dataImage = JSON.parse(stringJ);
                                                     }
 
