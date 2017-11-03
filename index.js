@@ -273,9 +273,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
     });
 
     socket.on('chat message', function(msg) {
-        console.log("------------------------- MESSAGES -----------------------------------");
-        console.log(msg);
-        console.log("----------------------------------------------------------------------");
+       // console.log("------------------------- MESSAGES -----------------------------------");
+        //console.log(msg);
+        //console.log("----------------------------------------------------------------------");
         if (msg.subtype == 'close') {
             //remove channel 
             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.to + "'";
@@ -293,7 +293,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var objectValue = JSON.parse(contentJson);
             // console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
             if (objectValue['candidate']) {
-                // console.log(JSON.stringify(msg));
+                console.log(JSON.stringify(msg));
                 //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
@@ -326,7 +326,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             // console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
 
             if (objectValue['sdp']) {
-                // console.log(JSON.stringify(msg));
+                 console.log(JSON.stringify(msg));
                 //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
