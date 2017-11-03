@@ -38,8 +38,8 @@ var _ = require('lodash');
 var moment = require('moment-timezone');
 
 
-app.use(bodyParser.json({limit: "50mb"}));
-var urlParser = bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000});
+app.use(bodyParser.json({ limit: "50mb" }));
+var urlParser = bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 });
 
 
 
@@ -121,15 +121,12 @@ io.on('connection', function(socket) { // Incoming connections from clients
             peer = usr;
             console.log("User online : " + user.key + "Key:" + user.key);
         }
-        console.log("----------------------------------------------------------");
+        console.log("------------------------- LIST USERS ---------------------------------");
         console.log(users);
-        console.log("----------------------------------------------------------");
+        console.log("----------------------------------------------------------------------");
         // 
-        var keyUser = "";
         if (user.key !== null && typeof user === 'object') {
-            keyUser = user.key;
-            socket.emit('reload', keyUser);
-            var sqlCheckVisible = "SELECT `is_visible` FROM `users_settings` WHERE `users_key`='" + keyUser + "'";
+            var sqlCheckVisible = "SELECT `is_visible` FROM `users_settings` WHERE `users_key`='" + user.key + "'";
             client.query(sqlCheckVisible, function(eCheck, dCheck, fCheck) {
                 if (eCheck) {
                     console.log(eCheck);
@@ -145,23 +142,23 @@ io.on('connection', function(socket) { // Incoming connections from clients
                                     // console.log("Fill last_active is updated");
                                 }
                             });
-                            var query = "UPDATE `users` SET `status`='online', `socket_id`='" + socket.id + "' WHERE `key`='" + keyUser + "'";
+                            var query = "UPDATE `users` SET `status`='online', `socket_id`='" + socket.id + "' WHERE `key`='" + user.key + "'";
                             client.query(query, function(error, results, fields) {
                                 if (error) {
                                     console.log(error);
                                 } else {
-                                    console.log(keyUser + " vừa online is_visible:" + dCheck[0].is_visible);
+                                    console.log(user.key + " vừa online is_visible:" + dCheck[0].is_visible);
                                 }
                             });
                         } else {
                             var currentTime = new Date().getTime();
-                            var query = "UPDATE `users` SET `status`='offline',`socket_id`='null',`last_active`='" + currentTime + "' WHERE `key`='" + keyUser + "'";
+                            var query = "UPDATE `users` SET `status`='offline',`socket_id`='null',`last_active`='" + currentTime + "' WHERE `key`='" + user.key + "'";
                             client.query(query, function(error, results, fields) {
                                 if (error) {
                                     console.log(error);
                                 } else {
                                     // console.log("last_active is updated");
-                                    console.log(keyUser + " offline is_visible:" + dCheck[0].is_visible);
+                                    console.log(user.key + " offline is_visible:" + dCheck[0].is_visible);
                                 }
                             });
                         }
@@ -170,14 +167,14 @@ io.on('connection', function(socket) { // Incoming connections from clients
             });
         }
     });
-    socket.on('status', function(check) {
-        if (check === 'online') {
-            console.log("Co ket noi");
-            var json = { id: ["100002398569411", "100006954612394"] };
-            //socket.emit('facebook',{"id":"100002398569411"});
-            socket.emit('facebook', json);
-        }
-    });
+    // socket.on('status', function(check) {
+    //     if (check === 'online') {
+    //         console.log("Co ket noi");
+    //         var json = { id: ["100002398569411", "100006954612394"] };
+    //         //socket.emit('facebook',{"id":"100002398569411"});
+    //         socket.emit('facebook', json);
+    //     }
+    // });
 
     // Roi vao disconnect
     socket.on('disconnect', function(data) {
@@ -186,10 +183,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var usr = users[index];
             users.splice(index, 1);
             socket.broadcast.emit('user leave', { id: usr.id, key: usr.key });
-
-             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + usr.key + "'";
-            
-             client.query(deleteSQL, function(eDelete, dDelete, fDelete) { }); 
+            var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + usr.key + "'";
+            client.query(deleteSQL, function(eDelete, dDelete, fDelete) {});
         }
         // END CALL VIDEO
         var checkquery = "SELECT * FROM `users` WHERE `socket_id`='" + socket.id + "'";
@@ -230,184 +225,128 @@ io.on('connection', function(socket) { // Incoming connections from clients
     });
     // Roi vao disconnect
     socket.on('signout', function(msg) {
-       
-       console.log("user signout: " + JSON.stringify(msg));
 
-       if (isEmpty(msg.key)) {
-        console.log("User signout with key null");
-       }else{
-        var checkquery = "SELECT * FROM `users` WHERE `key`='" + msg.key + "'";
-        client.query(checkquery, function(errorrr, resultsss, fieldsss) {
-            if (errorrr) {
-                console.log(errorrr);
-            } else {
-                if (resultsss.length > 0) {
-                    //-- CHANGE STATUS TYPING
-                    /*var ref = firebase.database().ref("ChatApp/Chat/Typing");
-                    ref.orderByChild(resultsss[0]['key']+'/sender_id').equalTo(resultsss[0]['key']).on("child_added", function(snapshot) {
-                          snapshot.ref.child(resultsss[0]['key']).update({status:"0"});
-                    });
-                    console.log('typing status is updated: '+resultsss[0]['key']);*/
-                    //-- END CHANGE
-                    var currentTime = new Date().getTime();
-                    var query = "UPDATE `users` SET `status`='offline',`last_active`='" + currentTime + "' WHERE `key`='" + msg.key + "'";
-                    client.query(query, function(error, results, fields) {
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            var sq = "UPDATE `users` SET `socket_id`='null' WHERE `status`='offline'";
-                            client.query(sq, function(err, ress, fie) {
-                                if (err) {
-                                    console.log(err);
-                                } else {
-                                    socket.emit('reload', resultsss[0].key);
-                                    console.log("last_active is updated");
-                                }
-                            });
-                        }
-                    });
+        console.log("user signout: " + JSON.stringify(msg));
+
+        if (isEmpty(msg.key)) {
+            console.log("User signout with key null");
+        } else {
+            var checkquery = "SELECT * FROM `users` WHERE `key`='" + msg.key + "'";
+            client.query(checkquery, function(errorrr, resultsss, fieldsss) {
+                if (errorrr) {
+                    console.log(errorrr);
+                } else {
+                    if (resultsss.length > 0) {
+                        var currentTime = new Date().getTime();
+                        var query = "UPDATE `users` SET `status`='offline',`last_active`='" + currentTime + "' WHERE `key`='" + msg.key + "'";
+                        client.query(query, function(error, results, fields) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                var sq = "UPDATE `users` SET `socket_id`='null' WHERE `status`='offline'";
+                                client.query(sq, function(err, ress, fie) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        socket.emit('reload', resultsss[0].key);
+                                        console.log("last_active is updated");
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
+            });
+
+            var index = findUserByUID(msg.key);
+            if (index != -1) {
+                var usr = users[index];
+                users.splice(index, 1);
+                socket.broadcast.emit('user leave', { id: msg.key, key: msg.key });
+                var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.key + "'";
+                client.query(deleteSQL, function(eDelete, dDelete, fDelete) {});
             }
-        });
 
-        var index = findUserByUID(msg.key);
-        if (index != -1) {
-            var usr = users[index];
-            users.splice(index, 1);
-            socket.broadcast.emit('user leave', { id: msg.key, key: msg.key });
-
-             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.key + "'";
-            
-             client.query(deleteSQL, function(eDelete, dDelete, fDelete) { }); 
+            connections.splice(connections.indexOf(socket), 1);
+            console.log("Disconnected: %s sockets connected", connections.length);
         }
-
-        connections.splice(connections.indexOf(socket), 1);
-        console.log("Disconnected: %s sockets connected", connections.length);
-       }
-        
     });
 
     socket.on('chat message', function(msg) {
-        
-
-
-        if(msg.subtype == 'close'){
-             //remove channel 
+        console.log("------------------------- MESSAGES -----------------------------------");
+        console.log(msg);
+        console.log("----------------------------------------------------------------------");
+        if (msg.subtype == 'close') {
+            //remove channel 
             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.to + "'";
-            
             client.query(deleteSQL, function(eDelete, dDelete, fDelete) {
-                 if (eDelete) {
-                    console.log("Fails Delete channel call"+msg.to);
+                if (eDelete) {
+                    console.log("Fails Delete channel call" + msg.to);
                 } else {
-                    console.log("Delete channel call"+msg.to);
-                 }
+                    console.log("Delete channel call" + msg.to);
+                }
             });
         }
-        
-        if (msg.subtype == 'candidate'){
 
-             var contentJson = JSON.stringify(msg.content);
-                var objectValue = JSON.parse(contentJson);
-                console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
-
-                 if (objectValue['candidate']) {
-
-                    console.log(JSON.stringify(msg));
-                     //save current channel
-                    var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='"+msg.from+"' AND `offer` != '"+contentJson+"'";
-
-                    client.query(queryChannel,function(err,dataChannel,FNN){
-                       
-                        if (err) {
-                               
-                            console.log(err);
-                        
-                        }else{
-                            //channel is exist , response to client busy
-                            if (dataChannel.length==0){
-
-                                //create channel call here
-                                var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='"+ msg.to +"', `fromKey`='"+ msg.from +"', `toKey` = '" + msg.to + "', `senderAvatar`='"+msg.senderAvatar+"',`senderName`='"+ msg.senderName +"', `receiverAvatar`='"+msg.receiverAvatar+"',`receiverName`='"+msg.receiverName+"',`candidate`='"+contentJson+"',`conversationId`='"+msg.conversationId+"',`type`='"+msg.type+"'";
-                                console.log(queryInsertChannel);
-                                client.query(queryInsertChannel,function(err,data,FNN){
-                                    if (err) {
-                                        console.log("Insert New Channel call FAILED");
-                                    }else{
-                                        console.log("Insert New Channel call success");
-                                    }
-                                });
-
-                            }
-                            // else{
-                            //     //create channel call here
-                            //     var queryInsertChannel = "UPDATE `channels` SET `candidate`='"+contentJson+"' WHERE `idChannel`='"+ msg.to +"'";
-                            //     console.log(queryInsertChannel);
-                            //     client.query(queryInsertChannel,function(err,data,FNN){
-                            //         if (err) {
-                            //             console.log("Update  Channel call FAILED");
-                            //         }else{
-                            //             console.log("Update Channel call success");
-                            //         }
-                            //     });
-                            // }
-                            
-                        }
-
-                    });
-
-                }   
-        }
-
-        var currentTime = new Date().getTime();
-        if (msg.subtype == 'offer') {
-
+        if (msg.subtype == 'candidate') {
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
-            console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
-
-             if (objectValue['sdp']) {
-
+            console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
+            if (objectValue['candidate']) {
                 console.log(JSON.stringify(msg));
-                 //save current channel
-                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='"+msg.from+"' AND `offer` != '"+contentJson+"'";
-
-                client.query(queryChannel,function(err,dataChannel,FNN){
-                   
+                //save current channel
+                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
+                client.query(queryChannel, function(err, dataChannel, FNN) {
                     if (err) {
-                           
                         console.log(err);
-                    
-                    }else{
+                    } else {
                         //channel is exist , response to client busy
-                        if (dataChannel.length==0){
-
+                        if (dataChannel.length == 0) {
                             //create channel call here
-                            var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='"+ msg.to +"', `fromKey`='"+ msg.from +"', `toKey` = '" + msg.to + "', `senderAvatar`='"+msg.senderAvatar+"',`senderName`='"+ msg.senderName +"', `receiverAvatar`='"+msg.receiverAvatar+"',`receiverName`='"+msg.receiverName+"',`offer`='"+contentJson+"',`conversationId`='"+msg.conversationId+"',`type`='"+msg.type+"',`subType`='"+msg.subtype+"'";
+                            var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='" + msg.to + "', `fromKey`='" + msg.from + "', `toKey` = '" + msg.to + "', `senderAvatar`='" + msg.senderAvatar + "',`senderName`='" + msg.senderName + "', `receiverAvatar`='" + msg.receiverAvatar + "',`receiverName`='" + msg.receiverName + "',`candidate`='" + contentJson + "',`conversationId`='" + msg.conversationId + "',`type`='" + msg.type + "'";
                             console.log(queryInsertChannel);
-                            client.query(queryInsertChannel,function(err,data,FNN){
+                            client.query(queryInsertChannel, function(err, data, FNN) {
                                 if (err) {
                                     console.log("Insert New Channel call FAILED");
-                                }else{
+                                } else {
                                     console.log("Insert New Channel call success");
                                 }
                             });
 
                         }
-                        // else{
-                        //     //create channel call here
-                        //         var queryInsertChannel = "UPDATE `channels` SET `offer`='"+contentJson+"',`subType`='"+msg.subtype+"' WHERE `idChannel`='"+ msg.to +"'";
-                        //         console.log(queryInsertChannel);
-                        //         client.query(queryInsertChannel,function(err,data,FNN){
-                        //             if (err) {
-                        //                 console.log("Update  Channel call FAILED");
-                        //             }else{
-                        //                 console.log("Update Channel call success");
-                        //             }
-                        //         }); 
-                        // }
-                        
                     }
+                });
+            }
+        }
 
+        var currentTime = new Date().getTime();
+        if (msg.subtype == 'offer') {
+            var contentJson = JSON.stringify(msg.content);
+            var objectValue = JSON.parse(contentJson);
+            console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
+
+            if (objectValue['sdp']) {
+                console.log(JSON.stringify(msg));
+                //save current channel
+                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
+                client.query(queryChannel, function(err, dataChannel, FNN) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        //channel is exist , response to client busy
+                        if (dataChannel.length == 0) {
+                            //create channel call here
+                            var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='" + msg.to + "', `fromKey`='" + msg.from + "', `toKey` = '" + msg.to + "', `senderAvatar`='" + msg.senderAvatar + "',`senderName`='" + msg.senderName + "', `receiverAvatar`='" + msg.receiverAvatar + "',`receiverName`='" + msg.receiverName + "',`offer`='" + contentJson + "',`conversationId`='" + msg.conversationId + "',`type`='" + msg.type + "',`subType`='" + msg.subtype + "'";
+                            console.log(queryInsertChannel);
+                            client.query(queryInsertChannel, function(err, data, FNN) {
+                                if (err) {
+                                    console.log("Insert New Channel call FAILED");
+                                } else {
+                                    console.log("Insert New Channel call success");
+                                }
+                            });
+                        }
+                    }
                 });
 
             }
@@ -470,25 +409,25 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var target = findUserByUID(msg.to);
             // console.log("Socket id cloud: ---------------------:  " + target.socketid);
             //emit for android
-             socket.broadcast.emit('chat message', msg);
-             console.log("Calling--------------- to user:" + msg.to + "Socket id : ");
+            socket.broadcast.emit('chat message', msg);
+            console.log("Calling--------------- to user:" + msg.to + "Socket id : ");
 
-             //emit for ios
+            //emit for ios
             if (target) {
                 // Send notifications
                 // socket.broadcast.to(target.socketid).emit('chat message', msg);
                 socket.broadcast.to(target.socketid).emit('K_Signal_Call', msg);
 
-                 console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: "+target.socketid);
+                console.log("User call on line------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
 
                 //socket_to.emit("chat message", msg);
             } else {
-                
+
                 socket.broadcast.emit("K_Signal_Call", msg);
                 console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
 
 
-           }
+            }
         }
     });
     //end socket
@@ -615,7 +554,7 @@ function isJsonString(str) {
     return true;
 }
 
-function isEmpty(val){
+function isEmpty(val) {
     return (val === undefined || val == null || val.length <= 0) ? true : false;
 }
 
