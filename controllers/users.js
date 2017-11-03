@@ -3185,7 +3185,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                         dataImage = feed['images'];
                                                     }
                                                     //console.log("data image -------- - - - -  "+stringJson);
-                                                    if (dataImage.length == 0) {
+                                                    if (isEmpty(dataImage) == true) {
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
