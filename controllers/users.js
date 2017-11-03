@@ -3183,7 +3183,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
 
                                                     var dataImage;
                                                     if (isEmpty(feed['images']) == false) {
-                                                        var stringJ = JSON.stringify(feed['images']); 
+                                                        var stringJ = JSON.stringify(feed['images'], null, 2);
                                                         dataImage = JSON.parse(stringJ);
                                                     }
 
