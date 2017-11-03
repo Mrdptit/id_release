@@ -3187,8 +3187,11 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                         dataImage = JSON.parse(stringJ);
                                                     }
 
-                                                    console.log("data image -------- - - - -  "+dataImage);
+                                                    
                                                     if (dataImage.length == 0) {
+
+                                                        console.log("data image 0 -------- - - - -  "+dataImage);
+
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
@@ -3221,6 +3224,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     }
                                                     else if (dataImage.length == 1) {
                                                         ///-------
+                                                        console.log("data image 1 -------- - - - -  "+dataImage);
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                                         var caption;
@@ -3275,6 +3279,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                              caption = feed['title'];
                                                         }
                                                         
+                                                        console.log("data image 2-------- - - - -  "+dataImage); 
 
                                                         var currentTime = parseInt(feed['time'], 10) * 1000;
                                                         var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
