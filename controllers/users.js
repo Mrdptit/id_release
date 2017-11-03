@@ -3237,8 +3237,8 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                                     return res.sendStatus(300);
                                                                 }
                                                             } else {
-                                                                async.forEachOf(dataImage, function(currentData, n, callback) {
-                                                                    var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+
+                                                                 var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
                                                                     var dataMember = "VALUES ('" + dataImage + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
                                                                     client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
                                                                         if (eMember) {
@@ -3259,7 +3259,11 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                                             }
                                                                         }
                                                                     });
-                                                                });
+                                                                    
+
+                                                                // async.forEachOf(dataImage, function(currentData, n, callback) {
+                                                                   
+                                                                // });
                                                             }
                                                         });
                                                         //--------
