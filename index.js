@@ -121,9 +121,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
             peer = usr;
             console.log("User online : " + user.key + "Key:" + user.key);
         }
-        console.log("------------------------- LIST USERS ---------------------------------");
-        console.log(users);
-        console.log("----------------------------------------------------------------------");
+        // console.log("------------------------- LIST USERS ---------------------------------");
+        // console.log(users);
+        // console.log("----------------------------------------------------------------------");
         // 
         if (user.key !== null && typeof user === 'object') {
             var sqlCheckVisible = "SELECT `is_visible` FROM `users_settings` WHERE `users_key`='" + user.key + "'";
