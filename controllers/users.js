@@ -3181,13 +3181,11 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                                     var feed = JSON.parse(stringJson);
                                                    
 
-                                                    var dataImage = [];
-                                                    // if (feed['images']) {
-                                                    //     dataImage = feed['images'];
-                                                    // }
-
-                                                    dataImage = JSON.parse(feed['images']);
-
+                                                    var dataImage;
+                                                    if (isEmpty(feed['images']) == false) {
+                                                        var stringJ = JSON.stringify(feed['images']); 
+                                                        dataImage = JSON.parse(stringJ);
+                                                    }
 
                                                     console.log("data image -------- - - - -  "+dataImage);
                                                     if (dataImage.length == 0) {
