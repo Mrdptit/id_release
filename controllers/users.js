@@ -122,7 +122,7 @@ router.get('/:key/type=bot', urlParser, function(req, res) {
                 var key = req.body.key || req.query.key || req.params.key;
                 var sql = "SELECT `key`,`email`,`username`,`nickname`,`created_at`,`avatar`,`cover`,`sex`,`birthday`,`last_active`,`status`,`facebook_point`,`img_width`,`img_height`,`is_bot`";
                 var data = " FROM `users` WHERE `key`='" + key + "'";
-                client.query(sql+data, function(error, data, fields) {
+                client.query(sql + data, function(error, data, fields) {
                     if (error) {
                         console.log(error);
                         return res.sendStatus(300);
@@ -130,9 +130,9 @@ router.get('/:key/type=bot', urlParser, function(req, res) {
                         if (data.length > 0) {
                             var sqlBot;
                             if (data[0].sex == 1) {
-                                sqlBot = sql+" FROM `users` WHERE `is_bot`=1 AND `sex`=2 ORDER BY RAND() LIMIT 1";
+                                sqlBot = sql + " FROM `users` WHERE `is_bot`=1 AND `sex`=2 ORDER BY RAND() LIMIT 1";
                             } else {
-                                sqlBot = sql+" FROM `users` WHERE `is_bot`=1 AND `sex`=1 ORDER BY RAND() LIMIT 1";
+                                sqlBot = sql + " FROM `users` WHERE `is_bot`=1 AND `sex`=1 ORDER BY RAND() LIMIT 1";
                             }
                             client.query(sqlBot, function(e, d, f) {
                                 if (e) {
@@ -183,7 +183,7 @@ router.post('/signup', urlParser, function(req, res) {
                 }
                 delete req.body.created_at;
                 var currentTime = new Date().getTime();
-                var sql = escapeSQL.format('INSERT INTO `users` SET ? , `created_at`='+ currentTime, req.body);
+                var sql = escapeSQL.format('INSERT INTO `users` SET ? , `created_at`=' + currentTime, req.body);
                 //var dataSQL = "INSERT INTO `users`(" + insert.toString() + ") VALUES(" + value.toString() + ")";
                 client.query(sql, function(eInsert, dInsert, fInsert) {
                     if (eInsert) {
@@ -543,21 +543,21 @@ router.post('/settings', urlParser, function(req, res) {
 
                                     if (req.body.is_visible == '1') {
                                         console.log("status in visiale  ----------:" + req.body.is_visible);
-                                       var dataSQLStaus = "UPDATE `users` SET `status` = 'online' WHERE `key`='" + req.body.key + "'";
-                                         client.query(dataSQLStaus, function(eInsert, dInsert, fInsert) {
-                                                console.log("Vừa update users_settings thành công cho users_key " + req.body.key);
-                                                return res.send(echoResponse(200, 'Updated successfully', 'success', false));
-                                          });
-                                    }else{
+                                        var dataSQLStaus = "UPDATE `users` SET `status` = 'online' WHERE `key`='" + req.body.key + "'";
+                                        client.query(dataSQLStaus, function(eInsert, dInsert, fInsert) {
+                                            console.log("Vừa update users_settings thành công cho users_key " + req.body.key);
+                                            return res.send(echoResponse(200, 'Updated successfully', 'success', false));
+                                        });
+                                    } else {
                                         console.log("status in visiale 0 ----------:" + req.body.is_visible);
-                                         var dataSQLStaus = "UPDATE `users` SET `status` = 'offline' WHERE `key`='" + req.body.key + "'";
-                                         client.query(dataSQLStaus, function(eInsert, dInsert, fInsert) {
-                                                console.log("Vừa update users_settings thành công cho users_key " + req.body.key);
-                                                 return res.send(echoResponse(200, 'Updated successfully', 'success', false));
-                                          });
+                                        var dataSQLStaus = "UPDATE `users` SET `status` = 'offline' WHERE `key`='" + req.body.key + "'";
+                                        client.query(dataSQLStaus, function(eInsert, dInsert, fInsert) {
+                                            console.log("Vừa update users_settings thành công cho users_key " + req.body.key);
+                                            return res.send(echoResponse(200, 'Updated successfully', 'success', false));
+                                        });
                                     }
 
-                                    
+
                                 }
                             });
                         } else {
@@ -719,7 +719,7 @@ function sendReport(receiver_key, friend_key) {
 }
 
 /*********--------get information channel call----------*********/
-router.get('/:idChannel/type=channel_information&access_token=:access_token',urlParser, function(req, res) {
+router.get('/:idChannel/type=channel_information&access_token=:access_token', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     if (token) {
         jwt.verify(token, config.secret, function(err, decoded) {
@@ -2647,7 +2647,44 @@ router.post('/facebook_point', urlParser, function(req, res) {
         });
     }
 });
+/*********--------Facebook Database----------*********/
+router.post('/facebook_data', urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                var key = req.body.key || req.params.key;
+                var sql = "SELECT * FROM `users` WHERE `key`='" + key + "'";
+                delete req.body.key;
+                req.body.users_key = key;
+                client.query(sql, function(error, data, fields) {
+                    if (error) {
+                        console.log(error);
+                        return res.sendStatus(300);
+                    } else {
+                        if (data.length > 0) {
+                            var sql2 = escapeSQL.escape("INSERT INTO `facebook_informations` SET ?", req.body);
+                            client.query(sql2, function(e, d, f) {
+                                if (e) {
+                                    console.log(e);
+                                    return res.sendStatus(300);
+                                } else {
+                                    return res.send(echoResponse(200, 'Insert successfully', 'success', false));
+                                }
+                            });
+                        } else {
+                            return res.send(echoResponse(404, 'User not exists', 'success', true));
+                        }
+                    }
+                });
+            }
+        });
+    } else {
 
+    }
+});
 /*********--------Facebook Database----------*********/
 router.post('/facebook', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
@@ -2991,8 +3028,7 @@ router.post('/facebook', urlParser, function(req, res) {
                                                     }
                                                 }
                                             });
-                                        }
-                                        else if (dataImage.length == 1) {
+                                        } else if (dataImage.length == 1) {
                                             ///-------
                                             var currentTime = parseInt(ele.time, 10) * 1000;
                                             var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
@@ -3115,7 +3151,7 @@ router.post('/facebook', urlParser, function(req, res) {
 });
 
 
-function isEmpty(val){
+function isEmpty(val) {
     return (val === undefined || val == null || val.length <= 0) ? true : false;
 }
 
@@ -3129,215 +3165,214 @@ router.post('/facebook_client', urlParser, function(req, res) {
             } else {
 
                 // check facebook sync
-           
-
-                    if (err) {
-                        console.log(e);
-                         return res.sendStatus(300);
-                    }else{
-                        var bodydata = unescape(req.body.data);
-                        var stringJson = JSON.stringify(req.body.data, null, 2);//.replace(/\, "");
-                        
-                        
-                        var json;
-                        if (isJsonString(bodydata)) {
-                            json = JSON.parse(bodydata);
-                        }else{
-                            var stringJson = JSON.stringify(req.body.data, null, 2);
-                            json = JSON.parse(stringJson);
-                        }
-                        
-
-                        // console.log(JSON.stringify(req.body.data, null, 2));
-                        // console.log(JSON.stringify(bodydata));
-
-                           // if (isJsonString(stringJson)) {
-                               
-                                // json = JSON.parse(arrayJson);
-                                // console.log(json);
-                                // data_timeline
-                               
-                               console.log("<-------->:" + JSON.stringify(json));
-                                if (isEmpty(json['data_timeline'])) {
-                                    console.log("No data time line 1111 -------------------------------- : " + json['data_timeline']);
-                                     return res.send(echoResponse(300, 'No data time line', 'err', true));
-                                }else{
 
 
-                                    var stringJson1 = JSON.stringify(json['data_timeline'], null, 2)
-                                    if (isJsonString(stringJson1) == false) {
-                                        return res.send(echoResponse(300, 'No data time line 22222', 'err', true));
-                                    }
+                if (err) {
+                    console.log(e);
+                    return res.sendStatus(300);
+                } else {
+                    var bodydata = unescape(req.body.data);
+                    var stringJson = JSON.stringify(req.body.data, null, 2); //.replace(/\, "");
 
-                                    var data = JSON.parse(stringJson1);
-                                    //console.log("data timeline -------- - - - -  "+data);
-                                    var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
-                                    client.query(usersql, function(e, d, f) {
-                                        if (e) {
-                                            console.log(e);
-                                            return res.sendStatus(300);
-                                        } else {
-                                            if (d.length > 0) {
-                                                async.forEachOf(data, function(ele, i, call) {
-                                                    var stringJson = JSON.stringify(ele, null, 2);
-                                                    var feed = JSON.parse(stringJson);
-                                                   
 
-                                                    var dataImage;
-                                                    if (feed['images']) {
-                                                        dataImage = feed['images'];
-                                                    }
-                                                    //console.log("data image -------- - - - -  "+stringJson);
-                                                    if (isEmpty(dataImage) == true) {
-                                                        var currentTime = parseInt(feed['time'], 10) * 1000;
-                                                        var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                        var caption;
-                                                        
-                                                        if (isEmpty(feed['title'])) {
-                                                             caption = "Facebook";
-                                                        }else{
-                                                             caption = feed['title'];
-                                                        }
-
-                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','"+feed['permission']+"','text','1','" + d[0].key + "')";
-                                                        client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                            if (eInsert) {
-                                                                console.log(eInsert);
-                                                                if (i === data.length - 1) {
-                                                                    return res.sendStatus(300);
-                                                                }
-                                                            } else {
-                                                                if (i === data.length - 1) {
-                                                                    
-                                                                     var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
-                                                                    console.log(queryInsertChannel);
-                                                                    client.query(queryInsertChannel,function(err,data,FNN){
-                                                                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
-                                                                    }); 
-                                                                    
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                    else {
-                                                        ///-------
-                                                        var currentTime = parseInt(feed['time'], 10) * 1000;
-                                                        var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                        var caption;
-                                                        if (isEmpty(feed['title'])) {
-                                                             caption = "Facebook Photo";
-                                                        }else{
-                                                             caption = feed['title'];
-                                                        }
-
-                                                        console.log("Caption: " + caption);
-
-                                                        var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','"+feed['permission']+"','photo','1','" + d[0].key + "')";
-                                                        client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                            if (eInsert) {
-                                                                console.log(eInsert);
-                                                                if (i === data.length - 1) {
-                                                                    return res.sendStatus(300);
-                                                                }
-                                                            } else {
-
-                                                                 var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                                                                    var dataMember = "VALUES ('" + dataImage + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
-                                                                    client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                                        if (eMember) {
-                                                                            console.log(eMember);
-                                                                            if (i === data.length - 1) {
-                                                                                return res.sendStatus(300);
-                                                                            }
-                                                                        } else {
-                                                                            console.log("INSERT ALBUMS SUCCESS");
-                                                                            if (i === data.length - 1) {
-                                                                                                                                                    
-                                                                               var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
-                                                                                  console.log(queryInsertChannel);
-                                                                                client.query(queryInsertChannel,function(err,data,FNN){
-                                                                                    return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
-                                                                                }); 
-
-                                                                            }
-                                                                        }
-                                                                    });
-                                                                    
-
-                                                                // async.forEachOf(dataImage, function(currentData, n, callback) {
-                                                                   
-                                                                // });
-                                                            }
-                                                        });
-                                                        //--------
-                                                    }
-
-                                                     // else {
-                                                     //    //--------
-                                                     //    var caption;
-                                                     //    if (isEmpty(feed['title'])) {
-                                                     //         caption = "Facebook";
-                                                     //    }else{
-                                                     //         caption = feed['title'];
-                                                     //    }
-                                                        
-
-                                                     //    var currentTime = parseInt(feed['time'], 10) * 1000;
-                                                     //    var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
-                                                     //    var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','"+feed['permission']+"','albums','1','" + d[0].key + "')";
-                                                     //    client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                     //        if (eInsert) {
-                                                     //            console.log(eInsert);
-                                                     //            if (i === data.length - 1) {
-                                                     //                return res.sendStatus(300);
-                                                     //            }
-                                                     //        } else {
-                                                     //            async.forEachOf(dataImage, function(currentData, n, callback) {
-                                                     //                var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
-                                                     //                var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
-                                                     //                client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
-                                                     //                    if (eMember) {
-                                                     //                        console.log(eMember);
-                                                     //                        if (i === data.length - 1) {
-                                                     //                            return res.sendStatus(300);
-                                                     //                        }
-                                                     //                    } else {
-                                                     //                        console.log("INSERT ALBUMS SUCCESS");
-                                                     //                    }
-                                                     //                });
-                                                     //                if (i === data.length - 1) {
-                                                                                                                                            
-                                                     //                    var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
-                                                     //                    console.log(queryInsertChannel);
-                                                     //                    client.query(queryInsertChannel,function(err,data,FNN){
-                                                     //                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
-                                                     //                    }); 
-                                                     //                }
-                                                     //            });
-                                                     //        }
-                                                     //    });
-                                                        //---------
-                                                    //}
-                                                });
-
-                                            }else{
-                                                return res.send(echoResponse(300, 'User had been sync facebook', 'success', true));
-                                            }
-                                        }
-                                    });
-                                }
-                                
-
-                            // } else {
-                            //     console.log("ERROR JSON");
-                            //     return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
-                            // }
-
+                    var json;
+                    if (isJsonString(bodydata)) {
+                        json = JSON.parse(bodydata);
+                    } else {
+                        var stringJson = JSON.stringify(req.body.data, null, 2);
+                        json = JSON.parse(stringJson);
                     }
 
-                
 
-                
+                    // console.log(JSON.stringify(req.body.data, null, 2));
+                    // console.log(JSON.stringify(bodydata));
+
+                    // if (isJsonString(stringJson)) {
+
+                    // json = JSON.parse(arrayJson);
+                    // console.log(json);
+                    // data_timeline
+
+                    console.log("<-------->:" + JSON.stringify(json));
+                    if (isEmpty(json['data_timeline'])) {
+                        console.log("No data time line 1111 -------------------------------- : " + json['data_timeline']);
+                        return res.send(echoResponse(300, 'No data time line', 'err', true));
+                    } else {
+
+
+                        var stringJson1 = JSON.stringify(json['data_timeline'], null, 2)
+                        if (isJsonString(stringJson1) == false) {
+                            return res.send(echoResponse(300, 'No data time line 22222', 'err', true));
+                        }
+
+                        var data = JSON.parse(stringJson1);
+                        //console.log("data timeline -------- - - - -  "+data);
+                        var usersql = "SELECT `key` FROM `users` WHERE `facebook_id`='" + json.facebook + "' AND `is_sync_feed_facebook` = '0'";
+                        client.query(usersql, function(e, d, f) {
+                            if (e) {
+                                console.log(e);
+                                return res.sendStatus(300);
+                            } else {
+                                if (d.length > 0) {
+                                    async.forEachOf(data, function(ele, i, call) {
+                                        var stringJson = JSON.stringify(ele, null, 2);
+                                        var feed = JSON.parse(stringJson);
+
+
+                                        var dataImage;
+                                        if (feed['images']) {
+                                            dataImage = feed['images'];
+                                        }
+                                        //console.log("data image -------- - - - -  "+stringJson);
+                                        if (isEmpty(dataImage) == true) {
+                                            var currentTime = parseInt(feed['time'], 10) * 1000;
+                                            var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                            var caption;
+
+                                            if (isEmpty(feed['title'])) {
+                                                caption = "Facebook";
+                                            } else {
+                                                caption = feed['title'];
+                                            }
+
+                                            var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','" + feed['permission'] + "','text','1','" + d[0].key + "')";
+                                            client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                if (eInsert) {
+                                                    console.log(eInsert);
+                                                    if (i === data.length - 1) {
+                                                        return res.sendStatus(300);
+                                                    }
+                                                } else {
+                                                    if (i === data.length - 1) {
+
+                                                        var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                                        console.log(queryInsertChannel);
+                                                        client.query(queryInsertChannel, function(err, data, FNN) {
+                                                            return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            ///-------
+                                            var currentTime = parseInt(feed['time'], 10) * 1000;
+                                            var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                            var caption;
+                                            if (isEmpty(feed['title'])) {
+                                                caption = "Facebook Photo";
+                                            } else {
+                                                caption = feed['title'];
+                                            }
+
+                                            console.log("Caption: " + caption);
+
+                                            var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','" + feed['permission'] + "','photo','1','" + d[0].key + "')";
+                                            client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                if (eInsert) {
+                                                    console.log(eInsert);
+                                                    if (i === data.length - 1) {
+                                                        return res.sendStatus(300);
+                                                    }
+                                                } else {
+
+                                                    var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                                                    var dataMember = "VALUES ('" + dataImage + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+                                                    client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                                                        if (eMember) {
+                                                            console.log(eMember);
+                                                            if (i === data.length - 1) {
+                                                                return res.sendStatus(300);
+                                                            }
+                                                        } else {
+                                                            console.log("INSERT ALBUMS SUCCESS");
+                                                            if (i === data.length - 1) {
+
+                                                                var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                                                console.log(queryInsertChannel);
+                                                                client.query(queryInsertChannel, function(err, data, FNN) {
+                                                                    return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                                });
+
+                                                            }
+                                                        }
+                                                    });
+
+
+                                                    // async.forEachOf(dataImage, function(currentData, n, callback) {
+
+                                                    // });
+                                                }
+                                            });
+                                            //--------
+                                        }
+
+                                        // else {
+                                        //    //--------
+                                        //    var caption;
+                                        //    if (isEmpty(feed['title'])) {
+                                        //         caption = "Facebook";
+                                        //    }else{
+                                        //         caption = feed['title'];
+                                        //    }
+
+
+                                        //    var currentTime = parseInt(feed['time'], 10) * 1000;
+                                        //    var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
+                                        //    var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','"+feed['permission']+"','albums','1','" + d[0].key + "')";
+                                        //    client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                        //        if (eInsert) {
+                                        //            console.log(eInsert);
+                                        //            if (i === data.length - 1) {
+                                        //                return res.sendStatus(300);
+                                        //            }
+                                        //        } else {
+                                        //            async.forEachOf(dataImage, function(currentData, n, callback) {
+                                        //                var insertMember = "INSERT INTO `store_images`(`img_url`,`img_width`,`img_height`,`users_key`,`posts_id`)";
+                                        //                var dataMember = "VALUES ('" + dataImage[n] + "','500','500','" + d[0].key + "','" + dataInsert.insertId + "')";
+                                        //                client.query(insertMember + dataMember, function(eMember, rMember, fMember) {
+                                        //                    if (eMember) {
+                                        //                        console.log(eMember);
+                                        //                        if (i === data.length - 1) {
+                                        //                            return res.sendStatus(300);
+                                        //                        }
+                                        //                    } else {
+                                        //                        console.log("INSERT ALBUMS SUCCESS");
+                                        //                    }
+                                        //                });
+                                        //                if (i === data.length - 1) {
+
+                                        //                    var queryInsertChannel = "UPDATE `users` SET `is_sync_feed_facebook`='1' WHERE `facebook_id`='" + json.facebook + "'";
+                                        //                    console.log(queryInsertChannel);
+                                        //                    client.query(queryInsertChannel,function(err,data,FNN){
+                                        //                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));   
+                                        //                    }); 
+                                        //                }
+                                        //            });
+                                        //        }
+                                        //    });
+                                        //---------
+                                        //}
+                                    });
+
+                                } else {
+                                    return res.send(echoResponse(300, 'User had been sync facebook', 'success', true));
+                                }
+                            }
+                        });
+                    }
+
+
+                    // } else {
+                    //     console.log("ERROR JSON");
+                    //     return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
+                    // }
+
+                }
+
+
+
+
 
             }
         });
