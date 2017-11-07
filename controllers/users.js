@@ -2659,6 +2659,7 @@ router.post('/facebook_data', urlParser, function(req, res) {
                 var sql = "SELECT * FROM `users` WHERE `key`='" + key + "'";
                 delete req.body.key;
                 req.body.users_key = key;
+                console.log(sql);
                 client.query(sql, function(error, data, fields) {
                     if (error) {
                         console.log(error);
@@ -2666,6 +2667,7 @@ router.post('/facebook_data', urlParser, function(req, res) {
                     } else {
                         if (data.length > 0) {
                             var sql2 = escapeSQL.escape("INSERT INTO `facebook_informations` SET ?", req.body);
+                            console.log(sql2);
                             client.query(sql2, function(e, d, f) {
                                 if (e) {
                                     console.log(e);
