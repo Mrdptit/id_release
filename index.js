@@ -465,7 +465,7 @@ app.get('/type=version', urlParser, function(req, res) {
             }
         });
     } else {
-        var sql = "SELECT * FROM `versions` ORDER BY `id` DESC LIMIT 1";
+        var sql = "SELECT * FROM `versions` WHERE `device`='ios' ORDER BY `id` DESC LIMIT 1";
         client.query(sql, function(error, data, fields) {
             if (error) {
                 console.log(error);
