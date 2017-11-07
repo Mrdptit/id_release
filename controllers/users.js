@@ -2658,6 +2658,7 @@ router.post('/facebook_data', urlParser, function(req, res) {
                 var key = req.body.key || req.params.key;
                 var sql = "SELECT * FROM `users` WHERE `key`='" + key + "'";
                 delete req.body.key;
+                delete req.body.access_token;
                 req.body.users_key = key;
                 console.log(sql);
                 client.query(sql, function(error, data, fields) {
