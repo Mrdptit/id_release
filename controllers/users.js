@@ -2666,7 +2666,7 @@ router.post('/facebook_data', urlParser, function(req, res) {
                         return res.sendStatus(300);
                     } else {
                         if (data.length > 0) {
-                            var sql2 = escapeSQL.escape("INSERT INTO `facebook_informations` SET ?", req.body);
+                            var sql2 = escapeSQL.format("INSERT INTO `facebook_informations` SET ?", req.body);
                             console.log(sql2);
                             client.query(sql2, function(e, d, f) {
                                 if (e) {
