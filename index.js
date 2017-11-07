@@ -454,7 +454,7 @@ app.get('/', function(req, res) {
 /*********--------GET Version----------*********/
 app.get('/type=version', urlParser, function(req, res) {
     var device = req.body.device || req.params.device || req.query.device;
-    if (device.length > 0) {
+    if (device && device.length > 0 && typeof device == 'string') {
         var sql = "SELECT * FROM `versions` WHERE `device`='android' ORDER BY `id` DESC LIMIT 1";
         client.query(sql, function(error, data, fields) {
             if (error) {
