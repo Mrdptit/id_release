@@ -1758,7 +1758,6 @@ router.get('/:key/type=findonline', function(req, res) {
                 } else {
                     finalSQL = userSQL1 + userSQL4 + userSQL5 + userSQL6 + userSQL9 + userSQL7 + userSQL8 + pp;
                 }
-                console.log(finalSQL);
                 client.query(finalSQL, function(error, data, fields) {
                     if (error) {
                         console.log(error);
