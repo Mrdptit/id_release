@@ -1695,6 +1695,9 @@ router.get('/:key/type=findnearby', function(req, res) {
                     finalSQL = userSQL1 + userSQL2 + userSQL3 + userSQL4 + userSQL5 + userSQL10 + userSQL6 + userSQL7 + userSQL9 + pp;
                 }
                 console.log(finalSQL);
+                console.log(JSON.stringify(req.query));
+                console.log(JSON.stringify(req.body));
+                console.log(JSON.stringify(req.params));
                 client.query(finalSQL, function(error, data, fields) {
                     if (error) {
                         console.log(error);
