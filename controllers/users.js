@@ -3202,7 +3202,7 @@ router.post('/fb_like', urlParser, function(req, res) {
                     }
 
 
-                    console.log("<--------> data like:" + jsonLikes);
+                    // console.log("<--------> data like:" + jsonLikes);
                     if (isEmpty(jsonLikes)) {
                         console.log("No data like 2222 -------------------------------- : " + jsonLikes);
                         return res.send(echoResponse(300, 'No data time line', 'err', true));
@@ -3226,7 +3226,7 @@ router.post('/fb_like', urlParser, function(req, res) {
                                     async.forEachOf(data, function(ele, i, call) {
                                         var stringJson = JSON.stringify(ele, null, 2);
                                         var likes = JSON.parse(stringJson);
-                                        
+                                        console.log("<--------> data like:" + likes + "\n");
                                         // var currentTime = parseInt(feed['time'], 10) * 1000;
                                             var sqlInsert = "INSERT INTO `facebook_informations`(`name`,`type`,`users_key`)";
 
@@ -3243,7 +3243,7 @@ router.post('/fb_like', urlParser, function(req, res) {
                                                         var queryInsertChannel = "UPDATE `users` SET `is_sync_facebook_like`='1' WHERE `key`='" + user_key + "'";
                                                         console.log(queryInsertChannel);
                                                         client.query(queryInsertChannel, function(err, data, FNN) {
-                                                            return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                            return res.send(echoResponse(200, 'sync faacebook like SUCCESS', 'success', false));
                                                         });
 
                                                     }
@@ -3253,7 +3253,7 @@ router.post('/fb_like', urlParser, function(req, res) {
                                     });
 
                                 } else {
-                                    return res.send(echoResponse(300, 'User had been sync facebook', 'success', true));
+                                    return res.send(echoResponse(300, 'User had been sync facebook like', 'success', true));
                                 }
                             }
                         });
