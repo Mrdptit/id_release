@@ -2105,9 +2105,11 @@ router.post('/request', urlParser, function(req, res) {
                             client.query(userSQL, function(error, data, fields) {
                                 if (error) {
                                     console.log(error);
+                                    console.log("-1---------------------------- REQUEST");
                                     return res.sendStatus(300);
                                 } else {
                                     if (data.length > 0) {
+                                        console.log("0---------------------------- REQUEST");
                                         return res.send(echoResponse(404, 'You requested.', 'success', true));
                                     } else {
                                         var insertSQL = "INSERT INTO `requests`(`friend_key`,`message`,`users_key`)";
@@ -2117,6 +2119,7 @@ router.post('/request', urlParser, function(req, res) {
                                                 console.log(eInsert);
                                                 return res.sendStatus(300);
                                             } else {
+                                                console.log("1---------------------------- REQUEST");
                                                 console.log(req.body.users_key + " gửi lời mời kết bạn tới " + req.body.friend_key);
                                                 return res.send(echoResponse(200, 'Requested successfully', 'success', false));
                                             }
@@ -2124,9 +2127,11 @@ router.post('/request', urlParser, function(req, res) {
                                         var currentUser = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
                                         client.query(currentUser, function(eCurrent, dCurrent, fCurren) {
                                             if (eCurrent) {
+                                                console.log("2---------------------------- REQUEST");
                                                 console.log(eCurrent);
                                             } else {
                                                 // Insert Notification
+                                                console.log("3---------------------------- REQUEST");
                                                 var currentTime = new Date().getTime();
                                                 insertNotificationNoImage(res, req.body.users_key, dCurrent[0].nickname, dCurrent[0].avatar, "request", currentTime, req.body.friend_key, 0);
                                                 sendNotification(req.body.users_key, req.body.friend_key, "send friend request", "request", null);
