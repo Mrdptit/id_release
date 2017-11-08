@@ -2129,7 +2129,7 @@ router.post('/request', urlParser, function(req, res) {
                                                            console.log(eCurrent);
                                                         } else {
                                                             // Insert Notification
-                                                            console.log("3---------------------------- REQUEST");
+                                                            console.log("3---------------------------- REQUEST " + req.body.users_key + "  " +req.body.friend_key);
                                                             var currentTime = new Date().getTime();
                                                             insertNotificationNoImage(res, req.body.users_key, dCurrent[0].nickname, dCurrent[0].avatar, "request", currentTime, req.body.friend_key, 0);
                                                             sendNotification(req.body.users_key, req.body.friend_key, "send friend request", "request", null);
