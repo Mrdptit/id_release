@@ -3657,7 +3657,7 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, posts_id) {
                             var note = new apn.Notification();
                             note.alert = dataNguoiGui[0].nickname + " " + noidung;
                             note.sound = 'default';
-                            note.topic = "config.ios";
+                            note.topic = config.ios;
                             note.badge = count;
                             if (posts_id) {
                                 note.payload = {
@@ -3683,6 +3683,8 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, posts_id) {
                                 console.log("failed:", result.failed.length);
                                 console.log(result.failed);
                             });
+
+
                         } else {
                             var message;
                             if (posts_id) {
