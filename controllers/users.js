@@ -2120,24 +2120,29 @@ router.post('/request', urlParser, function(req, res) {
                                                 return res.sendStatus(300);
                                             } else {
                                                 console.log("1---------------------------- REQUEST");
-                                                console.log(req.body.users_key + " gửi lời mời kết bạn tới " + req.body.friend_key);
-                                                return res.send(echoResponse(200, 'Requested successfully', 'success', false));
+                                               
+
+                                                 var currentUser = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
+                                                 client.query(currentUser, function(eCurrent, dCurrent, fCurren) {
+                                                       if (eCurrent) {
+                                                            console.log("2---------------------------- REQUEST");
+                                                           console.log(eCurrent);
+                                                        } else {
+                                                            // Insert Notification
+                                                            console.log("3---------------------------- REQUEST");
+                                                            var currentTime = new Date().getTime();
+                                                            insertNotificationNoImage(res, req.body.users_key, dCurrent[0].nickname, dCurrent[0].avatar, "request", currentTime, req.body.friend_key, 0);
+                                                            sendNotification(req.body.users_key, req.body.friend_key, "send friend request", "request", null);
+                                                            //-----
+                                                        }
+
+                                                         console.log(req.body.users_key + " gửi lời mời kết bạn tới " + req.body.friend_key);
+                                                        return res.send(echoResponse(200, 'Requested successfully', 'success', false));
+                                                 });
+
                                             }
                                         });
-                                        var currentUser = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
-                                        client.query(currentUser, function(eCurrent, dCurrent, fCurren) {
-                                            if (eCurrent) {
-                                                console.log("2---------------------------- REQUEST");
-                                                console.log(eCurrent);
-                                            } else {
-                                                // Insert Notification
-                                                console.log("3---------------------------- REQUEST");
-                                                var currentTime = new Date().getTime();
-                                                insertNotificationNoImage(res, req.body.users_key, dCurrent[0].nickname, dCurrent[0].avatar, "request", currentTime, req.body.friend_key, 0);
-                                                sendNotification(req.body.users_key, req.body.friend_key, "send friend request", "request", null);
-                                                //-----
-                                            }
-                                        });
+                                       
 
                                     }
                                 }
