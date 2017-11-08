@@ -3202,9 +3202,9 @@ router.post('/fb_like', urlParser, function(req, res) {
                     }
 
 
-                    console.log("<-------->:" + JSON.stringify(json));
+                    console.log("<--------> data like:" + JSON.stringify(jsonLikes));
                     if (isEmpty(jsonLikes)) {
-                        console.log("No data time line 1111 -------------------------------- : " + jsonLikes);
+                        console.log("No data like 2222 -------------------------------- : " + jsonLikes);
                         return res.send(echoResponse(300, 'No data time line', 'err', true));
                     } else {
 
