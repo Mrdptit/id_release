@@ -466,7 +466,7 @@ router.get('/:conversations_key/users_key=:key', function (req, res) {
                                             } else {
                                                 if (d.length > 0) {
 
-                                                    var sqlselect = "SELECT * FROM `messages` WHERE `conversations_key`='" + req.params.conversations_key + "' AND `key` IN (SELECT `messages_key` FROM `message_status` WHERE `users_key`='" + req.params.users_key + "' AND `conversations_key`='" + req.params.conversations_key + "' AND `status`=0)";
+                                                    var sqlselect = "SELECT * FROM `messages` WHERE `conversations_key`='" + req.params.conversations_key + "' AND `key` IN (SELECT `messages_key` FROM `message_status` WHERE `users_key`='" + req.params.key + "' AND `conversations_key`='" + req.params.conversations_key + "' AND `status`=0)";
                                                     client.query(sqlselect, function(eSelect, rSelect, fSelect) {
                                                         
                                                         var msgUnread = [];
