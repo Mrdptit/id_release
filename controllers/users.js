@@ -3168,7 +3168,118 @@ function isEmpty(val) {
     return (val === undefined || val == null || val.length <= 0) ? true : false;
 }
 
+//
 /*********--------Facebook Database client----------*********/
+//Facebook like
+router.post('/fb_like', urlParser, function(req, res) {
+
+     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+
+                // check facebook sync
+
+
+                if (err) {
+                    console.log(e);
+                    return res.sendStatus(300);
+                } else {
+
+                    var user_key = req.body.key;
+                    var bodydata = unescape(req.body.data);
+                    var stringJson = JSON.stringify(req.body.data, null, 2); //.replace(/\, "");
+
+
+                    var jsonLikes;
+                    if (isJsonString(bodydata)) {
+                        jsonLikes = JSON.parse(bodydata);
+                    } else {
+                        var stringJson = JSON.stringify(req.body.data, null, 2);
+                        jsonLikes = JSON.parse(stringJson);
+                    }
+
+
+                    console.log("<-------->:" + JSON.stringify(json));
+                    if (isEmpty(jsonLikes)) {
+                        console.log("No data time line 1111 -------------------------------- : " + jsonLikes);
+                        return res.send(echoResponse(300, 'No data time line', 'err', true));
+                    } else {
+
+
+                        // var stringJson1 = JSON.stringify(json['data_timeline'], null, 2)
+                        // if (isJsonString(stringJson1) == false) {
+                        //     return res.send(echoResponse(300, 'No data time line 22222', 'err', true));
+                        // }
+
+                        var data = jsonLikes;
+                        //console.log("data timeline -------- - - - -  "+data);
+                        var usersql = "SELECT `key` FROM `users` WHERE `key`='" + user_key + "' AND `is_sync_facebook_like` = '0'";
+                        client.query(usersql, function(e, d, f) {
+                            if (e) {
+                                console.log(e);
+                                return res.sendStatus(300);
+                            } else {
+                                if (d.length > 0) {
+                                    async.forEachOf(data, function(ele, i, call) {
+                                        var stringJson = JSON.stringify(ele, null, 2);
+                                        var likes = JSON.parse(stringJson);
+                                        
+                                        // var currentTime = parseInt(feed['time'], 10) * 1000;
+                                            var sqlInsert = "INSERT INTO `facebook_informations`(`name`,`type`,`users_key`)";
+
+                                            var sqlData = "VALUES (" + escapeSQL.escape(likes['name']) + ",'" + likes['type'] + "','" + users_key + "')";
+                                            client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                                if (eInsert) {
+                                                    console.log(eInsert);
+                                                    if (i === data.length - 1) {
+                                                        return res.sendStatus(300);
+                                                    }
+                                                } else {
+                                                    if (i === data.length - 1) {
+
+                                                        var queryInsertChannel = "UPDATE `users` SET `is_sync_facebook_like`='1' WHERE `key`='" + users_key + "'";
+                                                        console.log(queryInsertChannel);
+                                                        client.query(queryInsertChannel, function(err, data, FNN) {
+                                                            return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+
+                                    });
+
+                                } else {
+                                    return res.send(echoResponse(300, 'User had been sync facebook', 'success', true));
+                                }
+                            }
+                        });
+                    }
+
+
+                    // } else {
+                    //     console.log("ERROR JSON");
+                    //     return res.send(echoResponse(404, 'JSON ERROR', 'success', false));
+                    // }
+
+                }
+
+
+
+
+
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+
+});
+
+//Facebook time line
 router.post('/facebook_client', urlParser, function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     if (token) {
