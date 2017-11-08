@@ -465,16 +465,33 @@ router.get('/:conversations_key/users_key=:key', function (req, res) {
                                                 return res.sendStatus(300);
                                             } else {
                                                 if (d.length > 0) {
-                                                    getStatusLastMessage(req.params.conversations_key, function(status){
-                                                        getLastMessage(req.params.conversations_key, function(last_message){
+
+                                                    var sqlselect = "SELECT * FROM `messages` WHERE `conversations_key`='" + conversations_key + "' AND `key` IN (SELECT `messages_key` FROM `message_status` WHERE `users_key`='" + users_key + "' AND `conversations_key`='" + conversations_key + "' AND `status`=0)";
+                                                    client.query(sqlselect, function(eSelect, rSelect, fSelect) {
+                                                        
+                                                        var msgUnread = [];
+                                                        if (eSelect) {
+                                                            res.send(echoResponse(300, 'error', JSON.stringify(eSelect), true));
+                                                        } else {
+                                                            if (rSelect.length > 0) {
+                                                                msgUnread = rSelect;
+                                                            }
+                                                        }
+
+                                                        getStatusLastMessage(req.params.conversations_key, function(status){
+                                                            getLastMessage(req.params.conversations_key, function(last_message){
                                                             dataResponse.on_notification = d[0].on_notification;
                                                             dataResponse.is_deleted = d[0].is_deleted;
                                                             dataResponse.conversations_key = d[0].conversations_key;
                                                             dataResponse.lastmessage = last_message;
                                                             dataResponse.status = status;
+                                                            dataResponse.messages = msgUnread;
                                                             return res.send(echoResponse(200, dataResponse, 'success', false));
                                                         });
                                                     });
+                                                    });
+
+                                                    
                                                     
                                                 } else {
                                                     return res.send(echoResponse(404, 'No members', 'success', true));
