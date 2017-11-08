@@ -3673,9 +3673,11 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, posts_id) {
                                 };
                             }
                             if (kieu == 'request') {
-                                console.log("request friend data devicetoken: " + dataNguoiNhan[0].device_token);    
+
                             }
                             
+                            console.log("request friend data devicetoken:----------------- " + dataNguoiNhan[0].device_token);  
+
                             apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
                                 console.log("sent:", result.sent.length);
                                 console.log("failed:", result.failed.length);
