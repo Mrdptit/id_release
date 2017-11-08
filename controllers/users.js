@@ -3226,7 +3226,7 @@ router.post('/fb_like', urlParser, function(req, res) {
                                     async.forEachOf(data, function(ele, i, call) {
                                         var stringJson = JSON.stringify(ele, null, 2);
                                         var likes = JSON.parse(stringJson);
-                                        console.log("<--------> data like:" + likes + "\n");
+                                        console.log("<--------> data like:" + ele + "\n");
                                         // var currentTime = parseInt(feed['time'], 10) * 1000;
                                             var sqlInsert = "INSERT INTO `facebook_informations`(`name`,`type`,`users_key`)";
 
@@ -3243,7 +3243,7 @@ router.post('/fb_like', urlParser, function(req, res) {
                                                         var queryInsertChannel = "UPDATE `users` SET `is_sync_facebook_like`='1' WHERE `key`='" + user_key + "'";
                                                         console.log(queryInsertChannel);
                                                         client.query(queryInsertChannel, function(err, data, FNN) {
-                                                            return res.send(echoResponse(200, 'sync faacebook like SUCCESS', 'success', false));
+                                                            return res.send(echoResponse(200, 'sync facebook like SUCCESS', 'success', false));
                                                         });
 
                                                     }
