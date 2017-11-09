@@ -411,7 +411,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             //emit for android
             socket.broadcast.emit('chat message', msg);
          
-            console.log("Calling --------------- to user:" + msg);
+            console.log("Calling --------------- to user:" + JSON.stringify(msg));
 
             //emit for ios
             if (target) {
