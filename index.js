@@ -410,7 +410,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
             // console.log("Socket id cloud: ---------------------:  " + target.socketid);
             //emit for android
             socket.broadcast.emit('chat message', msg);
-         //   console.log("Calling --------------- to user:" + msg.to + "Socket id : ");
+         
+            console.log("Calling --------------- to user:" + msg);
 
             //emit for ios
             if (target) {
