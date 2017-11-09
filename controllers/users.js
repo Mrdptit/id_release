@@ -3272,13 +3272,13 @@ router.post('/fb_like', urlParser, function(req, res) {
 
                         var data = jsonLikes;
                         //console.log("data timeline -------- - - - -  "+data);
-                        var usersql = "SELECT `key` FROM `users` WHERE `key`='" + user_key + "' AND `is_sync_facebook_like` = '0'";
-                        client.query(usersql, function(e, d, f) {
-                            if (e) {
-                                console.log(e);
-                                return res.sendStatus(300);
-                            } else {
-                                if (d.length > 0) {
+                       // var usersql = "SELECT `key` FROM `users` WHERE `key`='" + user_key + "' AND `is_sync_facebook_like` = '0'";
+                        //client.query(usersql, function(e, d, f) {
+                            // if (e) {
+                            //     console.log(e);
+                            //     return res.sendStatus(300);
+                            // } else {
+                               // if (d.length > 0) {
                                     async.forEachOf(data, function(ele, i, call) {
                                         var stringJson = JSON.stringify(ele, null, 2);
                                         var likes = JSON.parse(stringJson);
@@ -3311,8 +3311,8 @@ router.post('/fb_like', urlParser, function(req, res) {
                                 } else {
                                     return res.send(echoResponse(300, 'User had been sync facebook like', 'success', true));
                                 }
-                            }
-                        });
+                          //  }
+                      //  });
                     }
 
 
