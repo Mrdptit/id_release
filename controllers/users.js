@@ -3308,9 +3308,9 @@ router.post('/fb_like', urlParser, function(req, res) {
 
                                     });
 
-                                } else {
-                                    return res.send(echoResponse(300, 'User had been sync facebook like', 'success', true));
-                                }
+                                // } else {
+                                //     return res.send(echoResponse(300, 'User had been sync facebook like', 'success', true));
+                                // }
                           //  }
                       //  });
                     }
