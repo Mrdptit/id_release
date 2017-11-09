@@ -1208,6 +1208,58 @@ router.post('/update', urlParser, function(req, res) {
     }
 });
 
+/*********--------Udelete avatar----------*********/
+router.post('/deleteAvatar', urlParser, function(req, res) {
+    if (!req.body.key) {
+        return res.sendStatus(300);
+    }
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
+            } else {
+                ///-----Check nếu tồn tại access_token thì chạy xuống dưới
+                var userSQL = "SELECT * FROM `users` WHERE `key`='" + req.body.key + "'";
+                client.query(userSQL, function(error, data, fields) {
+                    if (error) {
+                        console.log(error);
+                        return res.sendStatus(300);
+                    } else {
+                        if (data.length > 0) {
+
+                            var urlImage = "https://i.imgur.com/2NNcVO7.jpg";
+                            client.query("UPDATE `users` SET `avatar`='"+urlImage+"' WHERE `key`='" + req.body.key + "'");
+                            client.query(dataSQL, function(eInsert, dInsert, fInsert) {
+                                if (eInsert) {
+                                    console.log(eInsert);
+                                    return res.sendStatus(300);
+                                } else {
+                                    console.log("Vừa update users thành công cho key " + req.body.key);
+                                    return res.send(JSON.stringify({
+                                                                status: 200,
+                                                                avatar: urlImage,
+                                                                message: "delete avatar success",
+                                                                error: false
+                                                            }));
+                                    // return res.send(echoResponse(200,avatar:"", 'Updated successfully', 'success', false));
+                                }
+                            });
+                            
+                        } else {
+                            return res.send(echoResponse(300, 'Can not delete avatar' , 'success', true));
+                        }
+                    }
+                });
+                //---- Kết thúc đoạn xử lý data
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Authenticate: No token provided.', 'success', true));
+    }
+});
+
+
 /*********--------GET 1 USER----------*********/
 router.get('/:key/type=info&access_token=:access_token', function(req, res) {
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
