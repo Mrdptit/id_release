@@ -1229,7 +1229,7 @@ router.post('/deleteAvatar', urlParser, function(req, res) {
                         if (data.length > 0) {
 
                             var urlImage = "https://i.imgur.com/2NNcVO7.jpg";
-                            client.query("UPDATE `users` SET `avatar`='"+urlImage+"' WHERE `key`='" + req.body.key + "'");
+                            var dataSQL = "UPDATE `users` SET `avatar`='"+urlImage+"' WHERE `key`='" + req.body.key + "'";
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);
