@@ -285,9 +285,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.to + "'";
             client.query(deleteSQL, function(eDelete, dDelete, fDelete) {
                 if (eDelete) {
-                    console.log("Fails Delete channel call" + msg.to);
+                    //console.log("Fails Delete channel call" + msg.to);
                 } else {
-                    console.log("Delete channel call" + msg.to);
+                   // console.log("Delete channel call" + msg.to);
                 }
             });
         }
@@ -296,7 +296,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
             // console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
-            console.log(JSON.stringify(msg));
+            //console.log(JSON.stringify(msg));
                 //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `candidate` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
@@ -328,7 +328,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var objectValue = JSON.parse(contentJson);
             // console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
             
-            console.log(JSON.stringify(msg));
+          //  console.log(JSON.stringify(msg));
                 //save current channel
                 var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
                 client.query(queryChannel, function(err, dataChannel, FNN) {
@@ -410,7 +410,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             // console.log("Socket id cloud: ---------------------:  " + target.socketid);
             //emit for android
             socket.broadcast.emit('chat message', msg);
-            console.log("Calling --------------- to user:" + msg.to + "Socket id : ");
+         //   console.log("Calling --------------- to user:" + msg.to + "Socket id : ");
 
             //emit for ios
             if (target) {
@@ -418,13 +418,13 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 // socket.broadcast.to(target.socketid).emit('chat message', msg);
                 socket.broadcast.to(target.socketid).emit('K_Signal_Call', msg);
 
-                console.log("User call online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
+               // console.log("User call online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
 
                 //socket_to.emit("chat message", msg);
             } else {
 
                 socket.broadcast.emit("K_Signal_Call", msg);
-                console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
+             //   console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
 
 
             }
