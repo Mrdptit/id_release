@@ -3191,7 +3191,7 @@ router.post('/fb_like', urlParser, function(req, res) {
                     var user_key = req.body.key;
                     var bodydata = unescape(req.body.data);
                     var stringJson = JSON.stringify(req.body.data, null, 2); //.replace(/\, "");
-
+                    console.log("No data like 2222 -------------------------------- : " + stringJson);
 
                     var jsonLikes;
                     if (isJsonString(bodydata)) {
