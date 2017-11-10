@@ -600,8 +600,6 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                 }
                             }
                         });
-
-
                     }
                 });
             });
