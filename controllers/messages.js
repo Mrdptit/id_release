@@ -37,7 +37,7 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-var LocalString = require('../Localizable/Localizable.js');
+var LocalString = require('../localizable/localizable.js');
 var LOCALIZABLE = new LocalString();
 
 var async = require('async');
