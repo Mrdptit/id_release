@@ -37,7 +37,7 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-var LocalString = require('../Localizable/Localizable.js');
+var LocalString = require('../localizable/localizable.js');
 var LOCALIZABLE = new LocalString();
 
 var async = require('async');
@@ -109,7 +109,7 @@ var j = schedule.scheduleJob('00 00 00 */1 * *', function() {
                                                 console.log(eUser2);
                                             } else {
                                                 var tinnhanReport = {
-                                                    to: '<'+dUser[0].email+'>',
+                                                    to: '<' + dUser[0].email + '>',
                                                     subject: dUser[0].nickname + ', you have unread messages!',
                                                     html: '<!DOCTYPE html><html><meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]--><title></title><!--[if !mso]><!-- --><link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css"><!--<![endif]--><style type="text/css" id="media-query">body {margin: 0;padding: 0;}table,tr,td {vertical-align: top;border-collapse: collapse;}.ie-browser table,.mso-container table {table-layout: fixed;}* {line-height: inherit;}a[x-apple-data-detectors=true] {color: inherit !important;text-decoration: none !important;}[owa] .img-container div,[owa] .img-container button {display: block !important;}[owa] .fullwidth button {width: 100% !important;}[owa] .block-grid .col {display: table-cell;float: none !important;vertical-align: top;}.ie-browser .num12,.ie-browser .block-grid,[owa] .num12,[owa] .block-grid {width: 575px !important;}.ExternalClass,.ExternalClass p,.ExternalClass span,.ExternalClass font,.ExternalClass td,.ExternalClass div {line-height: 100%;}.ie-browser .mixed-two-up .num4,[owa] .mixed-two-up .num4 {width: 188px !important;}.ie-browser .mixed-two-up .num8,[owa] .mixed-two-up .num8 {width: 376px !important;}.ie-browser .block-grid.two-up .col,[owa] .block-grid.two-up .col {width: 287px !important;}.ie-browser .block-grid.three-up .col,[owa] .block-grid.three-up .col {width: 191px !important;}.ie-browser .block-grid.four-up .col,[owa] .block-grid.four-up .col {width: 143px !important;}.ie-browser .block-grid.five-up .col,[owa] .block-grid.five-up .col {width: 115px !important;}.ie-browser .block-grid.six-up .col,[owa] .block-grid.six-up .col {width: 95px !important;}.ie-browser .block-grid.seven-up .col,[owa] .block-grid.seven-up .col {width: 82px !important;}.ie-browser .block-grid.eight-up .col,[owa] .block-grid.eight-up .col {width: 71px !important;}.ie-browser .block-grid.nine-up .col,[owa] .block-grid.nine-up .col {width: 63px !important;}.ie-browser .block-grid.ten-up .col,[owa] .block-grid.ten-up .col {width: 57px !important;}.ie-browser .block-grid.eleven-up .col,[owa] .block-grid.eleven-up .col {width: 52px !important;}.ie-browser .block-grid.twelve-up .col,[owa] .block-grid.twelve-up .col {width: 47px !important;}@media only screen and (min-width: 595px) {.block-grid {width: 575px !important;}.block-grid .col {display: table-cell;Float: none !important;vertical-align: top;}.block-grid .col.num12 {width: 575px !important;}.block-grid.mixed-two-up .col.num4 {width: 188px !important;}.block-grid.mixed-two-up .col.num8 {width: 376px !important;}.block-grid.two-up .col {width: 287px !important;}.block-grid.three-up .col {width: 191px !important;}.block-grid.four-up .col {width: 143px !important;}.block-grid.five-up .col {width: 115px !important;}.block-grid.six-up .col {width: 95px !important;}.block-grid.seven-up .col {width: 82px !important;}.block-grid.eight-up .col {width: 71px !important;}.block-grid.nine-up .col {width: 63px !important;}.block-grid.ten-up .col {width: 57px !important;}.block-grid.eleven-up .col {width: 52px !important;}.block-grid.twelve-up .col {width: 47px !important;}}@media (max-width: 595px) {.block-grid,.col {min-width: 320px !important;max-width: 100% !important;}.block-grid {width: calc(100% - 40px) !important;}.col {width: 100% !important;}.col>div {margin: 0 auto;}img.fullwidth {max-width: 100% !important;}}</style></head><body class="clean-body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: transparent"><!--[if IE]><div class="ie-browser"><![endif]--><!--[if mso]><div class="mso-container"><![endif]--><div class="nl-container" style="min-width: 320px;Margin: 0 auto;background-color: transparent"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color: transparent;"><![endif]--><div style="background-color:transparent;"><div style="Margin: 0 auto;min-width: 320px;max-width: 575px;width: 575px;width: calc(26500% - 157100px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;" class="block-grid "><div style="border-collapse: collapse;display: table;width: 100%;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 575px;"><tr class="layout-full-width" style="background-color:transparent;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="575" style=" width:575px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]--><div class="col num12" style="min-width: 320px;max-width: 575px;width: 575px;width: calc(25500% - 146050px);background-color: transparent;"><div style="background-color: transparent; width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]--><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"><![endif]--><div style="color:#555555;line-height:120%;font-family:" Montserrat ", "Trebuchet MS ", "Lucida Grande ", "Lucida Sans Unicode ", "Lucida Sans ", Tahoma, sans-serif; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"><div style="font-size:12px;line-height:14px;color:#555555;font-family:" Montserrat ", "Trebuchet MS ", "Lucida Grande ", "Lucida Sans Unicode ", "Lucida Sans ", Tahoma, sans-serif;text-align:left;"><br></div></div><!--[if mso]></td></tr></table><![endif]--><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]--></div></div></div><div style="background-color:transparent;"><div style="Margin: 0 auto;min-width: 320px;max-width: 575px;width: 575px;width: calc(26500% - 157100px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;" class="block-grid "><div style="border-collapse: collapse;display: table;width: 100%;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 575px;"><tr class="layout-full-width" style="background-color:#FFFFFF;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="575" style=" width:575px; padding-right: 0px; padding-left: 0px; padding-top:5px; padding-bottom:0px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]--><div class="col num12" style="min-width: 320px;max-width: 575px;width: 575px;width: calc(25500% - 146050px);background-color: #FFFFFF;"><div style="background-color: transparent; width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:5px; padding-bottom:0px; padding-right: 0px; padding-left: 0px;"><!--<![endif]--><div align="center" class="img-container center fullwidth" style="padding-right: 0px;padding-left: 0px;"><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px;" align="center"><![endif]--><img class="center fullwidth" align="center" border="0" src="http://smartconnectsoftware.com/mail_iudi/logo.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 575px" width="575"><!--[if mso]></td></tr></table><![endif]--></div><!--[if (!mso)&(!IE)]><!--></div><!--<![endif]--></div></div><!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]--></div></div></div><div style="background-color:transparent;"><div style="Margin: 0 auto;min-width: 320px;max-width: 575px;width: 575px;width: calc(26500% - 157100px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;" class="block-grid "><div style="border-collapse: collapse;display: table;width: 100%;"><!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 575px;"><tr class="layout-full-width" style="background-color:#FFFFFF;"><![endif]--><!--[if (mso)|(IE)]><td align="center" width="575" style=" width:575px; padding-right: 0px; padding-left: 0px; padding-top:0px; padding-bottom:5px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><![endif]--><div class="col num12" style="min-width: 320px;max-width: 575px;width: 575px;width: calc(25500% - 146050px);background-color: #FFFFFF;"><div style="background-color: transparent; width: 100% !important;"><!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:0px; padding-bottom:5px; padding-right: 0px; padding-left: 0px;"><!--<![endif]--><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"><![endif]--><div style="font-family:" Montserrat ", "Trebuchet MS ", "Lucida Grande ", "Lucida Sans Unicode ", "Lucida Sans ", Tahoma, sans-serif;line-height:120%;color:#0D0D0D; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"><div style="font-size:12px;line-height:14px;color:#0D0D0D;font-family:" Montserrat ", "Trebuchet MS ", "Lucida Grande ", "Lucida Sans Unicode ", "Lucida Sans ", Tahoma, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center"><span style="font-size: 28px; line-height: 33px;"><strong><span style="line-height: 33px; font-size: 28px;">Dear Sir or Madam ,</span></strong></span></p></div></div><!--[if mso]></td></tr></table><![endif]--><div align="center" class="img-container center" style="padding-right: 0px;padding-left: 0px;"><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px;" align="center"><![endif]--><div style="line-height:10px;font-size:1px">&#160;</div> <img class="center" align="center" border="0" src="http://smartconnectsoftware.com/mail_iudi//divider.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 316px" width="316"><div style="line-height:10px;font-size:1px">&#160;</div><!--[if mso]></td></tr></table><![endif]--></div><!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"><![endif]--><div style="font-family:" Montserrat ", "Trebuchet MS ", "Lucida Grande ", "Lucida Sans Unicode ", "Lucida Sans ", Tahoma, sans-serif;line-height:150%;color:#555555; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"><div style="font-size:12px;line-height:18px;color:#555555;font-family:" Montserrat ", "Trebuchet MS ", "Lucida Grande ", "Lucida Sans Unicode ", "Lucida Sans ", Tahoma, sans-serif;text-align:left;"><p style="margin: 0;font-size: 14px;line-height: 21px;text-align: center">  <img src="' +
                                                         dUser2[0].avatar + '" width="80px" height="80px" style="border-radius: 50%; border: 4px solid rgba(218, 217, 217, 0.72);">  <h1 style="text-align: center;">' +
@@ -141,7 +141,7 @@ console.log(j.nextInvocation());
 router.post('/new', urlParser, function(req, res) {
 
 
-    console.log("TEST LOCALIZABLE String : >>>>>>>>>>>>>>>>>>>>>>>>>>>> " + LOCALIZABLE.getLocalMessage('vi','msg'));
+    console.log("TEST LOCALIZABLE String : >>>>>>>>>>>>>>>>>>>>>>>>>>>> " + LOCALIZABLE.getLocalMessage('vi', 'msg'));
 
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     if (token) {
@@ -498,43 +498,38 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                             if (eSettings) {
                                                 console.log(eSettings);
                                             } else {
-                                                var msgAlert  = "";
+                                                var msgAlert = "";
                                                 if (dataSetting[0].preview_message == 1) {
                                                     if (type == 'Photo') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language,'msg_common_sent_a_photo');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_sent_a_photo');
                                                     } else if (type == 'Emoji') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language,'msg_common_sent_a_emoji');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_sent_a_emoji');
                                                     } else if (type == 'Gif') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language,'msg_common_sent_a_gif');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_sent_a_gif');
                                                     } else if (type == 'Video') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language,'msg_common_sent_a_video');
-                                                    }else if (type == 'Call') {
-                                                            
-                                                        if (noidung == '-1'){
-                                                            msgAlert = LOCALIZABLE.getLocalMessage(language,'msg_common_miss_call') + dataNguoiGui[0].nickname;
-                                                       }else{
-                                                            msgAlert = LOCALIZABLE.getLocalMessage(language,'msg_common_incomming_call') + dataNguoiGui[0].nickname;
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_sent_a_video');
+                                                    } else if (type == 'Call') {
+                                                        if (noidung == '-1') {
+                                                            msgAlert = LOCALIZABLE.getLocalMessage(language, 'msg_common_miss_call') + dataNguoiGui[0].nickname;
+                                                        } else {
+                                                            msgAlert = LOCALIZABLE.getLocalMessage(language, 'msg_common_incomming_call') + dataNguoiGui[0].nickname;
                                                         }
-                                                            
                                                     } else if (type == 'File') {
-                                                        msgAlert= dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language,'msg_common_sent_a_file');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_sent_a_file');
                                                     } else if (type == 'MChangeBackground') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language,'msg_common_changed_background_chat');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_changed_background_chat');
                                                     } else if (type == 'MInviteMember') {
                                                         msgAlert = noidung;
                                                     } else {
                                                         msgAlert = dataNguoiGui[0].nickname + ': ' + noidung;
                                                     }
                                                 } else {
-                                                       msgAlert = LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language,'msg_common_new_message');
+                                                    msgAlert = LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_new_message');
                                                 }
-
-                                                console.log("language: " + dataNguoiNhan[0].language + "mesg:" +  msgAlert);
-
+                                                console.log("language: " + dataNguoiNhan[0].language + "mesg:" + msgAlert);
                                                 if (dataNguoiNhan[0].device_type == 'ios') {
                                                     //--------APNS
                                                     var note = new apn.Notification();
-                                                    
                                                     note.alert = msgAlert;
                                                     note.sound = 'default';
                                                     note.topic = config.ios;
@@ -546,16 +541,13 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                             "type": kieu
                                                         };
                                                     } else {
-
                                                         note.payload = {
                                                             "sender_id": sender_key,
                                                             "conversations_key": conversation_key,
                                                             "content": msgAlert,
                                                             "type": kieu
                                                         };
-
                                                     }
-
                                                     apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
                                                         console.log("sent:", result.sent.length);
                                                     });
@@ -574,19 +566,18 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                             }
                                                         };
                                                     } else {
-
-                                                          message = {
-                                                                to: dataNguoiNhan[0].device_token,
-                                                                collapse_key: collapse_key,
-                                                                data: {
-                                                                    sender_id: sender_key,
-                                                                    conversations_key: conversation_key,
-                                                                    content: msgAlert,
-                                                                    type: kieu,
-                                                                    title: 'IUDI',
-                                                                    body: msgAlert
-                                                                }
-                                                            };
+                                                        message = {
+                                                            to: dataNguoiNhan[0].device_token,
+                                                            collapse_key: collapse_key,
+                                                            data: {
+                                                                sender_id: sender_key,
+                                                                conversations_key: conversation_key,
+                                                                content: msgAlert,
+                                                                type: kieu,
+                                                                title: 'IUDI',
+                                                                body: msgAlert
+                                                            }
+                                                        };
 
                                                     }
 
@@ -609,8 +600,6 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                 }
                             }
                         });
-
-
                     }
                 });
             });
@@ -687,5 +676,5 @@ function echoResponse(status, data, message, error) {
 /*********--------------------------*********
  **********------- CONTROLLERS ------*********
  **********--------------------------*********/
- // express.use(require('./Localizable'));
+// express.use(require('./Localizable'));
 module.exports = router;
