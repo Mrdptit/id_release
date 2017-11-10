@@ -85,12 +85,12 @@ router.post('/new', urlParser, function (req, res) {
                             var value = [];
                             var insert = [];
                             for (var k in req.body) {
-                                if (k != 'access_token' & k != 'members' && k != 'last_message' && k != 'last_name_update') {
+                                if (k != 'access_token' & k != 'members' && k != 'last_message' && k != 'last_name_update' && k != 'name') {
                                     insert.push("`" + k + "`");
                                     value.push("'" + req.body[k] + "'");
                                 }
                             }
-                            var insertSQL = "INSERT INTO `conversations`(" + insert.toString() + ",`last_message`,`last_name_update`) VALUES(" + value.toString() + ","+escapeSQL.escape(req.body.last_message)+","+escapeSQL.escape(req.body.last_name_update)+")";
+                            var insertSQL = "INSERT INTO `conversations`(" + insert.toString() + ",`last_message`,`last_name_update`,`name`) VALUES(" + value.toString() + ","+escapeSQL.escape(req.body.last_message)+","+escapeSQL.escape(req.body.last_name_update)+","+escapeSQL.escape(req.body.name)+")";
 
                             client.query(insertSQL, function (eInsert, dInsert, fInsert) {
                                 if (eInsert) {
