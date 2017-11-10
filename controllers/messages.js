@@ -474,13 +474,13 @@ router.get('/conversations=:conversations_key', urlParser, function(req, res) {
 });
 
 function sendNotification(type, conversation_key, sender_key, receiver_key, noidung, kieu, posts_id) {
-    var senderSQL = "SELECT `nickname`,`language` FROM `users` WHERE `key`='" + sender_key + "'";
+    var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
     client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
         if (loiNguoiGui) {
             console.log(loiNguoiGui);
         } else {
             numberBadge(receiver_key, function(count) {
-                var receiverSQL = "SELECT `device_token`,`device_type` FROM `users` WHERE `key`='" + receiver_key + "'";
+                var receiverSQL = "SELECT `device_token`,`device_type`,`language` FROM `users` WHERE `key`='" + receiver_key + "'";
                 client.query(receiverSQL, function(loiNguoiNhan, dataNguoiNhan, FNN) {
                     if (loiNguoiNhan) {
                         console.log(loiNguoiNhan);
