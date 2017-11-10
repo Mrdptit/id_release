@@ -501,13 +501,13 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                 var msgAlert  = "";
                                                 if (dataSetting[0].preview_message == 1) {
                                                     if (type == 'Photo') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_photo');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiGui[0].language,'msg_common_sent_a_photo');
                                                     } else if (type == 'Emoji') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_emoji');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiGui[0].language,'msg_common_sent_a_emoji');
                                                     } else if (type == 'Gif') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_gif');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiGui[0].language,'msg_common_sent_a_gif');
                                                     } else if (type == 'Video') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_video');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiGui[0].language,'msg_common_sent_a_video');
                                                     }else if (type == 'Call') {
                                                             
                                                         if (noidung == '-1'){
@@ -517,16 +517,16 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                         }
                                                             
                                                     } else if (type == 'File') {
-                                                        msgAlert= dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_file');
+                                                        msgAlert= dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiGui[0].language,'msg_common_sent_a_file');
                                                     } else if (type == 'MChangeBackground') {
-                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_changed_background_chat');
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiGui[0].language,'msg_common_changed_background_chat');
                                                     } else if (type == 'MInviteMember') {
                                                         msgAlert = noidung;
                                                     } else {
                                                         msgAlert = dataNguoiGui[0].nickname + ': ' + noidung;
                                                     }
                                                 } else {
-                                                       msgAlert = LOCALIZABLE.getLocalMessage(language,'msg_common_new_message');
+                                                       msgAlert = LOCALIZABLE.getLocalMessage(dataNguoiGui[0].language,'msg_common_new_message');
                                                 }
 
                                                 if (dataNguoiNhan[0].device_type == 'ios') {
