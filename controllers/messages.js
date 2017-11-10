@@ -37,6 +37,9 @@ let transporter = nodemailer.createTransport({
     }
 });
 
+var LocalString = require('../localizable.js');
+var LOCALIZABLE = new LocalString();
+
 var async = require('async');
 /*********--------------------------*********
  **********------- MYSQL CONNECT ----*********
@@ -136,8 +139,14 @@ var j = schedule.scheduleJob('00 00 00 */1 * *', function() {
 console.log(j.nextInvocation());
 
 router.post('/new', urlParser, function(req, res) {
+
+
+    console.log("TEST LOCALIZABLE String : >>>>>>>>>>>>>>>>>>>>>>>>>>>> " + LOCALIZABLE.getLocalMessage('en','test'));
+
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     if (token) {
+
+
         jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });
