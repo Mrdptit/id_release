@@ -498,40 +498,42 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                             if (eSettings) {
                                                 console.log(eSettings);
                                             } else {
+                                                var msgAlert  = "";
+                                                if (dataSetting[0].preview_message == 1) {
+                                                    if (type == 'Photo') {
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_photo');
+                                                    } else if (type == 'Emoji') {
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_emoji');
+                                                    } else if (type == 'Gif') {
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_gif');
+                                                    } else if (type == 'Video') {
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_video');
+                                                    }else if (type == 'Call') {
+                                                            
+                                                        if (noidung == '-1'){
+                                                            msgAlert = LOCALIZABLE.getLocalMessage(language,'msg_common_miss_call') + dataNguoiGui[0].nickname;
+                                                       }else{
+                                                            msgAlert = LOCALIZABLE.getLocalMessage(language,'msg_common_incomming_call') + dataNguoiGui[0].nickname;
+                                                        }
+                                                            
+                                                    } else if (type == 'File') {
+                                                        msgAlert= dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_file');
+                                                    } else if (type == 'MChangeBackground') {
+                                                        msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_changed_background_chat');
+                                                    } else if (type == 'MInviteMember') {
+                                                        msgAlert = noidung;
+                                                    } else {
+                                                        msgAlert = dataNguoiGui[0].nickname + ': ' + noidung;
+                                                    }
+                                                } else {
+                                                       msgAlert = LOCALIZABLE.getLocalMessage(language,'msg_common_new_message');
+                                                }
+
                                                 if (dataNguoiNhan[0].device_type == 'ios') {
                                                     //--------APNS
                                                     var note = new apn.Notification();
-
-                                                    if (dataSetting[0].preview_message == 1) {
-                                                        if (type == 'Photo') {
-                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_photo');
-                                                        } else if (type == 'Emoji') {
-                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_emoji');
-                                                        } else if (type == 'Gif') {
-                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_gif');
-                                                        } else if (type == 'Video') {
-                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_video');
-                                                        }else if (type == 'Call') {
-                                                            
-                                                            if (noidung == '-1'){
-                                                                note.alert = LOCALIZABLE.getLocalMessage(language,'msg_common_miss_call') + dataNguoiGui[0].nickname;
-                                                            }else{
-                                                                note.alert = LOCALIZABLE.getLocalMessage(language,'msg_common_incomming_call') + dataNguoiGui[0].nickname;
-                                                            }
-                                                            
-                                                        } else if (type == 'File') {
-                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_file');
-                                                        } else if (type == 'MChangeBackground') {
-                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_changed_background_chat');
-                                                        } else if (type == 'MInviteMember') {
-                                                            note.alert = noidung;
-                                                        } else {
-                                                            note.alert = dataNguoiGui[0].nickname + ': ' + noidung;
-                                                        }
-                                                    } else {
-                                                        note.alert = 'New Message!';
-                                                    }
-
+                                                    
+                                                    note.alert = msgAlert;
                                                     note.sound = 'default';
                                                     note.topic = config.ios;
                                                     note.badge = count;
@@ -542,82 +544,13 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                             "type": kieu
                                                         };
                                                     } else {
-                                                        if (type == 'Photo') {
-                                                            note.payload = {
-                                                                "sender_id": sender_key,
-                                                                "conversations_key": conversation_key,
-                                                                "content": note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_photo'),
-                                                                "type": kieu
-                                                            };
-                                                        } else if (type == 'Emoji') {
-                                                            note.payload = {
-                                                                "sender_id": sender_key,
-                                                                "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_emoji'),
-                                                                "type": kieu
-                                                            };
-                                                        } else if (type == 'Gif') {
-                                                            note.payload = {
-                                                                "sender_id": sender_key,
-                                                                "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_gif'),
-                                                                "type": kieu
-                                                            };
-                                                        } else if (type == 'Video') {
-                                                            note.payload = {
-                                                                "sender_id": sender_key,
-                                                                "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_video'),
-                                                                "type": kieu
-                                                            };
-                                                        }else if (type == 'Call') {
-                                                            
-                                                            if(noidung == '-1'){
-                                                                 note.payload = {
-                                                                    "sender_id": sender_key,
-                                                                    "conversations_key": conversation_key,
-                                                                    "content": LOCALIZABLE.getLocalMessage(language,'msg_common_miss_call')+ dataNguoiGui[0].nickname,
-                                                                    "type": kieu
-                                                                 };
-                                                            }else{
-                                                                note.payload = {
-                                                                    "sender_id": sender_key,
-                                                                    "conversations_key": conversation_key,
-                                                                    "content": LOCALIZABLE.getLocalMessage(language,'msg_common_incomming_call') + dataNguoiGui[0].nickname,
-                                                                    "type": kieu
-                                                                };
 
-                                                            }
-                                                            
-                                                        } else if (type == 'File') {
-                                                            note.payload = {
-                                                                "sender_id": sender_key,
-                                                                "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_file'),
-                                                                "type": kieu
-                                                            };
-                                                        }else if (type == 'MChangeBackground') {
-                                                            note.payload = {
-                                                                "sender_id": sender_key,
-                                                                "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_changed_background_chat'),
-                                                                "type": kieu
-                                                            };
-                                                        } else if (type == 'MInviteMember') {
-                                                            note.payload = {
-                                                                "sender_id": sender_key,
-                                                                "conversations_key": conversation_key,
-                                                                "content": noidung,
-                                                                "type": kieu
-                                                            };
-                                                        } else {
-                                                            note.payload = {
-                                                                "sender_id": sender_key,
-                                                                "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + ': ' + noidung,
-                                                                "type": kieu
-                                                            };
-                                                        }
+                                                        note.payload = {
+                                                            "sender_id": sender_key,
+                                                            "conversations_key": conversation_key,
+                                                            "content": msgAlert,
+                                                            "type": kieu
+                                                        };
 
                                                     }
 
@@ -639,114 +572,19 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                             }
                                                         };
                                                     } else {
-                                                        if (dataSetting[0].preview_message == 1) {
-                                                            if (type == 'Photo') {
-                                                                message = {
-                                                                    to: dataNguoiNhan[0].device_token,
-                                                                    collapse_key: collapse_key,
-                                                                    data: {
-                                                                        sender_id: sender_key,
-                                                                        conversations_key: conversation_key,
-                                                                        content: dataNguoiGui[0].nickname + ' sent a photo',
-                                                                        type: kieu,
-                                                                        title: 'IUDI',
-                                                                        body: dataNguoiGui[0].nickname + ' sent a photo'
-                                                                    }
-                                                                };
-                                                            } else if (type == 'Emoji') {
-                                                                message = {
-                                                                    to: dataNguoiNhan[0].device_token,
-                                                                    collapse_key: collapse_key,
-                                                                    data: {
-                                                                        sender_id: sender_key,
-                                                                        conversations_key: conversation_key,
-                                                                        content: dataNguoiGui[0].nickname + ' sent a emoji',
-                                                                        type: kieu,
-                                                                        title: 'IUDI',
-                                                                        body: dataNguoiGui[0].nickname + ' sent a emoji'
-                                                                    }
-                                                                };
-                                                            } else if (type == 'Gif') {
-                                                                message = {
-                                                                    to: dataNguoiNhan[0].device_token,
-                                                                    collapse_key: collapse_key,
-                                                                    data: {
-                                                                        sender_id: sender_key,
-                                                                        conversations_key: conversation_key,
-                                                                        content: dataNguoiGui[0].nickname + ' sent a gif',
-                                                                        type: kieu,
-                                                                        title: 'IUDI',
-                                                                        body: dataNguoiGui[0].nickname + ' sent a gif'
-                                                                    }
-                                                                };
-                                                            } else if (type == 'Video') {
-                                                                message = {
-                                                                    to: dataNguoiNhan[0].device_token,
-                                                                    collapse_key: collapse_key,
-                                                                    data: {
-                                                                        sender_id: sender_key,
-                                                                        conversations_key: conversation_key,
-                                                                        content: dataNguoiGui[0].nickname + ' sent a video',
-                                                                        type: kieu,
-                                                                        title: 'IUDI',
-                                                                        body: dataNguoiGui[0].nickname + ' sent a video'
-                                                                    }
-                                                                };
-                                                            } else if (type == 'File') {
-                                                                message = {
-                                                                    to: dataNguoiNhan[0].device_token,
-                                                                    collapse_key: collapse_key,
-                                                                    data: {
-                                                                        sender_id: sender_key,
-                                                                        conversations_key: conversation_key,
-                                                                        content: dataNguoiGui[0].nickname + ' sent a file',
-                                                                        type: kieu,
-                                                                        title: 'IUDI',
-                                                                        body: dataNguoiGui[0].nickname + ' sent a file'
-                                                                    }
-                                                                };
-                                                            } else if (type == 'MInviteMember') {
-                                                                message = {
-                                                                    to: dataNguoiNhan[0].device_token,
-                                                                    collapse_key: collapse_key,
-                                                                    data: {
-                                                                        sender_id: sender_key,
-                                                                        conversations_key: conversation_key,
-                                                                        content: noidung,
-                                                                        type: kieu,
-                                                                        title: 'IUDI',
-                                                                        body: noidung
-                                                                    }
-                                                                };
-                                                            } else {
-                                                                message = {
-                                                                    to: dataNguoiNhan[0].device_token,
-                                                                    collapse_key: collapse_key,
-                                                                    data: {
-                                                                        sender_id: sender_key,
-                                                                        conversations_key: conversation_key,
-                                                                        content: dataNguoiGui[0].nickname + ': ' + noidung,
-                                                                        type: kieu,
-                                                                        title: 'IUDI',
-                                                                        body: dataNguoiGui[0].nickname + ': ' + noidung
-                                                                    }
-                                                                };
-                                                            }
 
-                                                        } else {
-                                                            message = {
+                                                          message = {
                                                                 to: dataNguoiNhan[0].device_token,
                                                                 collapse_key: collapse_key,
                                                                 data: {
                                                                     sender_id: sender_key,
                                                                     conversations_key: conversation_key,
-                                                                    content: dataNguoiGui[0].nickname + ': ' + noidung,
+                                                                    content: msgAlert,
                                                                     type: kieu,
                                                                     title: 'IUDI',
-                                                                    body: dataNguoiGui[0].nickname + ': ' + noidung
+                                                                    body: msgAlert
                                                                 }
                                                             };
-                                                        }
 
                                                     }
 

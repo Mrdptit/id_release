@@ -1,5 +1,6 @@
 var EN = {
   "msg"								:'I come from eng',
+  "msg_common_new_message"			:'You have a new message', 
   "msg_common_sent_a_photo"			:' sent a photo', 
   "msg_common_sent_a_emoji"			:' sent a emoji',
   "msg_common_sent_a_gif"			:' sent a gif',
