@@ -211,6 +211,9 @@ router.post('/signup', urlParser, function(req, res) {
                                 currentTime = getRandomInt(1, 9) + "0" + currentTime;
                                 client.query("UPDATE `users` SET `username`='" + currentTime + "' WHERE `email`='" + req.body.email + "'");
                             }
+                        } else {
+                            currentTime = getRandomInt(1, 9) + "0" + currentTime;
+                            client.query("UPDATE `users` SET `username`='" + currentTime + "' WHERE `email`='" + req.body.email + "'");
                         }
                         console.log("Vừa đăng ký thành công với email " + req.body.email + " bằng thiết bị " + req.body.device_name);
                         return res.send(echoResponse(200, 'Registered successfully.', 'success', false));
@@ -1229,7 +1232,7 @@ router.post('/deleteAvatar', urlParser, function(req, res) {
                         if (data.length > 0) {
 
                             var urlImage = "https://i.imgur.com/2NNcVO7.jpg";
-                            var dataSQL = "UPDATE `users` SET `avatar`='"+urlImage+"' WHERE `key`='" + req.body.key + "'";
+                            var dataSQL = "UPDATE `users` SET `avatar`='" + urlImage + "' WHERE `key`='" + req.body.key + "'";
                             client.query(dataSQL, function(eInsert, dInsert, fInsert) {
                                 if (eInsert) {
                                     console.log(eInsert);
@@ -1237,17 +1240,17 @@ router.post('/deleteAvatar', urlParser, function(req, res) {
                                 } else {
                                     console.log("Vừa update users thành công cho key " + req.body.key);
                                     return res.send(JSON.stringify({
-                                                                status: 200,
-                                                                avatar: urlImage,
-                                                                message: "delete avatar success",
-                                                                error: false
-                                                            }));
+                                        status: 200,
+                                        avatar: urlImage,
+                                        message: "delete avatar success",
+                                        error: false
+                                    }));
                                     // return res.send(echoResponse(200,avatar:"", 'Updated successfully', 'success', false));
                                 }
                             });
-                            
+
                         } else {
-                            return res.send(echoResponse(300, 'Can not delete avatar' , 'success', true));
+                            return res.send(echoResponse(300, 'Can not delete avatar', 'success', true));
                         }
                     }
                 });
@@ -1825,11 +1828,11 @@ router.get('/:key/type=findonline', function(req, res) {
                                 var date = new Date(data[i].birthday);
                                 var today = new Date();
                                 var age = today.getFullYear() - date.getFullYear();
-                                
-                                if(max_age == 0 && min_age == 0){
+
+                                if (max_age == 0 && min_age == 0) {
                                     data[i].age = age;
                                     array.push(data[i]);
-                                }else if (age >= min_age && age <= max_age) {
+                                } else if (age >= min_age && age <= max_age) {
                                     data[i].age = age;
                                     array.push(data[i]);
                                 }
@@ -2176,29 +2179,29 @@ router.post('/request', urlParser, function(req, res) {
                                                 return res.sendStatus(300);
                                             } else {
                                                 console.log("1---------------------------- REQUEST");
-                                               
 
-                                                 var currentUser = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
-                                                 client.query(currentUser, function(eCurrent, dCurrent, fCurren) {
-                                                       if (eCurrent) {
-                                                            console.log("2---------------------------- REQUEST");
-                                                           console.log(eCurrent);
-                                                        } else {
-                                                            // Insert Notification
-                                                            console.log("3---------------------------- REQUEST " + req.body.users_key + "  " +req.body.friend_key);
-                                                            var currentTime = new Date().getTime();
-                                                            insertNotificationNoImage(res, req.body.users_key, dCurrent[0].nickname, dCurrent[0].avatar, "request", currentTime, req.body.friend_key, 0);
-                                                            sendNotification(req.body.users_key, req.body.friend_key, "send friend request", "request", null);
-                                                            //-----
-                                                        }
 
-                                                         console.log(req.body.users_key + " gửi lời mời kết bạn tới " + req.body.friend_key);
-                                                        return res.send(echoResponse(200, 'Requested successfully', 'success', false));
-                                                 });
+                                                var currentUser = "SELECT `nickname`,`avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
+                                                client.query(currentUser, function(eCurrent, dCurrent, fCurren) {
+                                                    if (eCurrent) {
+                                                        console.log("2---------------------------- REQUEST");
+                                                        console.log(eCurrent);
+                                                    } else {
+                                                        // Insert Notification
+                                                        console.log("3---------------------------- REQUEST " + req.body.users_key + "  " + req.body.friend_key);
+                                                        var currentTime = new Date().getTime();
+                                                        insertNotificationNoImage(res, req.body.users_key, dCurrent[0].nickname, dCurrent[0].avatar, "request", currentTime, req.body.friend_key, 0);
+                                                        sendNotification(req.body.users_key, req.body.friend_key, "send friend request", "request", null);
+                                                        //-----
+                                                    }
+
+                                                    console.log(req.body.users_key + " gửi lời mời kết bạn tới " + req.body.friend_key);
+                                                    return res.send(echoResponse(200, 'Requested successfully', 'success', false));
+                                                });
 
                                             }
                                         });
-                                       
+
 
                                     }
                                 }
@@ -3229,7 +3232,7 @@ function isEmpty(val) {
 //Facebook like
 router.post('/fb_like', urlParser, function(req, res) {
 
-     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     if (token) {
         jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
@@ -3272,47 +3275,47 @@ router.post('/fb_like', urlParser, function(req, res) {
 
                         var data = jsonLikes;
                         //console.log("data timeline -------- - - - -  "+data);
-                       // var usersql = "SELECT `key` FROM `users` WHERE `key`='" + user_key + "' AND `is_sync_facebook_like` = '0'";
+                        // var usersql = "SELECT `key` FROM `users` WHERE `key`='" + user_key + "' AND `is_sync_facebook_like` = '0'";
                         //client.query(usersql, function(e, d, f) {
-                            // if (e) {
-                            //     console.log(e);
-                            //     return res.sendStatus(300);
-                            // } else {
-                               // if (d.length > 0) {
-                                    async.forEachOf(data, function(ele, i, call) {
-                                        var stringJson = JSON.stringify(ele, null, 2);
-                                        var likes = JSON.parse(stringJson);
-                                        console.log("<--------> data like:" + ele + "\n");
-                                        // var currentTime = parseInt(feed['time'], 10) * 1000;
-                                            var sqlInsert = "INSERT INTO `facebook_informations`(`name`,`type`,`users_key`)";
+                        // if (e) {
+                        //     console.log(e);
+                        //     return res.sendStatus(300);
+                        // } else {
+                        // if (d.length > 0) {
+                        async.forEachOf(data, function(ele, i, call) {
+                            var stringJson = JSON.stringify(ele, null, 2);
+                            var likes = JSON.parse(stringJson);
+                            console.log("<--------> data like:" + ele + "\n");
+                            // var currentTime = parseInt(feed['time'], 10) * 1000;
+                            var sqlInsert = "INSERT INTO `facebook_informations`(`name`,`type`,`users_key`)";
 
-                                            var sqlData = "VALUES (" + escapeSQL.escape(likes['name']) + ",'" + likes['type'] + "','" + user_key + "')";
-                                            client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
-                                                if (eInsert) {
-                                                    console.log(eInsert);
-                                                    if (i === data.length - 1) {
-                                                        return res.sendStatus(300);
-                                                    }
-                                                } else {
-                                                    if (i === data.length - 1) {
+                            var sqlData = "VALUES (" + escapeSQL.escape(likes['name']) + ",'" + likes['type'] + "','" + user_key + "')";
+                            client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                                if (eInsert) {
+                                    console.log(eInsert);
+                                    if (i === data.length - 1) {
+                                        return res.sendStatus(300);
+                                    }
+                                } else {
+                                    if (i === data.length - 1) {
 
-                                                        var queryInsertChannel = "UPDATE `users` SET `is_sync_facebook_like`='1' WHERE `key`='" + user_key + "'";
-                                                        console.log(queryInsertChannel);
-                                                        client.query(queryInsertChannel, function(err, data, FNN) {
-                                                            return res.send(echoResponse(200, 'sync facebook like SUCCESS', 'success', false));
-                                                        });
+                                        var queryInsertChannel = "UPDATE `users` SET `is_sync_facebook_like`='1' WHERE `key`='" + user_key + "'";
+                                        console.log(queryInsertChannel);
+                                        client.query(queryInsertChannel, function(err, data, FNN) {
+                                            return res.send(echoResponse(200, 'sync facebook like SUCCESS', 'success', false));
+                                        });
 
-                                                    }
-                                                }
-                                            });
+                                    }
+                                }
+                            });
 
-                                    });
+                        });
 
-                                // } else {
-                                //     return res.send(echoResponse(300, 'User had been sync facebook like', 'success', true));
-                                // }
-                          //  }
-                      //  });
+                        // } else {
+                        //     return res.send(echoResponse(300, 'User had been sync facebook like', 'success', true));
+                        // }
+                        //  }
+                        //  });
                     }
 
 
@@ -3842,8 +3845,8 @@ function sendNotification(sender_key, receiver_key, noidung, kieu, posts_id) {
                             if (kieu == 'request') {
 
                             }
-                            
-                            console.log("request friend data devicetoken:----------------- " + dataNguoiNhan[0].device_token);  
+
+                            console.log("request friend data devicetoken:----------------- " + dataNguoiNhan[0].device_token);
 
                             apnService.send(note, dataNguoiNhan[0].device_token).then(result => {
                                 console.log("sent:", result.sent.length);
