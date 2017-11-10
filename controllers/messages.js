@@ -474,7 +474,7 @@ router.get('/conversations=:conversations_key', urlParser, function(req, res) {
 });
 
 function sendNotification(type, conversation_key, sender_key, receiver_key, noidung, kieu, posts_id) {
-    var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + sender_key + "'";
+    var senderSQL = "SELECT `nickname`,`language` FROM `users` WHERE `key`='" + sender_key + "'";
     client.query(senderSQL, function(loiNguoiGui, dataNguoiGui, FNG) {
         if (loiNguoiGui) {
             console.log(loiNguoiGui);
@@ -501,17 +501,28 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                 if (dataNguoiNhan[0].device_type == 'ios') {
                                                     //--------APNS
                                                     var note = new apn.Notification();
+
                                                     if (dataSetting[0].preview_message == 1) {
                                                         if (type == 'Photo') {
-                                                            note.alert = dataNguoiGui[0].nickname + ' sent a photo';
+                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_photo');
                                                         } else if (type == 'Emoji') {
-                                                            note.alert = dataNguoiGui[0].nickname + ' sent a emoji';
+                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_emoji');
                                                         } else if (type == 'Gif') {
-                                                            note.alert = dataNguoiGui[0].nickname + ' sent a gif';
+                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_gif');
                                                         } else if (type == 'Video') {
-                                                            note.alert = dataNguoiGui[0].nickname + ' sent a video';
+                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_video');
+                                                        }else if (type == 'Call') {
+                                                            
+                                                            if (noidung == '-1'){
+                                                                note.alert = LOCALIZABLE.getLocalMessage(language,'msg_common_miss_call') + dataNguoiGui[0].nickname;
+                                                            }else{
+                                                                note.alert = LOCALIZABLE.getLocalMessage(language,'msg_common_incomming_call') + dataNguoiGui[0].nickname;
+                                                            }
+                                                            
                                                         } else if (type == 'File') {
-                                                            note.alert = dataNguoiGui[0].nickname + ' sent a file';
+                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_file');
+                                                        } else if (type == 'MChangeBackground') {
+                                                            note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_changed_background_chat');
                                                         } else if (type == 'MInviteMember') {
                                                             note.alert = noidung;
                                                         } else {
@@ -535,35 +546,61 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                             note.payload = {
                                                                 "sender_id": sender_key,
                                                                 "conversations_key": conversation_key,
-                                                                "content": note.alert = dataNguoiGui[0].nickname + ' sent a photo',
+                                                                "content": note.alert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_photo'),
                                                                 "type": kieu
                                                             };
                                                         } else if (type == 'Emoji') {
                                                             note.payload = {
                                                                 "sender_id": sender_key,
                                                                 "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + ' sent a emoji',
+                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_emoji'),
                                                                 "type": kieu
                                                             };
                                                         } else if (type == 'Gif') {
                                                             note.payload = {
                                                                 "sender_id": sender_key,
                                                                 "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + ' sent a gif',
+                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_gif'),
                                                                 "type": kieu
                                                             };
                                                         } else if (type == 'Video') {
                                                             note.payload = {
                                                                 "sender_id": sender_key,
                                                                 "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + ' sent a video',
+                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_video'),
                                                                 "type": kieu
                                                             };
+                                                        }else if (type == 'Call') {
+                                                            
+                                                            if(noidung == '-1'){
+                                                                 note.payload = {
+                                                                    "sender_id": sender_key,
+                                                                    "conversations_key": conversation_key,
+                                                                    "content": LOCALIZABLE.getLocalMessage(language,'msg_common_miss_call')+ dataNguoiGui[0].nickname,
+                                                                    "type": kieu
+                                                                 };
+                                                            }else{
+                                                                note.payload = {
+                                                                    "sender_id": sender_key,
+                                                                    "conversations_key": conversation_key,
+                                                                    "content": LOCALIZABLE.getLocalMessage(language,'msg_common_incomming_call') + dataNguoiGui[0].nickname,
+                                                                    "type": kieu
+                                                                };
+
+                                                            }
+                                                            
                                                         } else if (type == 'File') {
                                                             note.payload = {
                                                                 "sender_id": sender_key,
                                                                 "conversations_key": conversation_key,
-                                                                "content": dataNguoiGui[0].nickname + ' sent a file',
+                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_sent_a_file'),
+                                                                "type": kieu
+                                                            };
+                                                        }else if (type == 'MChangeBackground') {
+                                                            note.payload = {
+                                                                "sender_id": sender_key,
+                                                                "conversations_key": conversation_key,
+                                                                "content": dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(language,'msg_common_changed_background_chat'),
                                                                 "type": kieu
                                                             };
                                                         } else if (type == 'MInviteMember') {
