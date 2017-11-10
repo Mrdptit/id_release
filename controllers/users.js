@@ -3076,7 +3076,7 @@ router.post('/facebook', urlParser, function(req, res) {
                                     async.forEachOf(data, function(ele, i, call) {
                                         var dataImage = ele.images;
                                         if (dataImage.length == 0) {
-                                            var currentTime = parseInt(ele.time, 10) * 1000;
+                                            var currentTime = parseFloat(ele.time, 10) * 1000;
                                             var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                             var caption;
                                             if (ele.content == 0) {
@@ -3099,7 +3099,7 @@ router.post('/facebook', urlParser, function(req, res) {
                                             });
                                         } else if (dataImage.length == 1) {
                                             ///-------
-                                            var currentTime = parseInt(ele.time, 10) * 1000;
+                                            var currentTime = parseFloat(ele.time, 10) * 1000;
                                             var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                             var caption;
                                             if (ele.content == 0) {
@@ -3142,7 +3142,7 @@ router.post('/facebook', urlParser, function(req, res) {
                                             } else {
                                                 caption = ele.title + ' ' + ele.content;
                                             }
-                                            var currentTime = parseInt(ele.time, 10) * 1000;
+                                            var currentTime = parseFloat(ele.time, 10) * 1000;
                                             var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                             var sqlData = "VALUES (" + escapeSQL.escape(caption) + ",'" + currentTime + "','" + currentTime + "','0','albums','1','" + d[0].key + "')";
                                             client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
@@ -3405,7 +3405,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                         }
                                         //console.log("data image -------- - - - -  "+stringJson);
                                         if (isEmpty(dataImage) == true) {
-                                            var currentTime = parseInt(feed['time'], 10) * 1000;
+                                            var currentTime = parseFloat(feed['time'], 10) * 1000;
                                             var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                             var caption;
 
@@ -3436,7 +3436,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                                             });
                                         } else {
                                             ///-------
-                                            var currentTime = parseInt(feed['time'], 10) * 1000;
+                                            var currentTime = parseFloat(feed['time'], 10) * 1000;
                                             var sqlInsert = "INSERT INTO `posts`(`caption`,`posted_time`,`edited_time`,`permission`,`type`,`is_active`,`users_key`)";
                                             var caption;
                                             if (isEmpty(feed['title'])) {
