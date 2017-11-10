@@ -529,6 +529,8 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                        msgAlert = LOCALIZABLE.getLocalMessage(dataNguoiGui[0].language,'msg_common_new_message');
                                                 }
 
+                                                console.log(msgAlert);
+
                                                 if (dataNguoiNhan[0].device_type == 'ios') {
                                                     //--------APNS
                                                     var note = new apn.Notification();
