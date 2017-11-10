@@ -810,5 +810,5 @@ function echoResponse(status, data, message, error) {
 /*********--------------------------*********
  **********------- CONTROLLERS ------*********
  **********--------------------------*********/
- express.use(require('./Localizable'));
+ // express.use(require('./Localizable'));
 module.exports = router;
