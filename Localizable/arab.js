@@ -1,5 +1,4 @@
 var AR = {
-
 //Message
   "msg":   'I come from AR',
   "msg_common_new_message"			:'You have a new message', 

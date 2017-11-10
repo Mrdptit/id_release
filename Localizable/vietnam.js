@@ -1,5 +1,5 @@
 var VI = {
-  "msg" : "I come from viet name",
+  "msg" : "I come from viet nam",
   "msg_common_new_message"      :'Bạn có một tin nhắn mới', 
   "msg_common_sent_a_photo"                  :' đã gửi một bức ảnh', 
   "msg_common_sent_a_emoji"                  :' đã gửi một emoji',
