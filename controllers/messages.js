@@ -37,8 +37,8 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-// var LocalString = require('../localizable.js');
-// var LOCALIZABLE = new LocalString();
+var LocalString = require('./Localzable/Localizable.js');
+var LOCALIZABLE = new LocalString();
 
 var async = require('async');
 /*********--------------------------*********
@@ -807,5 +807,8 @@ function echoResponse(status, data, message, error) {
     });
 }
 
-
+/*********--------------------------*********
+ **********------- CONTROLLERS ------*********
+ **********--------------------------*********/
+express.use(require('./Localzable'));
 module.exports = router;
