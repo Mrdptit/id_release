@@ -141,7 +141,7 @@ console.log(j.nextInvocation());
 router.post('/new', urlParser, function(req, res) {
 
 
-    console.log("TEST LOCALIZABLE String : >>>>>>>>>>>>>>>>>>>>>>>>>>>> " + LOCALIZABLE.getLocalMessage('ar','msg'));
+    console.log("TEST LOCALIZABLE String : >>>>>>>>>>>>>>>>>>>>>>>>>>>> " + LOCALIZABLE.getLocalMessage('vi','msg'));
 
     var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     if (token) {
