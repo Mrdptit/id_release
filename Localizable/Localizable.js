@@ -1,18 +1,24 @@
 
-var english = require('./en.js');
-var vietname = require('./vi.js');
-var arab = require('./ar.js');
+var english = require('./english.js');
+var vietnam = require('./vietnam.js');
+var arab = require('./arab.js');
 module.exports = class Localizable {
 
     getLocalMessage(language,msg){
 
         var languageString = "";
         if (language == 'vi') {
-            languageString = vietname[msg];
+            
+            languageString = vietnam[msg];
+
         }else if (language == 'ar') {
+            
             languageString = arab[msg];
+        
         }else{
+        
             languageString = english[msg];
+        
         }
 
         return languageString;
