@@ -1437,7 +1437,11 @@ router.get('/:key/type=mutual_friend', function(req, res) {
                     async.forEachOf(data, function(element, i, callback) {
                         var sql2 = "SELECT " + BASE.baseSelectFriendSQL() + " FROM `users` WHERE `key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + data[i].key + "' AND `friend_key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + req.params.key + "'))";
                         BASE.getObjectWithSQL(sql2, function(contact) {
-                            data[i].mutual_friend = contact.length;
+                            if (contact) {
+                                data[i].mutual_friend = contact.length;
+                            } else {
+                                data[i].mutual_friend = 0;
+                            }
                             if (i === data.length - 1) {
                                 return res.send(echoResponse(200, data, "success", false));
                             }
