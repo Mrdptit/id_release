@@ -48,8 +48,10 @@ var apnService = new apn.Provider({
 router.get('/nickname=:nickname', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -113,8 +115,10 @@ router.get('/nickname=:nickname', function(req, res) {
 router.get('/email=:email', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -162,8 +166,10 @@ router.get('/email=:email', function(req, res) {
 router.get('/phone_number=:phone_number', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {

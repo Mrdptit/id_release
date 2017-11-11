@@ -69,8 +69,10 @@ var LOCALIZABLE = new LocalString();
 router.get('/type=all', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -147,8 +149,10 @@ router.get('/type=all', function(req, res) {
 router.post('/type=params', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -364,8 +368,10 @@ router.post('/type=params', urlParser, function(req, res) {
 router.get('/type=like', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -414,8 +420,10 @@ router.get('/type=like', function(req, res) {
 router.get('/type=check', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -458,8 +466,10 @@ router.get('/type=check', function(req, res) {
 router.post('/type=deletelike', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -486,8 +496,10 @@ router.post('/type=deletelike', urlParser, function(req, res) {
 router.post('/type=deleteunlike', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -514,8 +526,10 @@ router.post('/type=deleteunlike', urlParser, function(req, res) {
 router.get('/type=unlike', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -545,8 +559,10 @@ router.get('/type=unlike', function(req, res) {
 router.get('/type=me', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -597,8 +613,10 @@ router.get('/type=me', function(req, res) {
 router.post('/like', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -656,8 +674,10 @@ router.post('/like', urlParser, function(req, res) {
 router.post('/unlike', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {

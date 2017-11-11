@@ -68,8 +68,10 @@ var LOCALIZABLE = new LocalString();
 router.post('/new', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -126,8 +128,10 @@ router.post('/new', urlParser, function(req, res) {
 router.post('/update', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -272,8 +276,10 @@ router.post('/update', urlParser, function(req, res) {
 router.post('/delete_image', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -311,8 +317,10 @@ router.post('/delete_image', urlParser, function(req, res) {
 router.post('/delete', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -352,8 +360,10 @@ router.post('/delete', urlParser, function(req, res) {
 router.post('/report', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -435,8 +445,10 @@ router.post('/report', urlParser, function(req, res) {
 router.post('/seen', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -474,8 +486,10 @@ router.post('/seen', urlParser, function(req, res) {
 router.get('/:id/type=info', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -759,8 +773,10 @@ router.get('/:id/type=comment', function(req, res) {
 router.post('/like', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -897,8 +913,10 @@ router.post('/like', urlParser, function(req, res) {
 router.post('/comment/new', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -981,8 +999,10 @@ router.post('/comment/new', urlParser, function(req, res) {
 router.post('/comment/update', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.user_key || req.query.user_key || req.params.user_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1015,8 +1035,10 @@ router.post('/comment/update', urlParser, function(req, res) {
 router.post('/comment/delete', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1078,8 +1100,10 @@ router.post('/comment/delete', urlParser, function(req, res) {
 router.post('/public', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {

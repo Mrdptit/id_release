@@ -204,8 +204,10 @@ router.get('/:key/type=newest', urlParser, function(req, res) {
     var key = req.body.key || req.query.key || req.params.key;
     var page = req.body.page || req.query.page || req.params.page;
     var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -235,8 +237,10 @@ router.post('/follow', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
     var friend_key = req.body.friend_key || req.query.friend_key || req.params.friend_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -259,8 +263,10 @@ router.post('/unfollow', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
     var friend_key = req.body.friend_key || req.query.friend_key || req.params.friend_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -284,8 +290,10 @@ router.post('/unfollow', urlParser, function(req, res) {
 router.post('/point', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -307,8 +315,10 @@ router.post('/point', urlParser, function(req, res) {
 router.get('/:key/type=imgur', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -330,8 +340,10 @@ router.get('/:key/type=imgur', urlParser, function(req, res) {
 router.post('/settings', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -371,8 +383,10 @@ router.post('/settings', urlParser, function(req, res) {
 router.post('/report', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -438,8 +452,10 @@ router.get('/:idChannel/type=channel_information&access_token=:access_token', ur
 router.post('/change_email', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -520,8 +536,10 @@ router.post('/change_email', urlParser, function(req, res) {
 router.post('/auth_email', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -553,8 +571,10 @@ router.post('/auth_email', urlParser, function(req, res) {
 router.post('/other_information', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -598,8 +618,10 @@ router.post('/other_information', urlParser, function(req, res) {
 router.post('/email', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -629,8 +651,10 @@ router.post('/email', urlParser, function(req, res) {
 router.post('/username', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -661,8 +685,10 @@ router.post('/username', urlParser, function(req, res) {
 router.post('/signout', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -693,8 +719,10 @@ router.post('/signout', urlParser, function(req, res) {
 router.post('/phone', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -738,8 +766,10 @@ router.post('/phone', urlParser, function(req, res) {
 router.post('/update', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -784,8 +814,10 @@ router.post('/update', urlParser, function(req, res) {
 router.get('/:key/type=info&access_token=:access_token', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -859,8 +891,10 @@ router.get('/:key/type=friendinfo', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var friend_key = req.body.friend_key || req.query.friend_key || req.params.friend_key;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -954,8 +988,10 @@ router.get('/:key/type=conversations', function(req, res) {
     var key = req.body.key || req.query.key || req.params.key;
     var page = req.body.page || req.query.page || req.params.page;
     var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1004,8 +1040,10 @@ router.get('/:key/type=conversations', function(req, res) {
 router.get('/:key/type=sync', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1029,8 +1067,10 @@ router.get('/:key/type=sync', function(req, res) {
 router.post('/deleteAvatar', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1069,8 +1109,10 @@ router.post('/deleteAvatar', urlParser, function(req, res) {
 router.get('/:key/type=syncunread', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1094,8 +1136,10 @@ router.get('/:key/type=syncunread', function(req, res) {
 router.get('/:key/type=devices', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1120,8 +1164,10 @@ router.get('/:key/type=devices', function(req, res) {
 router.get('/:key/type=facebook', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1145,8 +1191,10 @@ router.get('/:key/type=facebook', function(req, res) {
 router.get('/:key/type=friend&access_token=:access_token', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1170,8 +1218,10 @@ router.get('/:key/type=friend&access_token=:access_token', function(req, res) {
 router.get('/:key/type=findnearby', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1247,8 +1297,10 @@ router.get('/:key/type=findnearby', function(req, res) {
 router.get('/:key/type=findonline', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1307,8 +1359,10 @@ router.get('/:key/type=findonline', function(req, res) {
 router.get('/:key/type=friendrequest&access_token=:access_token', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1345,8 +1399,10 @@ router.get('/:key/type=friendrequest&access_token=:access_token', function(req, 
 router.get('/:key/type=friendsuggest', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1391,8 +1447,10 @@ router.get('/:key/type=friendsuggest', function(req, res) {
 router.post('/unsuggest', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1425,8 +1483,10 @@ router.get('/:key/type=mutual_friend', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
     var friend_key = req.body.friend_key || req.query.friend_key || req.params.friend_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1462,8 +1522,10 @@ router.get('/:key/type=mutual_friend', function(req, res) {
 router.get('/:key/type=friendblock&access_token=:access_token', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     console.log(access_token);
     BASE.authenticateWithToken(key, access_token, function(logged) {
@@ -1490,8 +1552,10 @@ router.get('/:key/type=friendblock&access_token=:access_token', function(req, re
 router.get('/:key/exists=:friend_key', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1518,8 +1582,10 @@ router.get('/:key/exists=:friend_key', function(req, res) {
 router.get('/:key/type=friendonline&access_token=:access_token', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1544,8 +1610,10 @@ router.get('/:key/type=friendonline&access_token=:access_token', function(req, r
 router.get('/:key/type=friendoffline&access_token=:access_token', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1570,8 +1638,10 @@ router.get('/:key/type=friendoffline&access_token=:access_token', function(req, 
 router.post('/request', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1625,8 +1695,10 @@ router.post('/request', urlParser, function(req, res) {
 router.post('/removerequest', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1656,8 +1728,10 @@ router.post('/removerequest', urlParser, function(req, res) {
 router.get('/:key/notifications', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1691,8 +1765,10 @@ router.get('/:key/notifications', urlParser, function(req, res) {
 router.get('/:key/friend=:friend_key&access_token=:access_token', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1772,8 +1848,10 @@ router.get('/:key/friend=:friend_key&access_token=:access_token', function(req, 
 router.post('/unrequest', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1811,8 +1889,10 @@ router.post('/unrequest', urlParser, function(req, res) {
 router.post('/unfriend', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1867,8 +1947,10 @@ router.post('/unfriend', urlParser, function(req, res) {
 router.post('/block', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1922,8 +2004,10 @@ router.post('/block', urlParser, function(req, res) {
 router.post('/unblock', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -1955,8 +2039,10 @@ router.post('/unblock', urlParser, function(req, res) {
 router.post('/accept', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -2048,8 +2134,10 @@ router.post('/accept', urlParser, function(req, res) {
 router.post('/seen_profile', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -2068,8 +2156,10 @@ router.post('/seen_profile', urlParser, function(req, res) {
 router.post('/facebook_data', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {

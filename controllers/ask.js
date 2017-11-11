@@ -81,8 +81,10 @@ router.get('/type=username', urlParser, function(req, res) {
 router.get('/type=received', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -114,8 +116,10 @@ router.get('/type=received', urlParser, function(req, res) {
 router.get('/type=sent', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -233,8 +237,10 @@ router.post('/questions/new', urlParser, function(req, res) {
 router.post('/questions/delete', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
@@ -302,8 +308,10 @@ router.post('/questions/delete', urlParser, function(req, res) {
 router.post('/answers/new', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.sender_key || req.query.sender_key || req.params.sender_key;
-    if (key.length == 0) {
-        return res.sendStatus(300);
+    if (typeof key != 'string') {
+        if (key.length == 0) {
+            return res.sendStatus(300);
+        }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
