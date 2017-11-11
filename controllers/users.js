@@ -268,13 +268,11 @@ router.post('/fb_like', urlParser, function(req, res) {
                             }
                         } else {
                             if (i === data.length - 1) {
-
                                 var queryInsertChannel = "UPDATE `users` SET `is_sync_facebook_like`='1' WHERE `key`='" + user_key + "'";
                                 console.log(queryInsertChannel);
                                 client.query(queryInsertChannel, function(err, data, FNN) {
                                     return res.send(echoResponse(200, 'sync facebook like SUCCESS', 'success', false));
                                 });
-
                             }
                         }
                     });
