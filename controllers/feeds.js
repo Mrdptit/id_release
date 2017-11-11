@@ -507,6 +507,7 @@ router.get('/type=myalbums', function(req, res) {
 router.get('/type=avatar', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
+    var users_key = req.body.users_key || req.query.users_key || req.params.users_key;
     if (typeof key != 'string') {
         if (key.length == 0) {
             return res.sendStatus(300);
@@ -515,7 +516,7 @@ router.get('/type=avatar', function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
-            var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + key + "' AND `type`='avatar'";
+            var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + users_key + "' AND `type`='avatar'";
             var orderBy = "ORDER BY `posted_time` DESC";
             client.query(selectSQL + orderBy, function(ePost, post, fPost) {
                 if (ePost) {
@@ -606,6 +607,7 @@ router.get('/type=avatar', function(req, res) {
 router.get('/type=cover', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
+    var users_key = req.body.users_key || req.query.users_key || req.params.users_key;
     if (typeof key != 'string') {
         if (key.length == 0) {
             return res.sendStatus(300);
@@ -614,7 +616,7 @@ router.get('/type=cover', function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
-            var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + key + "' AND `type`='cover'";
+            var selectSQL = "SELECT * FROM `posts` WHERE `users_key`='" + users_key + "' AND `type`='cover'";
             var orderBy = "ORDER BY `posted_time` DESC";
             client.query(selectSQL + orderBy, function(ePost, post, fPost) {
                 if (ePost) {
