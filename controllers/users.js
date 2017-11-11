@@ -2763,6 +2763,7 @@ router.post('/facebook_client', urlParser, function(req, res) {
                         if (isEmpty(dataImage) == true) {
                             var currentTime;
                             if (isNaN(parseFloat(feed['time']) * 1000)) {
+                                console.log("--------"+feed['time']);
                                 currentTime = parseInt(feed['time'] + '000');
                             } else {
                                 currentTime = parseFloat(feed['time']) * 1000;
@@ -2806,7 +2807,8 @@ router.post('/facebook_client', urlParser, function(req, res) {
                             ///-------
                             var currentTime;
                             if (isNaN(parseFloat(feed['time']) * 1000)) {
-                                currentTime = parseInt(feed['time'] + '000');
+                                console.log("--------"+feed['time']);
+                                currentTime = parseFloat(feed['time']) + '000';
                             } else {
                                 currentTime = parseFloat(feed['time']) * 1000;
                             }
