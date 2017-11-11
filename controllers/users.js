@@ -1578,7 +1578,11 @@ router.get('/:key/exists=:friend_key', function(req, res) {
             BASE.getObjectWithSQL(userSQL, function(data) {
                 if (data) {
                     console.log("-------:"+JSON.stringify(data));
-                    return res.send(echoResponse(200, data, 'success', true));
+                    var sqlUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + data[0].key + "')";
+                    BASE.getObjectWithSQL(sqlUser, function(members){
+                        data[0].members = members;
+                        return res.send(echoResponse(200, data, 'success', true));
+                    }); 
                 } else {
                     return res.send(echoResponse(404, 'Conversation not found.', 'success', true));
                 }
