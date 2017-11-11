@@ -1280,7 +1280,7 @@ router.get('/:key/type=findonline', function(req, res) {
                         var date = new Date(data[i].birthday);
                         var today = new Date();
                         var age = today.getFullYear() - date.getFullYear();
-                        if (age >= min_age && age <= max_age) {
+                        if ((age >= min_age && age <= max_age) || (min_age == 0 && max_age == 0)) {
                             data[i].age = age;
                             array.push(data[i]);
                         }
