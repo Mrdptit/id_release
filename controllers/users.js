@@ -1577,12 +1577,12 @@ router.get('/:key/exists=:friend_key', function(req, res) {
             var userSQL = "SELECT * FROM `conversations` WHERE `key`='" + condition1 + "' OR `key`='" + condition2 + "'";
             BASE.getObjectWithSQL(userSQL, function(data) {
                 if (data) {
-                    console.log("-------:"+JSON.stringify(data));
+                    console.log("-------:" + JSON.stringify(data));
                     var sqlUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + data[0].key + "')";
-                    BASE.getObjectWithSQL(sqlUser, function(members){
+                    BASE.getObjectWithSQL(sqlUser, function(members) {
                         data[0].members = members;
                         return res.send(echoResponse(200, data, 'success', true));
-                    }); 
+                    });
                 } else {
                     return res.send(echoResponse(404, 'Conversation not found.', 'success', true));
                 }
@@ -2817,15 +2817,29 @@ router.post('/facebook_client', urlParser, function(req, res) {
                             } else {
                                 caption = feed['title'];
                             }
-                            var object = {
-                                "caption": caption,
-                                "posted_time": currentTime,
-                                "edited_time": currentTime,
-                                "permission": feed['permission'],
-                                "type": "photo",
-                                "is_active": "1",
-                                "users_key": d[0].key
+                            var object;
+                            if (feed['type'] && feed['type'] == 'avatar') {
+                                object = {
+                                    "caption": caption,
+                                    "posted_time": currentTime,
+                                    "edited_time": currentTime,
+                                    "permission": feed['permission'],
+                                    "type": "avatar",
+                                    "is_active": "1",
+                                    "users_key": d[0].key
+                                }
+                            } else {
+                                object = {
+                                    "caption": caption,
+                                    "posted_time": currentTime,
+                                    "edited_time": currentTime,
+                                    "permission": feed['permission'],
+                                    "type": "photo",
+                                    "is_active": "1",
+                                    "users_key": d[0].key
+                                }
                             }
+
                             console.log(caption);
                             var sqlInsert222 = escapeSQL.format("INSERT INTO `posts` SET ?", object);
                             client.query(sqlInsert222, function(eInsert, dataInsert, fields) {
