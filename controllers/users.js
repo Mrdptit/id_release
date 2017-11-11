@@ -1273,24 +1273,24 @@ router.get('/:key/type=findnearby', function(req, res) {
                                 } else {
                                     data[i].mutual_friend = 0;
                                 }
-                            });
-                            data[i].relation_ship = ketqua;
-                            delete data[i].your_latitude;
-                            delete data[i].your_longitude;
-                            var date = new Date(data[i].birthday);
-                            var today = new Date();
-                            var age = today.getFullYear() - date.getFullYear();
-                            if (age >= min_age && age <= max_age) {
-                                data[i].age = age;
-                                array.push(data[i]);
-                            }
-                            if (i === data.length - 1) {
-                                if (array.length > 0) {
-                                    return res.send(echoResponse(200, array, 'success', false));
-                                } else {
-                                    return res.send(echoResponse(404, "No have any user", 'success', true));
+                                data[i].relation_ship = ketqua;
+                                delete data[i].your_latitude;
+                                delete data[i].your_longitude;
+                                var date = new Date(data[i].birthday);
+                                var today = new Date();
+                                var age = today.getFullYear() - date.getFullYear();
+                                if (age >= min_age && age <= max_age) {
+                                    data[i].age = age;
+                                    array.push(data[i]);
                                 }
-                            }
+                                if (i === data.length - 1) {
+                                    if (array.length > 0) {
+                                        return res.send(echoResponse(200, array, 'success', false));
+                                    } else {
+                                        return res.send(echoResponse(404, "No have any user", 'success', true));
+                                    }
+                                }
+                            });
                         });
                     });
                 } else {
