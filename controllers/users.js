@@ -1006,8 +1006,8 @@ router.get('/:key/type=conversations', function(req, res) {
             BASE.getObjectWithSQL(userSQL, function(conversations) {
                 if (conversations) {
                     async.forEachOf(conversations, function(element, i, callback) {
-                        var sql = "WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + element.key + "')";
-                        BASE.getFriendBySQL(sql, function(user) {
+                        var sql = "SELECT "+BASE.baseSelectFriendSQL()+" FROM `users` WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + element.key + "')";
+                        BASE.getObjectWithSQL(sql, function(user) {
                             if (user) {
                                 getStatusLastMessage(element.key, function(status) {
                                     getLastMessage(element.key, function(last_message) {
