@@ -499,9 +499,9 @@ function sendNotification(type, conversation_key, sender_key, receiver_key, noid
                                                         msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_sent_a_video');
                                                     } else if (type == 'Call') {
                                                         if (noidung == '-1') {
-                                                            msgAlert = LOCALIZABLE.getLocalMessage(language, 'msg_common_miss_call') + dataNguoiGui[0].nickname;
+                                                            msgAlert = LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_miss_call') + dataNguoiGui[0].nickname;
                                                         } else {
-                                                            msgAlert = LOCALIZABLE.getLocalMessage(language, 'msg_common_incomming_call') + dataNguoiGui[0].nickname;
+                                                            msgAlert = LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_incomming_call') + dataNguoiGui[0].nickname;
                                                         }
                                                     } else if (type == 'File') {
                                                         msgAlert = dataNguoiGui[0].nickname + LOCALIZABLE.getLocalMessage(dataNguoiNhan[0].language, 'msg_common_sent_a_file');
