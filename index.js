@@ -4,56 +4,46 @@ var express = require('express');
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var md5 = require('md5');
+var escapeSQL = require('sqlstring');
+var config = require('./config.js');
 app.io = io;
+//access-token
+var jwt = require('jsonwebtoken');
+//---
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
 eventEmitter.setMaxListeners(0);
-/* ----------------------------*/
-/* ---------- CONFIG ----------*/
-/* ----------------------------*/
-// var callManager = require('.controllers/users');
-var config = require('./config.js');
-var Base = require('./base.js');
-var BASE = new Base();
-/* ----------------------------*/
-/* ----------------------------*/
-var md5 = require('md5');
-var escapeSQL = require('sqlstring');
-var jwt = require('jsonwebtoken');
+
 var firebase = require('firebase');
+
 var bodyParser = require('body-parser');
 var mysql = require('mysql');
 var moment = require('moment-timezone');
-var async = require('async');
-var _ = require('lodash');
-var moment = require('moment-timezone');
-/* -------------------------------------------------------------------------------- */
-/* ------------------------------ NOTIFICATION ------------------------------------ */
-/* -------------------------------------------------------------------------------- */
-/* -------------------------*/
-/* ---------- APN ----------*/
-/* -------------------------*/
+var connections = [];
 var apn = require('apn');
 var apnService = new apn.Provider({
     cert: "certificates/cert.pem",
     key: "certificates/key.pem",
 });
-/* -------------------------*/
-/* ---------- FCM ----------*/
-/* -------------------------*/
+//-- FCM
 var FCM = require('fcm-push');
 var serverKey = config.android;
 var collapse_key = 'com.android.abc';
 var fcm = new FCM(serverKey);
-/* -------------------------*/
-/* -------------------------*/
 var avatarApp = "http://i.imgur.com/rt1NU2t.png";
-/* -------------------------*/
-/* -------------------------*/
-/* -------------------------------------------------------------------------------- */
-/* ------------------------------ INIT VARIABLE ----------------------------------- */
-/* -------------------------------------------------------------------------------- */
+
+var async = require('async');
+var _ = require('lodash');
+var moment = require('moment-timezone');
+
+
 app.use(bodyParser.json({ limit: "50mb" }));
+var urlParser = bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 });
+
+
+
+
 
 var configFirebase = {
     apiKey: "AIzaSyAmYRokQALuWuM53U3O2n2d58N3vdml8uc",
@@ -62,38 +52,67 @@ var configFirebase = {
     storageBucket: "thinkdiff-71ab0.appspot.com",
     messagingSenderId: "837773260215"
 };
+
 firebase.initializeApp(configFirebase);
-/* -------------------------------------------------------------------------------- */
-/* ------------------------------ START SERVER ------------------------------------ */
-/* -------------------------------------------------------------------------------- */
+
 server.listen(config.app_port, config.app_ip, function() {
-    console.log("SERVER RUNNING @ http://" + config.app_ip + ":" + config.app_port);
+    console.log("Server running @ http://" + config.app_ip + ":" + config.app_port);
 });
 server.timeout = 60000;
-/* -------------------------*/
-/* -------------------------*/
-/* --- CREATED VARIABLE ----*/
-/* -------------------------*/
-/* -------------------------*/
+
+// --- CREATED VARIABLE ---
+// ------------------------
+// ------------------------
 var users = [];
 var index = 0;
 var incomings = [];
-var connections = [];
-/**********--------------------------*********
+/*********--------------------------*********
  **********------- MYSQL CONNECT ----*********
  **********--------------------------*********/
-var client = BASE.client();
-var urlParser = BASE.urlParser();
-/**********---------------------------*********
- **********------- FUNCTION ----------*********
- **********---------------------------*********/ 
-var call = require('./controllers/call.js');
-var callManager = new call();
+var client;
 
+function startConnection() {
+    console.error('CONNECTING');
+    client = mysql.createConnection({
+        host: config.mysql_host,
+        user: config.mysql_user,
+        password: config.mysql_pass,
+        database: config.mysql_data
+    });
+    client.connect(function(err) {
+        if (err) {
+            console.error('CONNECT FAILED MESSAGE', err.code);
+            startConnection();
+        } else {
+            console.error('CONNECTED MESSAGE');
+        }
+    });
+    client.on('error', function(err) {
+        if (err.fatal)
+            startConnection();
+    });
+}
+startConnection();
+client.query("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci", function(error, results, fields) {
+    if (error) {
+        console.log(error);
+    } else {
+        console.log("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
+    }
+});
+client.query("SET CHARACTER SET utf8mb4", function(error, results, fields) {
+    if (error) {
+        console.log(error);
+    } else {
+        console.log("SET CHARACTER SET utf8mb4");
+    }
+});
+/*********--------------------------*********
+ **********------- FUNCTION ------*********
+ **********--------------------------*********/
 io.on('connection', function(socket) { // Incoming connections from clients
     var peer;
     socket.on('online', function(user) {
-        
         if (findUserByUID(user.key) == null) {
             var usr = { id: user.key, key: user.key, socketid: socket.id };
             users.push(usr);
@@ -148,35 +167,14 @@ io.on('connection', function(socket) { // Incoming connections from clients
             });
         }
     });
-    socket.on('calling', function(user) {
- 
-        callManager.socketEventMatchCall(user,function(msg,isLeave){
-            if (!isLeave) {
-                 socket.emit('calling', msg);
-                }
-            });  
-         
-    });
-
-    socket.on('matching', function(msg) {
-    
-        var target = findUserByUID(msg.to);
-
-        console.log("Matching Calling --------------- to user:" + msg.to + "Socket id : ");
-
-            //emit for ios
-        if (target) {
-
-            socket.broadcast.to(target.socketid).emit('matching', msg);
-             
-        } else {
-
-            socket.broadcast.emit("matching", msg);
-
-         }
-         
-         
-    });
+    // socket.on('status', function(check) {
+    //     if (check === 'online') {
+    //         console.log("Co ket noi");
+    //         var json = { id: ["100002398569411", "100006954612394"] };
+    //         //socket.emit('facebook',{"id":"100002398569411"});
+    //         socket.emit('facebook', json);
+    //     }
+    // });
 
     // Roi vao disconnect
     socket.on('disconnect', function(data) {
@@ -225,13 +223,15 @@ io.on('connection', function(socket) { // Incoming connections from clients
         connections.splice(connections.indexOf(socket), 1);
         console.log("Disconnected: %s sockets connected", connections.length);
     });
-
     // Roi vao disconnect
     socket.on('signout', function(msg) {
+
         if (isEmpty(msg)) {
             return;
         }
+
         console.log("user signout: " + JSON.stringify(msg));
+
         if (isEmpty(msg.key)) {
             console.log("User signout with key null");
         } else {
@@ -277,8 +277,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
     });
 
     socket.on('chat message', function(msg) {
-         
-         //console.log("------------------------- MESSAGES -----------------------------------");
+       // console.log("------------------------- MESSAGES -----------------------------------");
         //console.log(msg);
         //console.log("----------------------------------------------------------------------");
         if (msg.subtype == 'close') {
@@ -286,9 +285,9 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var deleteSQL = "DELETE FROM `channels` WHERE `idChannel`='" + msg.to + "'";
             client.query(deleteSQL, function(eDelete, dDelete, fDelete) {
                 if (eDelete) {
-                    console.log("Fails Delete channel call" + msg.to);
+                    //console.log("Fails Delete channel call" + msg.to);
                 } else {
-                    console.log("Delete channel call" + msg.to);
+                   // console.log("Delete channel call" + msg.to);
                 }
             });
         }
@@ -297,29 +296,29 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
             // console.log("value sdp --------------------- --------- " + objectValue['candidate'] + "\n\n data " + msg);
-            console.log(JSON.stringify(msg));
-            //save current channel
-            var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `candidate` != '" + contentJson + "'";
-            client.query(queryChannel, function(err, dataChannel, FNN) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    //channel is exist , response to client busy
-                    if (dataChannel.length == 0) {
-                        //create channel call here
-                        var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='" + msg.to + "', `fromKey`='" + msg.from + "', `toKey` = '" + msg.to + "', `senderAvatar`='" + msg.senderAvatar + "',`senderName`='" + msg.senderName + "', `receiverAvatar`='" + msg.receiverAvatar + "',`receiverName`='" + msg.receiverName + "',`candidate`='" + contentJson + "',`conversationId`='" + msg.conversationId + "',`type`='" + msg.type + "'";
-                        // console.log(queryInsertChannel);
-                        client.query(queryInsertChannel, function(err, data, FNN) {
-                            if (err) {
-                                console.log("Insert New Channel call FAILED");
-                            } else {
-                                console.log("Insert New Channel call success");
-                            }
-                        });
+            //console.log(JSON.stringify(msg));
+                //save current channel
+                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `candidate` != '" + contentJson + "'";
+                client.query(queryChannel, function(err, dataChannel, FNN) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        //channel is exist , response to client busy
+                        if (dataChannel.length == 0) {
+                            //create channel call here
+                            var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='" + msg.to + "', `fromKey`='" + msg.from + "', `toKey` = '" + msg.to + "', `senderAvatar`='" + msg.senderAvatar + "',`senderName`='" + msg.senderName + "', `receiverAvatar`='" + msg.receiverAvatar + "',`receiverName`='" + msg.receiverName + "',`candidate`='" + contentJson + "',`conversationId`='" + msg.conversationId + "',`type`='" + msg.type + "'";
+                            // console.log(queryInsertChannel);
+                            client.query(queryInsertChannel, function(err, data, FNN) {
+                                if (err) {
+                                    console.log("Insert New Channel call FAILED");
+                                } else {
+                                    console.log("Insert New Channel call success");
+                                }
+                            });
 
+                        }
                     }
-                }
-            });
+                });
 
         }
 
@@ -328,29 +327,29 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var contentJson = JSON.stringify(msg.content);
             var objectValue = JSON.parse(contentJson);
             // console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
-
-            console.log(JSON.stringify(msg));
-            //save current channel
-            var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
-            client.query(queryChannel, function(err, dataChannel, FNN) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    //channel is exist , response to client busy
-                    if (dataChannel.length == 0) {
-                        //create channel call here
-                        var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='" + msg.to + "', `fromKey`='" + msg.from + "', `toKey` = '" + msg.to + "', `senderAvatar`='" + msg.senderAvatar + "',`senderName`='" + msg.senderName + "', `receiverAvatar`='" + msg.receiverAvatar + "',`receiverName`='" + msg.receiverName + "',`offer`='" + contentJson + "',`conversationId`='" + msg.conversationId + "',`type`='" + msg.type + "',`subType`='" + msg.subtype + "'";
-                        // console.log(queryInsertChannel);
-                        client.query(queryInsertChannel, function(err, data, FNN) {
-                            if (err) {
-                                console.log("Insert New Channel call FAILED");
-                            } else {
-                                console.log("Insert New Channel call success");
-                            }
-                        });
+            
+          //  console.log(JSON.stringify(msg));
+                //save current channel
+                var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
+                client.query(queryChannel, function(err, dataChannel, FNN) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        //channel is exist , response to client busy
+                        if (dataChannel.length == 0) {
+                            //create channel call here
+                            var queryInsertChannel = "INSERT INTO `channels` SET `idChannel`='" + msg.to + "', `fromKey`='" + msg.from + "', `toKey` = '" + msg.to + "', `senderAvatar`='" + msg.senderAvatar + "',`senderName`='" + msg.senderName + "', `receiverAvatar`='" + msg.receiverAvatar + "',`receiverName`='" + msg.receiverName + "',`offer`='" + contentJson + "',`conversationId`='" + msg.conversationId + "',`type`='" + msg.type + "',`subType`='" + msg.subtype + "'";
+                            // console.log(queryInsertChannel);
+                            client.query(queryInsertChannel, function(err, data, FNN) {
+                                if (err) {
+                                    console.log("Insert New Channel call FAILED");
+                                } else {
+                                    console.log("Insert New Channel call success");
+                                }
+                            });
+                        }
                     }
-                }
-            });
+                });
 
             // sendNotification(msg.from, msg.to, "is calling", "calling", "Thành đẹp trai");
             var senderSQL = "SELECT `nickname` FROM `users` WHERE `key`='" + msg.from + "'";
@@ -411,7 +410,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
             // console.log("Socket id cloud: ---------------------:  " + target.socketid);
             //emit for android
             socket.broadcast.emit('chat message', msg);
-            console.log("Calling --------------- to user:" + msg.to + "Socket id : ");
+         
+            console.log("Calling --------------- to user:" + JSON.stringify(msg));
 
             //emit for ios
             if (target) {
@@ -419,13 +419,13 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 // socket.broadcast.to(target.socketid).emit('chat message', msg);
                 socket.broadcast.to(target.socketid).emit('K_Signal_Call', msg);
 
-                console.log("User call online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
+               // console.log("User call online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
 
                 //socket_to.emit("chat message", msg);
             } else {
 
                 socket.broadcast.emit("K_Signal_Call", msg);
-                console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
+             //   console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
 
 
             }
@@ -442,6 +442,8 @@ app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
+
+app.use(express.static(__dirname + '/ask'));
 
 app.get('/listUsers', function(req, res) {
     res.end(JSON.stringify(users, censor));
