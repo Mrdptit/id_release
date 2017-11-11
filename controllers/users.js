@@ -21,6 +21,8 @@ var BASE = new Base();
 var client = BASE.client();
 var transporter = BASE.transporter();
 var urlParser = BASE.urlParser();
+var LocalString = require('../localizable/localizable.js');
+var LOCALIZABLE = new LocalString();
 /*-------------------------------------------------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------*/

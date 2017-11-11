@@ -53,6 +53,8 @@ var avatarApp = "http://i.imgur.com/rt1NU2t.png";
 var Base = require('../base.js');
 var BASE = new Base();
 var client = BASE.client();
+var LocalString = require('../localizable/localizable.js');
+var LOCALIZABLE = new LocalString();
 /*-------------------------------------------------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------*/
