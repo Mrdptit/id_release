@@ -1006,7 +1006,7 @@ router.get('/:key/type=conversations', function(req, res) {
             BASE.getObjectWithSQL(userSQL, function(conversations) {
                 if (conversations) {
                     async.forEachOf(conversations, function(element, i, callback) {
-                        var sql = "SELECT "+BASE.baseSelectFriendSQL()+" FROM `users` WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + element.key + "')";
+                        var sql = "SELECT " + BASE.baseSelectFriendSQL() + " FROM `users` WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + element.key + "')";
                         BASE.getObjectWithSQL(sql, function(user) {
                             if (user) {
                                 getStatusLastMessage(element.key, function(status) {
@@ -1265,22 +1265,33 @@ router.get('/:key/type=findnearby', function(req, res) {
             BASE.getObjectWithSQL(finalSQL, function(data) {
                 if (data) {
                     async.forEachOf(data, function(element, i, callback) {
-                        delete data[i].your_latitude;
-                        delete data[i].your_longitude;
-                        var date = new Date(data[i].birthday);
-                        var today = new Date();
-                        var age = today.getFullYear() - date.getFullYear();
-                        if (age >= min_age && age <= max_age) {
-                            data[i].age = age;
-                            array.push(data[i]);
-                        }
-                        if (i === data.length - 1) {
-                            if (array.length > 0) {
-                                return res.send(echoResponse(200, array, 'success', false));
-                            } else {
-                                return res.send(echoResponse(404, "No have any user", 'success', true));
+                        BASE.getRelationship(key, data[i].key, function(ketqua) {
+                            var sql = "SELECT " + BASE.baseSelectFriendSQL() + " FROM `users` WHERE `key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + data[i].key + "' AND `friend_key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + key + "'))";
+                            BASE.getObjectWithSQL(sql, function(contact) {
+                                if (contact) {
+                                    data[i].mutual_friend = contact.length;
+                                } else {
+                                    data[i].mutual_friend = 0;
+                                }
+                            });
+                            data[i].relation_ship = ketqua;
+                            delete data[i].your_latitude;
+                            delete data[i].your_longitude;
+                            var date = new Date(data[i].birthday);
+                            var today = new Date();
+                            var age = today.getFullYear() - date.getFullYear();
+                            if (age >= min_age && age <= max_age) {
+                                data[i].age = age;
+                                array.push(data[i]);
                             }
-                        }
+                            if (i === data.length - 1) {
+                                if (array.length > 0) {
+                                    return res.send(echoResponse(200, array, 'success', false));
+                                } else {
+                                    return res.send(echoResponse(404, "No have any user", 'success', true));
+                                }
+                            }
+                        });
                     });
                 } else {
                     return res.send(echoResponse(404, 'Nobody.', 'success', true));
