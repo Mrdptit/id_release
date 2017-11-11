@@ -230,7 +230,62 @@ router.get('/:key/type=newest', urlParser, function(req, res) {
     });
 });
 
+router.post('/fb_like', urlParser, function(req, res) {
+    var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
+    var key = req.body.key || req.query.key || req.params.key;
+    BASE.authenticateWithToken(key, access_token, function(logged) {
+        if (logged) {
+            var user_key = req.body.key;
+            var bodydata = unescape(req.body.data);
+            var stringJson = JSON.stringify(req.body.data, null, 2); //.replace(/\, "");
+            console.log("No data like 2222 -------------------------------- : " + stringJson);
 
+            var jsonLikes;
+            if (isJsonString(bodydata)) {
+                jsonLikes = JSON.parse(bodydata);
+            } else {
+                var stringJson = JSON.stringify(req.body.data, null, 2);
+                jsonLikes = JSON.parse(stringJson);
+            }
+            if (isEmpty(jsonLikes)) {
+                console.log("No data like 2222 -------------------------------- : " + jsonLikes);
+                return res.send(echoResponse(300, 'No data time line', 'err', true));
+            } else {
+                var data = jsonLikes;
+                async.forEachOf(data, function(ele, i, call) {
+                    var stringJson = JSON.stringify(ele, null, 2);
+                    var likes = JSON.parse(stringJson);
+                    console.log("<--------> data like:" + ele + "\n");
+                    // var currentTime = parseInt(feed['time'], 10) * 1000;
+                    var sqlInsert = "INSERT INTO `facebook_informations`(`name`,`type`,`users_key`)";
+
+                    var sqlData = "VALUES (" + escapeSQL.escape(likes['name']) + ",'" + likes['type'] + "','" + user_key + "')";
+                    client.query(sqlInsert + sqlData, function(eInsert, dataInsert, fields) {
+                        if (eInsert) {
+                            console.log(eInsert);
+                            if (i === data.length - 1) {
+                                return res.sendStatus(300);
+                            }
+                        } else {
+                            if (i === data.length - 1) {
+
+                                var queryInsertChannel = "UPDATE `users` SET `is_sync_facebook_like`='1' WHERE `key`='" + user_key + "'";
+                                console.log(queryInsertChannel);
+                                client.query(queryInsertChannel, function(err, data, FNN) {
+                                    return res.send(echoResponse(200, 'sync facebook like SUCCESS', 'success', false));
+                                });
+
+                            }
+                        }
+                    });
+
+                });
+            }
+        } else {
+            return res.send(echoResponse(403, 'Authenticate failed', 'success', false));
+        }
+    });
+});
 
 /*********--------Following----------*********/
 router.post('/follow', urlParser, function(req, res) {
