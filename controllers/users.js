@@ -597,7 +597,8 @@ router.post('/other_information', urlParser, function(req, res) {
                         }
                     });
                 } else {
-                    var sqlInsert = escapeSQL.format("INSERT INTO `other_information` SET ? WHERE `users_key`= ?", [req.body, key]);
+                    req.body.users_key = key;
+                    var sqlInsert = escapeSQL.format("INSERT INTO `other_information` SET ?", req.body);
                     BASE.insertWithSQL(sqlInsert, function(result) {
                         if (result) {
                             return res.send(echoResponse(200, 'Updated successfully', 'success', false));
