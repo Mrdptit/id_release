@@ -344,8 +344,8 @@ router.get('/type=mywall', function(req, res) {
                                 postID.push(post[i].id);
                                 if (i === post.length - 1) {
                                     // Sắp xếp lại mảng theo ID, và lấy vị trí bài cuối client gửi lên.
-                                    postID = _.sortBy(postID);
-                                    postID.reverse();
+                                    //postID = _.sortBy(postID);
+                                    //postID.reverse();
                                     var last = postID.indexOf(parseInt(last_post));
                                     // Vị trí bài đầu tiên
                                     var vitribaidautien = last + 1;
@@ -381,8 +381,8 @@ router.get('/type=mywall', function(req, res) {
                             async.forEachOf(post, function(dataLimit, i, callLimit) {
                                 postID.push(post[i].id);
                                 if (i === post.length - 1) {
-                                    postID = _.sortBy(postID);
-                                    postID.reverse();
+                                    //postID = _.sortBy(postID);
+                                    //postID.reverse();
                                     var vitribaicuoi;
                                     if (MOILANLAY < postID.length) {
                                         // Nếu mà vị trí bài cuối cần lấy mà nhỏ hơn độ dài của mảng đó
@@ -865,8 +865,10 @@ router.get('/type=badge', function(req, res) {
 
 
 
-function checkReadWall(list_post, users_key, isRead) {
+function checkReadWall(this_post, users_key, isRead) {
     var baivietcoquyen = [];
+    var list_post = _.sortBy(this_post, 'posted_time');
+        list_post.reverse();
     async.forEachOf(list_post, function(element, i, callback) {
         var sql = "SELECT `posts_id` FROM `permissions` WHERE `users_key`='" + users_key + "' AND `posts_id`='" + list_post[i].id + "'";
         client.query(sql, function(error, data, fields) {
