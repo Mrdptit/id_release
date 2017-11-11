@@ -181,7 +181,7 @@ module.exports = class Authenticate {
         jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
                 if (typeof token == "string" && token && token.length > 6) {
-                    console.log("ACCESS_TOKEN: 1.0");
+                    console.log("ACCESS_TOKEN: 1.0 - KEY: "+key);
                     var access_token = token.substring(5, token.length - 5);
                     if (isDecrypt(access_token) && isJsonString(isDecrypt(access_token))) {
                         try {
@@ -199,29 +199,29 @@ module.exports = class Authenticate {
                                                 callback(true);
                                             } else {
                                                 callback(false);
-                                                console.log("ACCESS_TOKEN: 1.11");
+                                                console.log("ACCESS_TOKEN: 1.11 - KEY: "+key);
                                             }
                                         }
                                     });
                                 } else {
                                     callback(false);
-                                    console.log("ACCESS_TOKEN: 1.22");
+                                    console.log("ACCESS_TOKEN: 1.22 - KEY: "+key);
                                 }
                             } else {
                                 callback(false);
-                                console.log("ACCESS_TOKEN: 1.33");
+                                console.log("ACCESS_TOKEN: 1.33 - KEY: "+key);
                                 client.query("DELETE FROM `tokens` WHERE `access_token`='" + access_token + "' AND `users_key`='" + key + "'");
                             }
                         } catch (e) {
-                            console.log("ACCESS_TOKEN: 1.44");
+                            console.log("ACCESS_TOKEN: 1.44 - KEY: "+key);
                             callback(false);
                         }
                     } else {
-                        console.log("ACCESS_TOKEN: 1.55");
+                        console.log("ACCESS_TOKEN: 1.55 - KEY: "+key);
                         callback(false);
                     }
                 } else {
-                    console.log("ACCESS_TOKEN: 2.0");
+                    console.log("ACCESS_TOKEN: 2.0 - KEY: "+key);
                     callback(false);
                 }
             } else {
