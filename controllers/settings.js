@@ -44,18 +44,28 @@ var apnService = new apn.Provider({
  **********------- FUNCTION ------*********
  **********--------------------------*********/
 
+    
 /*********--------Following----------*********/
 router.get('/global_setting', urlParser, function(req, res) {
-    var userSQL = "SELECT * FROM `global_settings`";
-    client.query(userSQL, function(e, d, fBlock) {
-        if (e) {
-            return res.sendStatus(300);
+
+    var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
+    var key = req.body.key || req.query.key || req.params.key;
+    BASE.authenticateWithToken(key, access_token, function(logged) {
+        if (logged) {
+            var userSQL = "SELECT * FROM `global_settings`";
+            client.query(userSQL, function(e, d, fBlock) {
+                if (e) {
+                    return res.sendStatus(300);
+                } else {
+                    if (d.length > 0) {
+                        return res.send(echoResponse(200, d[0], 'globak setting', false));
+                    } else {
+                        return res.send(echoResponse(404, "no data.", 'success', true));
+                    }
+                }
+             });
         } else {
-            if (d.length > 0) {
-                return res.send(echoResponse(200, d[0], 'globak setting', false));
-            } else {
-                return res.send(echoResponse(404, "no data.", 'success', true));
-            }
+            return res.send(echoResponse(403, 'Authenticate failed', 'success', false));
         }
     });
 
