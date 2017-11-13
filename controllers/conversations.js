@@ -85,12 +85,12 @@ router.post('/new', urlParser, function(req, res) {
                             console.log(members);
                               delete req.body.members;
 
-                            if (isEmpty(members)) {
-                                json = JSON.parse(req.body.members);
-                                for (var n = 0; n < json.length; n++) {
+                            if (isEmpty(members) == false) {
+                                // json = JSON.parse(req.body.members);
+                                for (var n = 0; n < members.length; n++) {
                                     console.log(json[n].user_id);
                                     var iMSQL = "INSERT INTO `members`(`users_key`,`conversations_key`)";
-                                    var dMSQL = "VALUES ('" + json[n].user_id + "','" + req.body.key + "')";
+                                    var dMSQL = "VALUES ('" + members[n].user_id + "','" + req.body.key + "')";
                                     BASE.insertWithSQL(iMSQL + dMSQL, function(stt) {
                                         console.log("INSERT members SUCCESS");
                                     });
