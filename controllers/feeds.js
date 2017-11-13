@@ -781,8 +781,8 @@ router.get('/type=feeds', function(req, res) {
                                 var last_post = req.body.last_post || req.query.last_post || req.params.last_post;
                                 if (last_post) {
                                     // Sắp xếp lại mảng theo ID, và lấy vị trí bài cuối client gửi lên.
-                                    postID = _.sortBy(postID);
-                                    postID.reverse();
+                                    // postID = _.sortBy(postID);
+                                    // postID.reverse();
                                     var last = postID.indexOf(parseInt(last_post));
                                     // Vị trí bài đầu tiên
                                     var vitribaidautien = last + 1;
@@ -813,8 +813,8 @@ router.get('/type=feeds', function(req, res) {
                                         }
                                     });
                                 } else {
-                                    postID = _.sortBy(postID);
-                                    postID.reverse();
+                                    // postID = _.sortBy(postID);
+                                    // postID.reverse();
                                     var vitribaicuoi;
                                     if (MOILANLAY < postID.length) {
                                         // Nếu mà vị trí bài cuối cần lấy mà nhỏ hơn độ dài của mảng đó
