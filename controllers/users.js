@@ -1218,7 +1218,7 @@ router.get('/:key/type=devices', function(req, res) {
 router.get('/:key/type=facebook', function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    var users_key = req.body.users_key || req.query.users_key || req.params.key;
+    var users_key = req.body.users_key || req.query.users_key || req.params.users_key;
     if (typeof key != 'string') {
         if (key.length == 0) {
             return res.sendStatus(300);
@@ -1227,7 +1227,7 @@ router.get('/:key/type=facebook', function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
-            var sql = "SELECT * FROM `facebook_informations` WHERE `users_key`='" + req.params.key + "'";
+            var sql = "SELECT * FROM `facebook_informations` WHERE `users_key`='" + users_key + "'";
             BASE.getObjectWithSQL(sql, function(data) {
                 if (data) {
                     return res.send(echoResponse(200, data, 'success', false));
