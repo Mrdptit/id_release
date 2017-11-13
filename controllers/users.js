@@ -833,13 +833,13 @@ router.post('/update', urlParser, function(req, res) {
                     delete req.body.access_token;
                     delete req.body.key;
                     if (req.body.ip_address && req.body.latitude && req.body.longitude && req.body.device_name && req.body.device_token) {
-                        var locationSQL = "SELECT * FROM `devices` WHERE `users_key`='" + req.body.key + "' AND `device_name`=" + escapeSQL.escape(req.body.device_name) + " AND `device_type`='" + req.body.device_type + "'";
+                        var locationSQL = "SELECT * FROM `devices` WHERE `users_key`='" + key + "' AND `device_name`=" + escapeSQL.escape(req.body.device_name) + " AND `device_type`='" + req.body.device_type + "'";
                         var currentTime = new Date().getTime();
                         BASE.getObjectWithSQL(locationSQL, function(object) {
                             if (object) {
-                                client.query("UPDATE `devices` SET `time`='" + currentTime + "', `device_token`='" + req.body.device_token + "', `ip_address`='" + req.body.ip_address + "', `latitude`='" + req.body.latitude + "', `longitude`='" + req.body.longitude + "', `location`=" + escapeSQL.escape(req.body.city + ' / ' + req.body.country_code) + " WHERE `users_key`='" + req.body.key + "'");
+                                client.query("UPDATE `devices` SET `time`='" + currentTime + "', `device_token`='" + req.body.device_token + "', `ip_address`='" + req.body.ip_address + "', `latitude`='" + req.body.latitude + "', `longitude`='" + req.body.longitude + "', `location`=" + escapeSQL.escape(req.body.city + ' / ' + req.body.country_code) + " WHERE `users_key`='" + key + "'");
                             } else {
-                                client.query("INSERT INTO `devices` SET `users_key`='" + req.body.key + "', `device_token`='" + req.body.device_token + "', `device_name`=" + escapeSQL.escape(req.body.device_name) + ", `device_type`='" + req.body.device_type + "', `time`='" + currentTime + "', `ip_address`='" + req.body.ip_address + "', `latitude`='" + req.body.latitude + "', `longitude`='" + req.body.longitude + "', `location`=" + escapeSQL.escape(req.body.city + ' / ' + req.body.country_code) + "");
+                                client.query("INSERT INTO `devices` SET `users_key`='" + key + "', `device_token`='" + req.body.device_token + "', `device_name`=" + escapeSQL.escape(req.body.device_name) + ", `device_type`='" + req.body.device_type + "', `time`='" + currentTime + "', `ip_address`='" + req.body.ip_address + "', `latitude`='" + req.body.latitude + "', `longitude`='" + req.body.longitude + "', `location`=" + escapeSQL.escape(req.body.city + ' / ' + req.body.country_code) + "");
                             }
                         });
                     }

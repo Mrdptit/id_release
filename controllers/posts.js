@@ -773,6 +773,7 @@ router.get('/:id/type=comment', function(req, res) {
 router.post('/like', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
+    var posts_id = req.body.posts_id || req.query.posts_id || req.params.posts_id;
     if (typeof key != 'string') {
         if (key.length == 0) {
             return res.sendStatus(300);
@@ -781,124 +782,106 @@ router.post('/like', urlParser, function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
-            checkHavePost(res, req.body.posts_id, function(runOut) {
-                if (runOut == true) {
-                    isHavePermission(req.body.users_key, req.body.posts_id, function(isPermission) {
+            var check = "SELECT * FROM `posts` WHERE `id`=" + posts_id;
+            BASE.getObjectWithSQL(check, function(post) {
+                if (post) {
+                    isHavePermission(key, posts_id, function(isPermission) {
                         if (isPermission == true) {
-                            var selectLike = "SELECT * FROM `likes` WHERE `users_key`='" + req.body.users_key + "' AND `posts_id`='" + req.body.posts_id + "'";
-                            client.query(selectLike, function(eLike, dLike, fLike) {
-                                if (eLike) {
-                                    console.log(eLike);
-                                    return res.sendStatus(300);
-                                } else {
-                                    if (dLike.length > 0) {
-                                        var deleteSQL = "DELETE FROM `likes` WHERE `users_key`='" + req.body.users_key + "' AND `posts_id`='" + req.body.posts_id + "'";
-                                        client.query(deleteSQL, function(eInsert, dInsert, fInsert) {
-                                            if (eInsert) {
-                                                console.log(eInsert);
-                                                return res.sendStatus(300);
-                                            } else {
-                                                var keyUserPost = "DELETE FROM `notification_feed` WHERE `posts_id`='" + req.body.posts_id + "' AND `friend_key`='" + req.body.users_key + "' AND `type`='like'";
-                                                client.query(keyUserPost, function(eNL, dNL, fNL) {
-                                                    if (eNL) {
-                                                        console.log(eNL);
-                                                        return res.sendStatus(300);
-                                                    } else {
-                                                        console.log(req.body.users_key + " bỏ thích " + req.body.posts_id + "");
-                                                        client.query("SELECT `id` FROM `likes` WHERE `posts_id`='" + req.body.posts_id + "'", function(e, d, fL) {
-                                                            if (e) {
-                                                                console.log(e);
-                                                                return res.sendStatus(300);
-                                                            } else {
-                                                                return res.send(echoResponse(200, { total_like: d.length, liked: 0 }, 'success', false));
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    } else {
-                                        var value = [];
-                                        var insert = [];
-                                        for (var k in req.body) {
-                                            if (k != 'access_token') {
-                                                insert.push("`" + k + "`");
-                                                value.push("'" + req.body[k] + "'");
-                                            }
+                            var likedSQL = "SELECT * FROM `likes` WHERE `users_key`='" + key + "' AND `posts_id`=" + posts_id;
+                            BASE.getObjectWithSQL(likedSQL, function(user) {
+                                if (user) {
+                                    client.query("DELETE FROM `likes` WHERE `users_key`='" + key + "' AND `posts_id`=" + posts_id);
+                                    client.query("DELETE FROM `notification_feed` WHERE `posts_id`=" + posts_id + " AND `friend_key`='" + key + "' AND `type`='like'");
+                                    client.query("SELECT `id` FROM `likes` WHERE `posts_id`='" + req.body.posts_id + "'", function(e, d, fL) {
+                                        if (e) {
+                                            console.log(e);
+                                            return res.sendStatus(300);
+                                        } else {
+                                            console.log(key + " bỏ thích bài viết " + posts_id);
+                                            return res.send(echoResponse(200, { total_like: d.length, liked: 0 }, 'success', false));
                                         }
-                                        var insertSQL = "INSERT INTO `likes`(" + insert.toString() + ") VALUES(" + value.toString() + ")";
-                                        client.query(insertSQL, function(eInsert, dInsert, fInsert) {
-                                            if (eInsert) {
-                                                console.log(eInsert);
-                                                return res.sendStatus(300);
-                                            } else {
-                                                var getUserLike = "SELECT `avatar`,`nickname` FROM `users` WHERE `key`='" + req.body.users_key + "'";
-                                                client.query(getUserLike, function(eL, dL, fL) {
-                                                    if (eL) {
-                                                        console.log(eL);
-                                                        return res.sendStatus(300);
-                                                    } else {
-                                                        var getPost = "SELECT `users_key` FROM `posts` WHERE `id`='" + req.body.posts_id + "'";
-                                                        client.query(getPost, function(ePostN, dPostN, fPostN) {
-                                                            if (ePostN) {
-                                                                console.log(ePostN);
-                                                                return res.sendStatus(300);
-                                                            } else {
-                                                                isMyPost(req.body.users_key, req.body.posts_id, function(result) {
-                                                                    if (result == false) {
-
-
-                                                                        var currentTime = new Date().getTime();
-                                                                        insertNotificationNoImage(req.body.users_key, dL[0].nickname, dL[0].avatar, 'like', currentTime, dPostN[0].users_key, req.body.posts_id);
-
-                                                                        sendNotification(req.body.users_key, dPostN[0].users_key, "like your activity", "like", req.body.posts_id);
-                                                                        var selectCurrent = "SELECT `nickname`, `avatar` FROM `users` WHERE `key`='" + req.body.users_key + "'";
-                                                                        client.query(selectCurrent, function(eCurrent, dCurrent, fCurrent) {
-                                                                            if (eCurrent) {
-                                                                                console.log(eCurrent);
-                                                                                return res.sendStatus(300);
-                                                                            } else {
-                                                                                var selectRelate = "SELECT * FROM `tags` WHERE `posts_id`='" + req.body.posts_id + "' AND `users_key`!='" + req.body.users_key + "'";
-                                                                                client.query(selectRelate, function(eRelate, dRelate, fRelate) {
-                                                                                    if (eRelate) {
-                                                                                        console.log(eRelate);
-                                                                                        return res.sendStatus(300);
-                                                                                    } else {
-                                                                                        if (dRelate.length > 0) {
-                                                                                            async.forEachOf(dRelate, function(asyData, asyI, asyCallback) {
-                                                                                                insertNotificationNoImage(req.body.users_key, dCurrent[0].nickname, dCurrent[0].avatar, 'like', currentTime, dRelate[asyI].users_key, req.body.posts_id);
-                                                                                                sendNotification(req.body.users_key, dRelate[asyI].users_key, "likes a post you are tagged in", "like", req.body.posts_id);
-                                                                                            });
-                                                                                        }
-                                                                                    }
-                                                                                });
-                                                                            }
-                                                                        });
+                                    });
+                                } else {
+                                    req.body.type = "like";
+                                    var sqlInsert = escapeSQL.format("INSERT INTO `likes` SET ?", req.body);
+                                    BASE.insertWithSQL(sqlInsert, function(result) {
+                                        if (result) {
+                                            var peopleLike = "SELECT * FROM `users` WHERE `key`='" + key + "'";
+                                            BASE.getDataWithSQL(peopleLike, function(people_like) {
+                                                if (people_like) {
+                                                    var sqlCheckMyPost = "SELECT `users_key` FROM `posts` WHERE `id`=" + posts_id;
+                                                    BASE.getDataWithSQL(sqlCheckMyPost, function(owner_post) {
+                                                        if (owner_post) {
+                                                            if (owner_post.users_key == key) {
+                                                                client.query("SELECT `id` FROM `likes` WHERE `posts_id`='" + req.body.posts_id + "'", function(e, d, fL) {
+                                                                    if (e) {
+                                                                        console.log(e);
+                                                                        return res.sendStatus(300);
                                                                     } else {
-                                                                        client.query("SELECT `id` FROM `likes` WHERE `posts_id`='" + req.body.posts_id + "'", function(e, d, fL) {
-                                                                            if (e) {
-                                                                                console.log(e);
+                                                                        console.log(key + " thích " + req.body.posts_id + "");
+                                                                        return res.send(echoResponse(200, { total_like: d.length, liked: 1 }, 'success', false));
+                                                                    }
+                                                                });
+                                                            } else {
+                                                                // 
+                                                                var currentTime = new Date().getTime();
+                                                                insertNotificationNoImage(key, people_like.nickname, people_like.avatar, 'like', currentTime, owner_post.users_key, posts_id);
+
+                                                                sendNotification(key, owner_post.users_key, "like your activity", "like", posts_id);
+
+                                                                var selectCurrent = "SELECT `nickname`, `avatar` FROM `users` WHERE `key`='" + key + "'";
+                                                                client.query(selectCurrent, function(eCurrent, dCurrent, fCurrent) {
+                                                                    if (eCurrent) {
+                                                                        console.log(eCurrent);
+                                                                        return res.sendStatus(300);
+                                                                    } else {
+                                                                        var selectRelate = "SELECT * FROM `tags` WHERE `posts_id`='" + posts_id + "' AND `users_key`!='" + key + "'";
+                                                                        client.query(selectRelate, function(eRelate, dRelate, fRelate) {
+                                                                            if (eRelate) {
+                                                                                console.log(eRelate);
                                                                                 return res.sendStatus(300);
                                                                             } else {
-                                                                                console.log(req.body.users_key + " thích " + req.body.posts_id + "");
-                                                                                return res.send(echoResponse(200, { total_like: d.length, liked: 1 }, 'success', false));
+                                                                                if (dRelate.length > 0) {
+                                                                                    async.forEachOf(dRelate, function(asyData, asyI, asyCallback) {
+                                                                                        insertNotificationNoImage(key, dCurrent[0].nickname, dCurrent[0].avatar, 'like', currentTime, dRelate[asyI].users_key, posts_id);
+                                                                                        sendNotification(key, dRelate[asyI].users_key, "likes a post you are tagged in", "like", posts_id);
+                                                                                    });
+                                                                                }
                                                                             }
                                                                         });
                                                                     }
                                                                 });
+                                                                client.query("SELECT `id` FROM `likes` WHERE `posts_id`='" + req.body.posts_id + "'", function(e, d, fL) {
+                                                                    if (e) {
+                                                                        console.log(e);
+                                                                        return res.sendStatus(300);
+                                                                    } else {
+                                                                        console.log(key + " thích " + req.body.posts_id + "");
+                                                                        return res.send(echoResponse(200, { total_like: d.length, liked: 1 }, 'success', false));
+                                                                    }
+                                                                });
+                                                                // 
                                                             }
-                                                        });
-                                                    }
-                                                });
-
-
-                                            }
-                                        });
-                                    }
+                                                        } else {
+                                                            return res.send(echoResponse(404, "Error post.", 'success', false));
+                                                        }
+                                                    });
+                                                } else {
+                                                    return res.send(echoResponse(404, "Error users_key.", 'success', false));
+                                                }
+                                            });
+                                        } else {
+                                            return res.send(echoResponse(404, "Like failed.", 'success', false));
+                                        }
+                                    });
                                 }
-                            }) //
+                            });
+                        } else {
+                            return res.send(echoResponse(404, "You dont have permission", 'success', false));
                         }
                     });
+                } else {
+                    return res.send(echoResponse(404, "This post not exists", 'success', false));
                 }
             });
         } else {
