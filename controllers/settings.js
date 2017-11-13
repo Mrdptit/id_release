@@ -52,7 +52,7 @@ router.get('/global_setting', urlParser, function(req, res) {
             return res.sendStatus(300);
         } else {
             if (d.length > 0) {
-                return res.send(echoResponse(200, data[0], 'globak setting', false));
+                return res.send(echoResponse(200, d[0], 'globak setting', false));
             } else {
                 return res.send(echoResponse(404, "no data.", 'success', true));
             }
