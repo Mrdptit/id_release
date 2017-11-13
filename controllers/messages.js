@@ -129,6 +129,7 @@ router.post('/new', urlParser, function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
+            delete req.body.users_key;
             var userSQL = "SELECT * FROM `messages` WHERE `key`='" + req.body.key + "'";
             client.query(userSQL, function(error, data, fields) {
                 if (error) {
