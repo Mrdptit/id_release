@@ -851,7 +851,15 @@ router.post('/like', urlParser, function(req, res) {
                                                                         });
                                                                     }
                                                                 });
-                                                                console.log(key + " thích " + req.body.posts_id + "");
+                                                                client.query("SELECT `id` FROM `likes` WHERE `posts_id`='" + req.body.posts_id + "'", function(e, d, fL) {
+                                                                    if (e) {
+                                                                        console.log(e);
+                                                                        return res.sendStatus(300);
+                                                                    } else {
+                                                                        console.log(key + " thích " + req.body.posts_id + "");
+                                                                        return res.send(echoResponse(200, { total_like: d.length, liked: 1 }, 'success', false));
+                                                                    }
+                                                                });
                                                                 // 
                                                             }
                                                         } else {
