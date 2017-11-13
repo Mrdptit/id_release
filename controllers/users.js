@@ -1634,8 +1634,18 @@ router.get('/:key/exists=:friend_key', function(req, res) {
                     console.log("-------:" + JSON.stringify(data));
                     var sqlUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + data[0].key + "')";
                     BASE.getObjectWithSQL(sqlUser, function(members) {
-                        data[0].members = members;
-                        return res.send(echoResponse(200, data, 'success', true));
+                        
+                        if (members.length > 0) {
+                            data[0].members = members;
+                            return res.send(echoResponse(200, data, 'success', true));    
+                        }else{
+                           
+                            var sqlDeleteCon = "DELETE FROM `conversations` WHERE `key` = '"+data[0].key+"'";
+                            client.query(sqlDeleteCon,function(err,d,f){
+                                return res.send(echoResponse(404, 'Conversation not found.', 'success', true));
+                            });
+                        }
+                        
                     });
                 } else {
                     return res.send(echoResponse(404, 'Conversation not found.', 'success', true));
