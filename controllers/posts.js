@@ -803,7 +803,7 @@ router.post('/like', urlParser, function(req, res) {
                                     });
                                 } else {
                                     req.body.type = "like";
-                                    var sqlInsert = escapeSQL.escape("INSERT INTO `likes` SET ?", req.body);
+                                    var sqlInsert = escapeSQL.format("INSERT INTO `likes` SET ?", req.body);
                                     BASE.insertWithSQL(sqlInsert, function(result) {
                                         if (result) {
                                             var peopleLike = "SELECT * FROM `users` WHERE `key`='" + key + "'";
