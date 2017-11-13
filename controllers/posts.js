@@ -808,7 +808,7 @@ router.post('/like', urlParser, function(req, res) {
                                         if (result) {
                                             var peopleLike = "SELECT * FROM `users` WHERE `key`='" + key + "'";
                                             BASE.getDataWithSQL(peopleLike, function(people_like) {
-                                                if (people) {
+                                                if (people_like) {
                                                     var sqlCheckMyPost = "SELECT `users_key` FROM `posts` WHERE `id`=" + posts_id;
                                                     BASE.getDataWithSQL(sqlCheckMyPost, function(owner_post) {
                                                         if (owner) {
