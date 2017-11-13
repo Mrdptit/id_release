@@ -46,7 +46,7 @@ var apnService = new apn.Provider({
 
     
 /*********--------Following----------*********/
-router.get('/global_setting', urlParser, function(req, res) {
+router.get('/:key/type=global_settings&access_token=:access_token', urlParser, function(req, res) {
 
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
