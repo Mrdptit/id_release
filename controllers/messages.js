@@ -130,6 +130,7 @@ router.post('/new', urlParser, function(req, res) {
         if (logged) {
             delete req.body.access_token;
             delete req.body.users_key;
+            delete req.body.user_key;
             var userSQL = "SELECT * FROM `messages` WHERE `key`='" + req.body.key + "'";
             client.query(userSQL, function(error, data, fields) {
                 if (error) {
