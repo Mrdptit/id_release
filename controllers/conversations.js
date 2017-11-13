@@ -68,28 +68,30 @@ router.post('/new', urlParser, function(req, res) {
                     return res.send(echoResponse(404, 'This conversation already exists', 'success', true));
                 } else {
                     
-                    
+                    var json = req.body.members;
                     delete req.body.access_token;
+                    delete req.body.members;
+                    
                     var sql = escapeSQL.format("INSERT INTO `conversations` SET ?", req.body);
                     BASE.insertWithSQL(sql, function(status) {
                         if (status) {
                             console.log("Vừa thêm conversation thành công với key " + req.body.key);
-                            var json;
+                            
                             console.log("start -------------------------------------------------------");
                             var members;
-                            if (isJsonString(req.body.members)) {
-                                members = JSON.parse(req.body.members);
+                            if (isJsonString(json)) {
+                                members = JSON.parse(json);
                             } else {
-                                var stringJson = JSON.stringify(req.body.members, null, 2);
+                                var stringJson = JSON.stringify(json, null, 2);
                                 members = JSON.parse(stringJson);
                             }
                             console.log(members);
-                              delete req.body.members;
+                              
 
                             if (isEmpty(members) == false) {
                                 // json = JSON.parse(req.body.members);
                                 for (var n = 0; n < members.length; n++) {
-                                    console.log(json[n].user_id);
+                                    console.log(members[n].user_id);
                                     var iMSQL = "INSERT INTO `members`(`users_key`,`conversations_key`)";
                                     var dMSQL = "VALUES ('" + members[n].user_id + "','" + req.body.key + "')";
                                     BASE.insertWithSQL(iMSQL + dMSQL, function(stt) {
