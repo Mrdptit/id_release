@@ -67,22 +67,31 @@ router.post('/new', urlParser, function(req, res) {
                 if (data) {
                     return res.send(echoResponse(404, 'This conversation already exists', 'success', true));
                 } else {
-                    var members = req.body.members;
-                    console.log(members);
-                    delete req.body.members;
+                    
+                    
                     delete req.body.access_token;
                     var sql = escapeSQL.format("INSERT INTO `conversations` SET ?", req.body);
                     BASE.insertWithSQL(sql, function(status) {
                         if (status) {
                             console.log("Vừa thêm conversation thành công với key " + req.body.key);
                             var json;
+                            var members = req.body.members;
                             if (isJsonString(req.body.members)) {
+                                members = JSON.parse(req.body.members);
+                            } else {
+                                var stringJson = JSON.stringify(req.body.members, null, 2);
+                                members = JSON.parse(stringJson);
+                            }
+                            console.log(members);
+                              delete req.body.members;
+
+                            if (isEmpty(members)) {
                                 json = JSON.parse(req.body.members);
                                 for (var n = 0; n < json.length; n++) {
                                     console.log(json[n].user_id);
                                     var iMSQL = "INSERT INTO `members`(`users_key`,`conversations_key`)";
                                     var dMSQL = "VALUES ('" + json[n].user_id + "','" + req.body.key + "')";
-                                    BASE.insertWithSQL(iMSQL+dMSQL, function(stt){
+                                    BASE.insertWithSQL(iMSQL + dMSQL, function(stt) {
                                         console.log("INSERT members SUCCESS");
                                     });
                                 }
