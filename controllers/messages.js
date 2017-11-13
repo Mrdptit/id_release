@@ -120,7 +120,7 @@ console.log(j.nextInvocation());
 
 router.post('/new', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
-    var key = req.body.users_key || req.query.users_key || req.params.users_key;
+    var key = req.body.sender_id || req.query.sender_id || req.params.sender_id;
     if (typeof key != 'string') {
         if (key.length == 0) {
             return res.sendStatus(300);
