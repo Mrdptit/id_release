@@ -68,6 +68,7 @@ router.post('/new', urlParser, function(req, res) {
                     return res.send(echoResponse(404, 'This conversation already exists', 'success', true));
                 } else {
                     var members = req.body.members;
+                    console.log(members);
                     delete req.body.members;
                     delete req.body.access_token;
                     var sql = escapeSQL.format("INSERT INTO `conversations` SET ?", req.body);
