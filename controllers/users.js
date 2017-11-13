@@ -1635,7 +1635,7 @@ router.get('/:key/exists=:friend_key', function(req, res) {
                     var sqlUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + data[0].key + "')";
                     BASE.getObjectWithSQL(sqlUser, function(members) {
                         
-                        if (members.length > 0) {
+                        if (isEmpty(members) == false) {
                             data[0].members = members;
                             return res.send(echoResponse(200, data, 'success', true));    
                         }else{
