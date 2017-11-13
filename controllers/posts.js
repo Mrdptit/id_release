@@ -811,8 +811,8 @@ router.post('/like', urlParser, function(req, res) {
                                                 if (people_like) {
                                                     var sqlCheckMyPost = "SELECT `users_key` FROM `posts` WHERE `id`=" + posts_id;
                                                     BASE.getDataWithSQL(sqlCheckMyPost, function(owner_post) {
-                                                        if (owner) {
-                                                            if (owner.users_key == key) {
+                                                        if (owner_post) {
+                                                            if (owner_post.users_key == key) {
                                                                 client.query("SELECT `id` FROM `likes` WHERE `posts_id`='" + req.body.posts_id + "'", function(e, d, fL) {
                                                                     if (e) {
                                                                         console.log(e);
