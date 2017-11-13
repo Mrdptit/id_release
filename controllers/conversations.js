@@ -75,7 +75,8 @@ router.post('/new', urlParser, function(req, res) {
                         if (status) {
                             console.log("Vừa thêm conversation thành công với key " + req.body.key);
                             var json;
-                            var members = req.body.members;
+                            console.log("start -------------------------------------------------------");
+                            var members;
                             if (isJsonString(req.body.members)) {
                                 members = JSON.parse(req.body.members);
                             } else {
