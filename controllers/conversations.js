@@ -71,7 +71,7 @@ router.post('/new', urlParser, function(req, res) {
                     var json = req.body.members;
                     delete req.body.access_token;
                     delete req.body.members;
-                    
+
                     var sql = escapeSQL.format("INSERT INTO `conversations` SET ?", req.body);
                     BASE.insertWithSQL(sql, function(status) {
                         if (status) {
@@ -572,6 +572,9 @@ function getStatusLastMessage(conversations_key, status) {
  **********------ ECHO RESPONSE -----*********
  **********--------------------------*********/
 
+function isEmpty(val) {
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
+}
 
 function isJsonString(str) {
     try {
