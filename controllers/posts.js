@@ -984,7 +984,7 @@ router.post('/comment/update', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.user_key || req.query.user_key || req.params.user_key;
     if (typeof key != 'string') {
-        if (key.length == 0) {
+        if (isEmpty(key)) {
             return res.sendStatus(300);
         }
     }
@@ -2106,6 +2106,11 @@ function checkHavePost(res, posts_id, callback) {
         }
     });
 }
+
+function isEmpty(val) {
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
+}
+
 
 function removeDuplicate(myArray) {
     uniqueArray = myArray.filter(function(elem, pos) {
