@@ -161,8 +161,9 @@ router.post('/type=params', urlParser, function(req, res) {
             //Param value
             // console.log(req.params.skips);
             
+            var dataSkip = req.body.skips || req.query.skips || req.params.skips;
             var skipUsers;
-            if (isEmpty(req.params.skips) == false) {
+            if (isEmpty(dataSkip) == false) {
                  skipUsers = parseJsonData(req.params.skips);
                 console.log("User skip in ***************************: " + skipUsers);
             }
