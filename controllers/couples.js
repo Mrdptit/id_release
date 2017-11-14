@@ -305,8 +305,17 @@ router.post('/type=params', urlParser, function(req, res) {
 
             var param16;
             if (isEmpty(skipUsers) == false) {
-               // param16 = " AND `key` NOT IN ('".skipUsers."') ";
-                //console.log("Condition ----============= "+param16);
+                var users = "";
+                for (var i = 0; i < skipUsers.length - 1 ; i++) {
+                    
+                    if (i == skipUsers.length - 1) {
+                        users = users + "'" + skipUsers[i] + "'";
+                    }else{
+                        users = users + "'" + skipUsers[i] + "',";
+                    }
+                }
+                param16 = " AND `key` NOT IN ('" + users +"') ";
+                console.log("Condition ----============= "+param16);
             }
 
             console.log(JSON.stringify(req.body));
