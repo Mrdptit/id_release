@@ -302,8 +302,8 @@ router.post('/type=params', urlParser, function(req, res) {
 
             var param16;
             if (isEmpty(skipUsers) == false) {
-                param16 = " AND `key` NOT IN ('".skipUsers."') ";
-                console.log("Condition ----============= "+param16);
+                // param16 = " AND `key` NOT IN ('".$skipUsers."') ";
+                // console.log("Condition ----============= "+param16);
             }
 
             console.log(JSON.stringify(req.body));
