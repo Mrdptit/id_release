@@ -341,7 +341,7 @@ router.post('/answers/new', urlParser, function(req, res) {
                                     sendNotification(sender_key, data2[0].receiver_key, req.body.content, "answers", questions_id);
                                     
                                     console.log("receiver Notification 1: " + data2[0].receiver_key);
-                                } else if (sender_key == data2[0].sender_key) {
+                                } else if (sender_key == data2[0].receiver) {
                                     client.query("UPDATE `questions` SET `receiver_deleted`=0 WHERE `id`=" + questions_id + "");
                                     sendNotification(sender_key, data2[0].sender_key, req.body.content, "answers", questions_id);
                                     
