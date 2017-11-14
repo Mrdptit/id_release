@@ -373,7 +373,7 @@ router.get('/unread', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
     if (typeof key != 'string') {
-        if (key.length == 0) {
+        if (isEmpty(key)) {
             return res.sendStatus(300);
         }
     }
@@ -655,6 +655,10 @@ function numberBadge(key, count) {
             }
         }
     });
+}
+
+function isEmpty(val) {
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
 }
 
 
