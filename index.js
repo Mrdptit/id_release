@@ -162,7 +162,8 @@ io.on('connection', function(socket) { // Incoming connections from clients
     
         var target = findUserByUID(msg.to);
 
-        console.log("Matching Calling --------------- to user:" + msg.to + "Socket id : ");
+        //console.log("Matching Calling --------------- to user:" + msg.to + "Socket id : ");
+
 
             //emit for ios
         if (target) {
@@ -411,7 +412,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             // console.log("Socket id cloud: ---------------------:  " + target.socketid);
             //emit for android
             socket.broadcast.emit('chat message', msg);
-            console.log("Calling --------------- to user:" + msg.to + "Socket id : ");
+            //console.log("Calling --------------- to user:" + msg.to + "Socket id : ");
 
             //emit for ios
             if (target) {
@@ -419,13 +420,13 @@ io.on('connection', function(socket) { // Incoming connections from clients
                 // socket.broadcast.to(target.socketid).emit('chat message', msg);
                 socket.broadcast.to(target.socketid).emit('K_Signal_Call', msg);
 
-                console.log("User call online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
+                //console.log("User call online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to + "Socket id: " + target.socketid);
 
                 //socket_to.emit("chat message", msg);
             } else {
 
                 socket.broadcast.emit("K_Signal_Call", msg);
-                console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
+               // console.log("User call not online ------------------------- : He9Y3AA7xtVQahaKGuon5HYSAqy1 to user:" + msg.to);
 
 
             }
