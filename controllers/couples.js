@@ -314,7 +314,7 @@ router.post('/type=params', urlParser, function(req, res) {
                         users = users + "'" + skipUsers[i] + "',";
                     }
                 }
-                param16 = " AND `key` NOT IN ('" + users +"') ";
+                param16 = " AND `key` NOT IN (" + users +") ";
                 console.log("Condition ----============= "+param16);
             }
 
