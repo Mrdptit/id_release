@@ -374,7 +374,9 @@ router.get('/unread', urlParser, function(req, res) {
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
     if (typeof key != 'string') {
         if (isEmpty(key)) {
+            
             return res.sendStatus(300);
+
         }
     }
     BASE.authenticateWithToken(key, access_token, function(logged) {
