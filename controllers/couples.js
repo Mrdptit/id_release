@@ -327,6 +327,11 @@ router.post('/type=params', urlParser, function(req, res) {
             }
             var orderby = " AND `key` IN (SELECT `users_key` FROM `other_information`) LIMIT " + parseInt(per_page, 10) + " OFFSET " + per_pageNan;
             var sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + param14 + param15 + orderby;
+            
+            if (isEmpty(param16) == false) {
+                sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + param14 + param15 + param16 + orderby;
+            }
+            
             console.log(sqlu);
             client.query(sqlu, function(errr, rsss, fiii) {
                 if (errr) {
