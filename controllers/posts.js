@@ -1019,6 +1019,7 @@ router.post('/comment/update', urlParser, function(req, res) {
 router.post('/comment/delete', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
+    var friend_key = req.body.friend_key || req.query.friend_key || req.params.friend_key;
     if (typeof key != 'string') {
         if (key.length == 0) {
             return res.sendStatus(300);
@@ -1027,14 +1028,14 @@ router.post('/comment/delete', urlParser, function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
-            var selectLike = "SELECT * FROM `comments` WHERE `users_key`='" + req.body.users_key + "' AND `id`='" + req.body.id + "' AND `posts_id`='" + req.body.posts_id + "'";
+            var selectLike = "SELECT * FROM `comments` WHERE `users_key`='" + friend_key + "' AND `id`='" + req.body.id + "' AND `posts_id`='" + req.body.posts_id + "'";
             client.query(selectLike, function(eLike, dLike, fLike) {
                 if (eLike) {
                     console.log(eLike);
                     return res.sendStatus(300);
                 } else {
                     if (dLike.length > 0) {
-                        var slSQL = "SELECT * FROM `comments` WHERE `users_key`='" + req.body.users_key + "' AND `posts_id`='" + req.body.posts_id + "'";
+                        var slSQL = "SELECT * FROM `comments` WHERE `users_key`='" + friend_key + "' AND `posts_id`='" + req.body.posts_id + "'";
                         client.query(slSQL, function(eC, dC, fC) {
                             if (eC) {
                                 console.log(eC);
@@ -1043,28 +1044,28 @@ router.post('/comment/delete', urlParser, function(req, res) {
                                 if (dC.length > 0) {
 
                                 } else {
-                                    var keyUserPost = "DELETE FROM `notification_feed` WHERE `posts_id`='" + req.body.posts_id + "' AND `friend_key`='" + req.body.users_key + "' AND `type`='comment'";
+                                    var keyUserPost = "DELETE FROM `notification_feed` WHERE `posts_id`='" + req.body.posts_id + "' AND `friend_key`='" + friend_key + "' AND `type`='comment'";
                                     client.query(keyUserPost, function(eNL, dNL, fNL) {
                                         if (eNL) {
                                             console.log(eNL);
                                             return res.sendStatus(300);
                                         } else {
-                                            console.log(req.body.users_key + " xóa feed comment " + req.body.posts_id + "");
+                                            console.log(key + " xóa feed comment " + req.body.posts_id + "");
                                         }
                                     });
-                                    var deleteRelate = "DELETE FROM `notification_relate` WHERE `posts_id`='" + req.body.posts_id + "' AND `users_key`='" + req.body.users_key + "'";
+                                    var deleteRelate = "DELETE FROM `notification_relate` WHERE `posts_id`='" + req.body.posts_id + "' AND `users_key`='" + friend_key + "'";
                                     client.query(deleteRelate);
                                 }
                             }
                         });
                         //--- delete noti
-                        var deleteSQL = "DELETE FROM `comments` WHERE `users_key`='" + req.body.users_key + "' AND `id`='" + req.body.id + "'  AND `posts_id`='" + req.body.posts_id + "'";
+                        var deleteSQL = "DELETE FROM `comments` WHERE `users_key`='" + friend_key + "' AND `id`='" + req.body.id + "'  AND `posts_id`='" + req.body.posts_id + "'";
                         client.query(deleteSQL, function(eInsert, dInsert, fInsert) {
                             if (eInsert) {
                                 console.log(eInsert);
                                 return res.sendStatus(300);
                             } else {
-                                console.log(req.body.users_key + " đã xóa comment " + req.body.id + "");
+                                console.log(key + " đã xóa comment " + req.body.id + "");
                                 return res.send(echoResponse(200, 'Deleted successfully.', 'success', false));
                             }
                         });
