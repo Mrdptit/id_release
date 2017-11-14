@@ -302,12 +302,12 @@ router.post('/type=params', urlParser, function(req, res) {
 
             console.log(JSON.stringify(req.body));
             var per_pageNan;
-            if(isNaN(parseInt(page, 10) * parseInt(per_page, 10))){
+            if (isNaN(parseInt(page, 10) * parseInt(per_page, 10))) {
                 per_pageNan = 0;
             } else {
                 per_pageNan = parseInt(page, 10) * parseInt(per_page, 10);
             }
-            var orderby = "LIMIT " + parseInt(per_page, 10) + " OFFSET " + per_pageNan;
+            var orderby = " AND `key` IN (SELECT `users_key` FROM `other_information`) LIMIT " + parseInt(per_page, 10) + " OFFSET " + per_pageNan;
             var sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + param14 + param15 + orderby;
             console.log(sqlu);
             client.query(sqlu, function(errr, rsss, fiii) {
@@ -324,24 +324,28 @@ router.post('/type=params', urlParser, function(req, res) {
                                     console.log(eGet);
                                     return res.send(echoResponse(300, 'error', JSON.stringify(eGet), true));
                                 } else {
-                                    if (dGet.length > 0) {
-                                        var chieucao = parseInt(dGet[0].height);
-                                        var cannang = parseInt(dGet[0].weight);
-                                        var date = new Date(rsss[i].birthday);
-                                        var today = new Date();
-                                        var age = today.getFullYear() - date.getFullYear();
-                                        if (age >= min_age && age <= max_age) {
-                                            rsss[i].year_old = age;
-                                            rsss[i].height = dGet[0].height;
-                                            rsss[i].industry = dGet[0].industry;
-                                            arrayMembers.push(rsss[i]);
-                                        }
+                                    var chieucao = parseInt(dGet[0].height);
+                                    var cannang = parseInt(dGet[0].weight);
+                                    var date = new Date(rsss[i].birthday);
+                                    var today = new Date();
+                                    var age = today.getFullYear() - date.getFullYear();
+                                    if (age >= min_age && age <= max_age) {
+                                        rsss[i].year_old = age;
+                                        rsss[i].height = dGet[0].height;
+                                        rsss[i].industry = dGet[0].industry;
+                                        arrayMembers.push(rsss[i]);
                                     }
                                     if (i === rsss.length - 1) {
                                         var last = _.uniqBy(arrayMembers, 'key');
+                                        console.log("-----1: "+arrayMembers.length);
+                                        console.log("-----1.1: "+last.length);
                                         if (last.length > 0) {
+                                            console.log("-----2: "+arrayMembers.length);
+                                            console.log("-----2.2: "+last.length);
                                             return res.send(echoResponse(200, last, 'success', false));
                                         } else {
+                                            console.log("-----3: "+arrayMembers.length);
+                                            console.log("-----3.3: "+last.length);
                                             return res.send(echoResponse(404, 'No user', 'success', true));
                                         }
                                     }
