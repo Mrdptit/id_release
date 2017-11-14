@@ -306,7 +306,7 @@ router.post('/type=params', urlParser, function(req, res) {
             var param16;
             if (isEmpty(skipUsers) == false) {
                 var users = "";
-                for (var i = 0; i < skipUsers.length - 1 ; i++) {
+                for (var i = 0; i < skipUsers.length ; i++) {
                     
                     if (i == skipUsers.length - 1) {
                         users = users + "'" + skipUsers[i] + "'";
@@ -331,7 +331,7 @@ router.post('/type=params', urlParser, function(req, res) {
             if (isEmpty(param16) == false) {
                 sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + param14 + param15 + param16 + orderby;
             }
-            
+
             console.log(sqlu);
             client.query(sqlu, function(errr, rsss, fiii) {
                 if (errr) {
