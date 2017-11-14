@@ -331,12 +331,16 @@ router.post('/type=params', urlParser, function(req, res) {
                                         arrayMembers.push(rsss[i]);
                                     }
                                     if (i === rsss.length - 1) {
-                                        console.log("-----: "+arrayMembers.length);
+                                        console.log("-----1: "+arrayMembers.length);
+                                        console.log("-----1.1: "+last.length);
                                         var last = _.uniqBy(arrayMembers, 'key');
                                         if (last.length > 0) {
-                                            console.log("-----: "+last.length);
+                                            console.log("-----2: "+arrayMembers.length);
+                                            console.log("-----2.2: "+last.length);
                                             return res.send(echoResponse(200, last, 'success', false));
                                         } else {
+                                            console.log("-----3: "+arrayMembers.length);
+                                            console.log("-----3.3: "+last.length);
                                             return res.send(echoResponse(404, 'No user', 'success', true));
                                         }
                                     }
