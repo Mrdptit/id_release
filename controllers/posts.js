@@ -76,6 +76,7 @@ router.post('/new', urlParser, function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
+            delete req.body.key;
             var value = [];
             var insert = [];
             for (var k in req.body) {
