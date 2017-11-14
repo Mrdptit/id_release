@@ -160,11 +160,11 @@ router.post('/type=params', urlParser, function(req, res) {
             var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
             //Param value
             // console.log(req.params.skips);
-            
+
             var dataSkip = req.body.skips || req.query.skips || req.params.skips;
             var skipUsers;
             if (isEmpty(dataSkip) == false) {
-                 skipUsers = parseJsonData(dataSkip);
+                skipUsers = parseJsonData(dataSkip);
                 console.log("User skip in ***************************: " + skipUsers);
             }
 
@@ -306,17 +306,24 @@ router.post('/type=params', urlParser, function(req, res) {
             var param16;
             if (isEmpty(skipUsers) == false) {
                 var users = "";
-                for (var i = 0; i < skipUsers.length ; i++) {
-                    
+                for (var i = 0; i < skipUsers.length; i++) {
+
                     if (i == skipUsers.length - 1) {
                         users = users + "'" + skipUsers[i] + "'";
-                    }else{
+                    } else {
                         users = users + "'" + skipUsers[i] + "',";
                     }
                 }
-                param16 = " AND `key` NOT IN (" + users +") ";
-                console.log("Condition ----============= "+param16);
+                param16 = " AND `key` NOT IN (" + users + ") ";
+                console.log("Condition ----============= " + param16);
             }
+
+            var param17;
+            var currentYear = (new Date()).getFullYear();
+            var startDate = "01/01/" + currentYear - min_age;
+            var endDate = "01/01/" + currentYear - max_age;
+            console.log("min_age :" + startDate + "endDate: " + endDate);
+            param17 = "AND `birthday` >= '" + startDate + "' and `birthday` <= '" + endDate + "'";
 
             console.log(JSON.stringify(req.body));
             var per_pageNan;
@@ -326,10 +333,10 @@ router.post('/type=params', urlParser, function(req, res) {
                 per_pageNan = parseInt(page, 10) * parseInt(per_page, 10);
             }
             var orderby = " AND `key` IN (SELECT `users_key` FROM `other_information`) LIMIT " + parseInt(per_page, 10) + " OFFSET " + per_pageNan;
-            var sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + param14 + param15 + orderby;
-            
+            var sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + param14 + param15 + param17 + orderby;
+
             if (isEmpty(param16) == false) {
-                sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + param14 + param15 + param16 + orderby;
+                sqlu = sqlsselect + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + param1 + param2 + param3 + param4 + param5 + param6 + param7 + param8 + param9 + param10 + param11 + param12 + param13 + param14 + param15 + param16 + param17 + orderby;
             }
 
             console.log(sqlu);
@@ -352,23 +359,25 @@ router.post('/type=params', urlParser, function(req, res) {
                                     var date = new Date(rsss[i].birthday);
                                     var today = new Date();
                                     var age = today.getFullYear() - date.getFullYear();
-                                    if (age >= min_age && age <= max_age) {
-                                        rsss[i].year_old = age;
-                                        rsss[i].height = dGet[0].height;
-                                        rsss[i].industry = dGet[0].industry;
-                                        arrayMembers.push(rsss[i]);
-                                    }
+                                    // if (age >= min_age && age <= max_age) {
+
+                                    // }
+                                    rsss[i].year_old = age;
+                                    rsss[i].height = dGet[0].height;
+                                    rsss[i].industry = dGet[0].industry;
+                                    arrayMembers.push(rsss[i]);
+
                                     if (i === rsss.length - 1) {
                                         var last = _.uniqBy(arrayMembers, 'key');
-                                        console.log("-----1: "+arrayMembers.length);
-                                        console.log("-----1.1: "+last.length);
+                                        //console.log("-----1: " + arrayMembers.length);
+                                       // console.log("-----1.1: " + last.length);
                                         if (last.length > 0) {
-                                            console.log("-----2: "+arrayMembers.length);
-                                            console.log("-----2.2: "+last.length);
+                                            //console.log("-----2: " + arrayMembers.length);
+                                          //  console.log("-----2.2: " + last.length);
                                             return res.send(echoResponse(200, last, 'success', false));
                                         } else {
-                                            console.log("-----3: "+arrayMembers.length);
-                                            console.log("-----3.3: "+last.length);
+                                            //console.log("-----3: " + arrayMembers.length);
+                                            //console.log("-----3.3: " + last.length);
                                             return res.send(echoResponse(404, 'No user', 'success', true));
                                         }
                                     }
