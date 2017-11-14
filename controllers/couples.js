@@ -300,6 +300,12 @@ router.post('/type=params', urlParser, function(req, res) {
                 param15 = "";
             }
 
+            var param16;
+            if (isEmpty(skipUsers) == false) {
+                param16 = " AND `key` NOT IN ('".skipUsers."') ";
+                console.log("Condition ----============= "+param16);
+            }
+
             console.log(JSON.stringify(req.body));
             var per_pageNan;
             if (isNaN(parseInt(page, 10) * parseInt(per_page, 10))) {
