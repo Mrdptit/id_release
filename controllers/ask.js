@@ -339,10 +339,12 @@ router.post('/answers/new', urlParser, function(req, res) {
                                 if (sender_key == data2[0].sender_key) {
                                     client.query("UPDATE `questions` SET `sender_deleted`=0 WHERE `id`=" + questions_id + "");
                                     sendNotification(sender_key, data2[0].receiver_key, req.body.content, "answers", questions_id);
+                                    
                                     console.log("receiver Notification 1: " + data2[0].receiver_key);
                                 } else if (sender_key == data2[0].sender_key) {
                                     client.query("UPDATE `questions` SET `receiver_deleted`=0 WHERE `id`=" + questions_id + "");
                                     sendNotification(sender_key, data2[0].sender_key, req.body.content, "answers", questions_id);
+                                    
                                      console.log("receiver Notification 2: " + data2[0].sender_key);
                                 }
                                 return res.send(echoResponse(200, 'Send successfully', 'success', false));
