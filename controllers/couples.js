@@ -145,7 +145,6 @@ router.get('/type=all', function(req, res) {
 });
 
 
-
 router.post('/type=params', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
@@ -160,6 +159,12 @@ router.post('/type=params', urlParser, function(req, res) {
             var page = req.body.page || req.query.page || req.params.page;
             var per_page = req.body.per_page || req.query.per_page || req.params.per_page;
             //Param value
+
+            var skipUsers = parseJsonData(req.params.skip);
+            if (isEmpty(skipUsers) == false) {
+                console.log("User skip in ***************************: " + skipUsers);
+            }
+
             var academic_level = req.body.academic_level || req.query.academic_level || req.params.academic_level;
             var annual_income = req.body.annual_income || req.query.kannual_incomeey || req.params.annual_income;
             var blood_group = req.body.blood_group || req.query.blood_group || req.params.blood_group;
@@ -293,6 +298,12 @@ router.post('/type=params', urlParser, function(req, res) {
                 param15 = " AND `key` IN (SELECT `users_key` FROM `other_information` WHERE `height`>='" + req.body.height + "') ";
             } else {
                 param15 = "";
+            }
+
+            var param16;
+            if (isEmpty(skipUsers) == false) {
+                // param16 = " AND `key` NOT IN ('".$skipUsers."') ";
+                // console.log("Condition ----============= "+param16);
             }
 
             console.log(JSON.stringify(req.body));
@@ -886,6 +897,17 @@ function isExistObject(list, position) {
     }
 }
 
+function parseJsonData(json) {
+    var jsonparse;
+    if (isJsonString(json)) {
+        jsonparse = JSON.parse(json);
+    } else {
+        var stringJson = JSON.stringify(json, null, 2);
+        jsonparse = JSON.parse(stringJson);
+    }
+    return jsonparse
+}
+
 function parseIntFromText(text) {
     if (text.indexOf(">") > -1) {
         var height = text.replace('>', '');
@@ -895,6 +917,10 @@ function parseIntFromText(text) {
         var heightInt = parseInt(text, 10);
         return heightInt;
     }
+}
+
+function isEmpty(val) {
+    return (val === undefined || val == null || val.length <= 0) ? true : false;
 }
 
 function isJsonString(str) {
