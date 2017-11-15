@@ -334,7 +334,7 @@ router.get('/:key/type=content', urlParser, function(req, res) {
     var key = req.body.key || req.query.key || req.params.key;
     var users_key = req.body.users_key || req.query.users_key || req.params.users_key;
     if (typeof users_key != 'string') {
-        if (users_key.length == 0) {
+        if (isEmpty(users_key)) {
             return res.sendStatus(300);
         }
     }
