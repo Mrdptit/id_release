@@ -1,4 +1,4 @@
-// process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'production';
 //process.setMaxListeners(0);
 var express = require('express');
 var app = require('express')();
