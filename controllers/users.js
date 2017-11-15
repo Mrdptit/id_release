@@ -826,7 +826,7 @@ router.post('/update', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
     if (typeof key != 'string') {
-        if (key.length == 0) {
+        if (isEmpty(key)) {
             return res.sendStatus(300);
         }
     }
