@@ -827,6 +827,7 @@ router.post('/update', urlParser, function(req, res) {
     var key = req.body.key || req.query.key || req.params.key;
     if (typeof key != 'string') {
         if (isEmpty(key)) {
+            console.log("API USer/update key is nil...............");
             return res.sendStatus(300);
         }
     }
