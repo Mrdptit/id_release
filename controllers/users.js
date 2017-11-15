@@ -48,8 +48,10 @@ router.post('/signin', urlParser, function(req, res) {
     BASE.getMeByKey(key, function(data) {
         if (data) {
             if (req.body.access_token) {
-                console.log("\n\n -------- --- Login with access_token -------------\n\n");
+                
                 var access_token = req.body.access_token;
+
+                console.log("\n\n -------- --- Login with access_token ------------- "+ access_token +" \n\n");
                 delete req.body.key;
                 BASE.authenticateWithToken(key, access_token, function(logged) {
                     if (logged) {
