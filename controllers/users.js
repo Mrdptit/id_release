@@ -48,7 +48,7 @@ router.post('/signin', urlParser, function(req, res) {
     BASE.getMeByKey(key, function(data) {
         if (data) {
             if (req.body.access_token) {
-                console.log("Login with access_token");
+                console.log("\n\n -------- --- Login with access_token -------------\n\n");
                 var access_token = req.body.access_token;
                 delete req.body.key;
                 BASE.authenticateWithToken(key, access_token, function(logged) {
@@ -99,7 +99,7 @@ router.post('/signin', urlParser, function(req, res) {
                 });
             } else {
 
-                console.log("Login with no access_token");
+                console.log("\n\n --------------Login with no access_token ------------\n\n");
                 BASE.createAccessToken(req.body.key, 604800, function(access_token) {
                     req.body.access_token = access_token;
                     delete req.body.key;
