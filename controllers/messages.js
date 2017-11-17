@@ -288,6 +288,8 @@ router.post('/delete', urlParser, function(req, res) {
             return res.sendStatus(300);
         }
     }
+
+    console.log("Authenticate user: " + key + "access_token: "+access_token);
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
