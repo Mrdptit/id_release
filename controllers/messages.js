@@ -282,15 +282,15 @@ router.post('/status', urlParser, function(req, res) {
 router.post('/delete', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.key || req.query.key || req.params.key;
-    var friend_key = req.body.friend_key || req.query.friend_key || req.params.friend_key;
+    var users_key = req.body.users_key || req.query.users_key || req.params.users_key;
     if (typeof key != 'string') {
         if (key.length == 0) {
             return res.sendStatus(300);
         }
     }
 
-    console.log("Authenticate user: " + key + "access_token: "+access_token);
-    BASE.authenticateWithToken(key, access_token, function(logged) {
+    console.log("Authenticate user: " + users_key + "access_token: "+access_token);
+    BASE.authenticateWithToken(users_key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
             var sqlMember = "SELECT * FROM `messages` WHERE `key`='" + req.body.key + "'";
