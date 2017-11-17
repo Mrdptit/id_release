@@ -787,7 +787,7 @@ router.post('/phone', urlParser, function(req, res) {
         if (logged) {
             var userSQL = "SELECT * FROM `other_information` WHERE `phone_number`='" + req.body.phone_number + "' AND `calling_code`='" + req.body.calling_code + "'";
             BASE.getObjectWithSQL(userSQL, function(data) {
-                if (err) {
+                if (data) {
                     var valid = false;
                     for (var i = 0; i < data.length; i++) {
                         if (data[i].users_key == key) {
