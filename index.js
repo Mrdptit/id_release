@@ -330,7 +330,7 @@ io.on('connection', function(socket) { // Incoming connections from clients
             var objectValue = JSON.parse(contentJson);
             // console.log("value sdp --------------------- --------- " + objectValue['sdp'] + "\n\n data " + contentJson);
 
-            console.log(JSON.stringify(msg));
+            //console.log(JSON.stringify(msg));
             //save current channel
             var queryChannel = "SELECT * FROM `channels` WHERE `toKey` = '" + msg.to + "' AND `fromKey`='" + msg.from + "' AND `offer` != '" + contentJson + "'";
             client.query(queryChannel, function(err, dataChannel, FNN) {
