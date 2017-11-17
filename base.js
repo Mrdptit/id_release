@@ -181,7 +181,7 @@ module.exports = class Authenticate {
         jwt.verify(token, config.secret, function(err, decoded) {
             if (err) {
                 if (typeof token == "string" && token && token.length > 6) {
-                    console.log("ACCESS_TOKEN: 1.0 - KEY: "+key);
+                    //console.log("ACCESS_TOKEN: 1.0 - KEY: "+key);
                     var access_token = token.substring(5, token.length - 5);
                     if (isDecrypt(access_token) && isJsonString(isDecrypt(access_token))) {
                         try {
