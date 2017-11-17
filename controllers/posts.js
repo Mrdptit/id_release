@@ -1121,6 +1121,7 @@ router.post('/public', urlParser, function(req, res) {
 /*********--------------------------*********
  **********------- END ------*********
  **********--------------------------*********/
+ 
 function getInformationUser(users_key, result) {
     var sql = "SELECT * FROM `users` WHERE `key`='" + users_key + "'";
     client.query(sql, function(error, data, fields) {
