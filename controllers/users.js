@@ -786,51 +786,47 @@ router.post('/phone', urlParser, function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             var userSQL = "SELECT * FROM `other_information` WHERE `phone_number`='" + req.body.phone_number + "' AND `calling_code`='" + req.body.calling_code + "'";
-            BASE.getObjectWithSQL(userSQL, function(err, data, f) {
+            BASE.getObjectWithSQL(userSQL, function(data) {
                 if (err) {
-                    console.log(userSQL + "  " + err);
-                    return res.send(echoResponse(404, 'Error check data from server.', 'false', false));
-                } else {
-
-                    if (data.length == 0) {
-                        var check = "SELECT * FROM `other_information` WHERE `users_key`='" + req.body.key + "'";
-                        BASE.getObjectWithSQL(check, function(data) {
-                            if (data) {
-                                var dataSQL = "UPDATE `other_information` SET `phone_number`='" + req.body.phone_number + "', `calling_code`='" + req.body.calling_code + "' WHERE `users_key`='" + key + "'";
-                                BASE.updateWithSQL(dataSQL, function(update) {
-                                    if (update) {
-                                        return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
-                                    } else {
-                                        return res.send(echoResponse(404, 'Update failed', 'success', false));
-                                    }
-                                });
-                            } else {
-                                var dataSQL = "INSERT INTO `other_information`(`phone_number`,`calling_code`,`users_key`) VALUES ('" + req.body.phone_number + "','" + req.body.calling_code + "','" + key + "')";
-                                BASE.insertWithSQL(dataSQL, function(insert) {
-                                    if (insert) {
-                                        return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
-                                    } else {
-                                        return res.send(echoResponse(404, 'Update failed', 'success', false));
-                                    }
-                                });
-                            }
-                        });
-                    }else{
-
-                        var valid = false;
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].users_key == key) {
-                                valid = true;
-                                break;
-                            }
-                        }
-
-                        if (valid == true) {
-                            return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
-                        }else{
-                            return res.send(echoResponse(404, 'Phone number is exist.', 'success', false));
+                    var valid = false;
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].users_key == key) {
+                            valid = true;
+                            break;
                         }
                     }
+
+                    if (valid == true) {
+                        return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
+                    } else {
+                        return res.send(echoResponse(404, 'Phone number is exist.', 'success', false));
+                    }
+                } else {
+
+
+                    var check = "SELECT * FROM `other_information` WHERE `users_key`='" + req.body.key + "'";
+                    BASE.getObjectWithSQL(check, function(data) {
+                        if (data) {
+                            var dataSQL = "UPDATE `other_information` SET `phone_number`='" + req.body.phone_number + "', `calling_code`='" + req.body.calling_code + "' WHERE `users_key`='" + key + "'";
+                            BASE.updateWithSQL(dataSQL, function(update) {
+                                if (update) {
+                                    return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
+                                } else {
+                                    return res.send(echoResponse(404, 'Update failed', 'success', false));
+                                }
+                            });
+                        } else {
+                            var dataSQL = "INSERT INTO `other_information`(`phone_number`,`calling_code`,`users_key`) VALUES ('" + req.body.phone_number + "','" + req.body.calling_code + "','" + key + "')";
+                            BASE.insertWithSQL(dataSQL, function(insert) {
+                                if (insert) {
+                                    return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
+                                } else {
+                                    return res.send(echoResponse(404, 'Update failed', 'success', false));
+                                }
+                            });
+                        }
+                    });
+
 
                 }
             });
