@@ -48,10 +48,10 @@ router.post('/signin', urlParser, function(req, res) {
     BASE.getMeByKey(key, function(data) {
         if (data) {
             if (req.body.access_token) {
-                
+
                 var access_token = req.body.access_token;
 
-                console.log("\n\n -------- --- Login with access_token ------------- "+ access_token +" \n\n");
+                console.log("\n\n -------- --- Login with access_token ------------- " + access_token + " \n\n");
                 delete req.body.key;
                 BASE.authenticateWithToken(key, access_token, function(logged) {
                     if (logged) {
@@ -786,32 +786,51 @@ router.post('/phone', urlParser, function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             var userSQL = "SELECT * FROM `other_information` WHERE `phone_number`='" + req.body.phone_number + "' AND `calling_code`='" + req.body.calling_code + "'";
-            BASE.getObjectWithSQL(userSQL, function(data) {
-                if (data) {
-                    return res.send(echoResponse(404, 'This phone number exists.', 'success', false));
+            BASE.getObjectWithSQL(userSQL, function(err, data, f) {
+                if (err) {
+                    return res.send(echoResponse(404, 'Error check data from server.', 'success', false));
                 } else {
-                    var check = "SELECT * FROM `other_information` WHERE `users_key`='" + req.body.key + "'";
-                    BASE.getObjectWithSQL(check, function(data) {
-                        if (data) {
-                            var dataSQL = "UPDATE `other_information` SET `phone_number`='" + req.body.phone_number + "', `calling_code`='" + req.body.calling_code + "' WHERE `users_key`='" + key + "'";
-                            BASE.updateWithSQL(dataSQL, function(update) {
-                                if (update) {
-                                    return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
-                                } else {
-                                    return res.send(echoResponse(404, 'Update failed', 'success', false));
-                                }
-                            });
-                        } else {
-                            var dataSQL = "INSERT INTO `other_information`(`phone_number`,`calling_code`,`users_key`) VALUES ('" + req.body.phone_number + "','" + req.body.calling_code + "','" + key + "')";
-                            BASE.insertWithSQL(dataSQL, function(insert) {
-                                if (insert) {
-                                    return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
-                                } else {
-                                    return res.send(echoResponse(404, 'Update failed', 'success', false));
-                                }
-                            });
+
+                    if (data.length == 0) {
+                        var check = "SELECT * FROM `other_information` WHERE `users_key`='" + req.body.key + "'";
+                        BASE.getObjectWithSQL(check, function(data) {
+                            if (data) {
+                                var dataSQL = "UPDATE `other_information` SET `phone_number`='" + req.body.phone_number + "', `calling_code`='" + req.body.calling_code + "' WHERE `users_key`='" + key + "'";
+                                BASE.updateWithSQL(dataSQL, function(update) {
+                                    if (update) {
+                                        return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
+                                    } else {
+                                        return res.send(echoResponse(404, 'Update failed', 'success', false));
+                                    }
+                                });
+                            } else {
+                                var dataSQL = "INSERT INTO `other_information`(`phone_number`,`calling_code`,`users_key`) VALUES ('" + req.body.phone_number + "','" + req.body.calling_code + "','" + key + "')";
+                                BASE.insertWithSQL(dataSQL, function(insert) {
+                                    if (insert) {
+                                        return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
+                                    } else {
+                                        return res.send(echoResponse(404, 'Update failed', 'success', false));
+                                    }
+                                });
+                            }
+                        });
+                    }else{
+
+                        var valid = false;
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].users_key == key) {
+                                valid = true;
+                                break;
+                            }
                         }
-                    });
+
+                        if (valid == true) {
+                            return res.send(echoResponse(200, 'Updated phone number successfully', 'success', false));
+                        }else{
+                            return res.send(echoResponse(404, 'Phone number is exist.', 'success', false));
+                        }
+                    }
+
                 }
             });
         } else {
@@ -1640,18 +1659,18 @@ router.get('/:key/exists=:friend_key', function(req, res) {
                     console.log("-------:" + JSON.stringify(data));
                     var sqlUser = "SELECT * FROM `users` WHERE `key` IN (SELECT `users_key` FROM `members` WHERE `conversations_key`='" + data[0].key + "')";
                     BASE.getObjectWithSQL(sqlUser, function(members) {
-                        
+
                         if (isEmpty(members) == false) {
                             data[0].members = members;
-                            return res.send(echoResponse(200, data, 'success', true));    
-                        }else{
-                           
-                            var sqlDeleteCon = "DELETE FROM `conversations` WHERE `key` = '"+data[0].key+"'";
-                            client.query(sqlDeleteCon,function(err,d,f){
+                            return res.send(echoResponse(200, data, 'success', true));
+                        } else {
+
+                            var sqlDeleteCon = "DELETE FROM `conversations` WHERE `key` = '" + data[0].key + "'";
+                            client.query(sqlDeleteCon, function(err, d, f) {
                                 return res.send(echoResponse(404, 'Conversation not found.', 'success', true));
                             });
                         }
-                        
+
                     });
                 } else {
                     return res.send(echoResponse(404, 'Conversation not found.', 'success', true));
