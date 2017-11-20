@@ -985,10 +985,13 @@ router.get('/:key/type=friendinfo', function(req, res) {
                         } else {
                             data.point = 0;
                         }
+                        console.log("Step 1");
                         BASE.getRelationship(key, friend_key, function(ketqua) {
+                             console.log("Step relationship: "+ketqua);
                             if (ketqua) {
                                 BASE.isFollowing(key, friend_key, function(isFollowing) {
                                     var sql2 = "SELECT * FROM `users` WHERE `key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + friend_key + "' AND `friend_key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + key + "'))";
+                                   console.log("Step 2");
                                     BASE.getObjectWithSQL(sql2, function(contact2) {
                                         if (contact2) {
                                             data.mutual_friend = contact2.length;
@@ -999,9 +1002,11 @@ router.get('/:key/type=friendinfo', function(req, res) {
                                         data.is_following = isFollowing;
                                         var array = [];
                                         array.push(data);
+                                        console.log("Step 3");
                                         BASE.getObjectWithSQL("SELECT * FROM `other_information` WHERE `users_key`='" + friend_key + "'", function(other_information) {
                                             var sqlSettings = "SELECT `on_secret_message`,`on_receive_email`,`is_visible`,`show_facebook`,`show_device`,`show_inputinfo`,`unknown_message`,`sound_message`,`vibrate_message`,`preview_message`,`seen_message`,`find_nearby`,`find_couples` FROM `users_settings` WHERE `users_key`='" + friend_key + "'";
                                             if (other_information) {
+                                                console.log("Step 4 other");
                                                 BASE.getObjectWithSQL(sqlSettings, function(settings) {
                                                     if (settings.length > 0) {
                                                         return res.send(JSON.stringify({
@@ -1022,6 +1027,7 @@ router.get('/:key/type=friendinfo', function(req, res) {
                                                     }
                                                 });
                                             } else {
+                                                console.log("Step 5");
                                                 BASE.getObjectWithSQL(sqlSettings, function(settings) {
                                                     if (settings.length > 0) {
                                                         return res.send(JSON.stringify({

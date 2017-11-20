@@ -1096,7 +1096,7 @@ function getImage(list_posts, callback) {
                 console.log(eImage);
                 callback(postArray);
             } else {
-                console.log(slqImage);
+                //console.log(slqImage);
                 async.forEachOf(dataImage, function(data, i, callData) {
                     if (dataImage[i]) {
                         dataImage[i].posts_id = list_posts[j];
