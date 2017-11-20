@@ -56,7 +56,7 @@ router.post('/new', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
     var key = req.body.users_key || req.query.users_key || req.params.users_key;
     if (typeof key != 'string') {
-        if (key.length == 0) {
+        if (isEmpty(key)) {
 
             return res.sendStatus(300);
         
@@ -170,13 +170,13 @@ router.post('/update', urlParser, function(req, res) {
 /*********--------UPDATE CONVERSATION----------*********/
 router.post('/type=add', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
-    var key = req.body.users_key || req.query.users_key || req.params.users_key;
-     if (typeof key != 'string') {
-        if (isEmpty(key)) {
+    var users_key = req.body.users_key || req.query.users_key || req.params.users_key;
+     if (typeof users_key != 'string') {
+        if (isEmpty(users_key)) {
             return res.sendStatus(300);
         }
     }
-    
+
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
@@ -247,13 +247,13 @@ router.post('/type=add', urlParser, function(req, res) {
 /*********--------UPDATE CONVERSATION----------*********/
 router.post('/type=remove', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'] || req.params.access_token;
-    var key = req.body.key || req.query.key || req.params.key;
-    if (typeof key != 'string') {
-        if (key.length == 0) {
+    var users_key = req.body.users_key || req.query.users_key || req.params.users_key;
+   if (typeof users_key != 'string') {
+        if (isEmpty(users_key)) {
             return res.sendStatus(300);
         }
     }
-    BASE.authenticateWithToken(key, access_token, function(logged) {
+    BASE.authenticateWithToken(users_key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
             var adminSQL = "SELECT `created_by` FROM `conversations` WHERE `key`='" + req.body.key + "'";
