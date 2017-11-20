@@ -177,7 +177,7 @@ router.post('/type=add', urlParser, function(req, res) {
         }
     }
 
-    BASE.authenticateWithToken(key, access_token, function(logged) {
+    BASE.authenticateWithToken(users_key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
             var userSQL = "SELECT * FROM `conversations` WHERE `key`='" + req.body.key + "'";
