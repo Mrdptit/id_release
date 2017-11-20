@@ -988,7 +988,7 @@ router.get('/:key/type=friendinfo', function(req, res) {
                         console.log("Step 1");
                         BASE.getRelationship(key, friend_key, function(ketqua) {
                              console.log("Step relationship: "+ketqua);
-                            if (ketqua) {
+                            if (isEmpty(ketqua) == false) {
                                 BASE.isFollowing(key, friend_key, function(isFollowing) {
                                     var sql2 = "SELECT * FROM `users` WHERE `key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + friend_key + "' AND `friend_key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + key + "'))";
                                    console.log("Step 2");
@@ -1050,6 +1050,8 @@ router.get('/:key/type=friendinfo', function(req, res) {
                                         });
                                     });
                                 })
+                            }else{
+                                return res.send(echoResponse(404, 'Can not get information friend', 'success', true));
                             }
                         });
                     });
