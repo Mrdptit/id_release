@@ -2989,7 +2989,7 @@ router.post('/update_purchase_chat', urlParser, function(req, res) {
     console.log("User purcahse : "+ key + "access:  "+access_token);
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
-            var sqlInsert = "INSERT INTO `users` (`is_purchase_chat`) VALUES('1')";
+            var sqlInsert = "UPDATE `users` SET `is_purchase_chat` = '1'";
 
             client.query(sqlInsert, function(eI, dI, fI) {
                 if (eI) {
