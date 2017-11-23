@@ -987,11 +987,11 @@ router.get('/:key/type=friendinfo', function(req, res) {
                         }
                         console.log("Step 1");
                         BASE.getRelationship(key, friend_key, function(ketqua) {
-                             console.log("Step relationship: "+ketqua);
+                            console.log("Step relationship: " + ketqua);
                             if (isEmpty(ketqua) == false) {
                                 BASE.isFollowing(key, friend_key, function(isFollowing) {
                                     var sql2 = "SELECT * FROM `users` WHERE `key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + friend_key + "' AND `friend_key` IN (SELECT `friend_key` FROM `contacts` WHERE `users_key`='" + key + "'))";
-                                   console.log("Step 2");
+                                    console.log("Step 2");
                                     BASE.getObjectWithSQL(sql2, function(contact2) {
                                         if (contact2) {
                                             data.mutual_friend = contact2.length;
@@ -1050,7 +1050,7 @@ router.get('/:key/type=friendinfo', function(req, res) {
                                         });
                                     });
                                 })
-                            }else{
+                            } else {
                                 return res.send(echoResponse(404, 'Can not get information friend', 'success', true));
                             }
                         });
@@ -2981,6 +2981,33 @@ router.post('/facebook_client', urlParser, function(req, res) {
 });
 
 
+//MARK update user perchase chat limit 10 conversation
+router.post('/update_purchase_chat', urlParser, function(req, res) {
+    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    var key = req.body.key || req.query.key || req.params.key;
+    if (token) {
+        jwt.verify(token, config.secretAdmin, function(err, decoded) {
+            if (err) {
+                return res.send(echoResponse(403, 'Failed to authenticate token', 'success', true));
+            } else {
+                
+                var sqlInsert = "INSERT INTO `users` (`is_purchase_chat`) VALUES('1')";
+
+                client.query(sqlInsert + value, function(eI, dI, fI) {
+                    if (eI) {
+                        console.log(eI);
+                        return res.sendStatus(300);
+                    } else {
+                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                    }
+                });
+
+            }
+        });
+    } else {
+        return res.send(echoResponse(403, 'Failed to authenticate token', 'success', true));
+    }
+});
 
 
 // /*********--------BOT----------*********/
