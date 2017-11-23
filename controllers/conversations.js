@@ -438,8 +438,8 @@ router.post('/settings', urlParser, function(req, res) {
                             }
                         }
 
-                        console.log("SQL: " + insert.toString();
-                            
+                        console.log("SQL: " + insert.toString());
+
                         var dataSQL = "UPDATE `members` SET " + insert.toString() + " WHERE `users_key`='" + req.body.users_key + "' AND `conversations_key`='" + req.body.conversations_key + "'";
                         
                         client.query(dataSQL, function(eInsert, dInsert, fInsert) {
