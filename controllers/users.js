@@ -2991,7 +2991,7 @@ router.post('/update_purchase_chat', urlParser, function(req, res) {
         if (logged) {
             var sqlInsert = "INSERT INTO `users` (`is_purchase_chat`) VALUES('1')";
 
-            client.query(sqlInsert + value, function(eI, dI, fI) {
+            client.query(sqlInsert, function(eI, dI, fI) {
                 if (eI) {
                     console.log(eI);
                     return res.sendStatus(300);
