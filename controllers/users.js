@@ -2983,30 +2983,29 @@ router.post('/facebook_client', urlParser, function(req, res) {
 
 //MARK update user perchase chat limit 10 conversation
 router.post('/update_purchase_chat', urlParser, function(req, res) {
-    var token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
+    var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     var key = req.body.key || req.query.key || req.params.key;
-    if (token) {
-        jwt.verify(token, config.secretAdmin, function(err, decoded) {
-            if (err) {
-                return res.send(echoResponse(403, 'Failed to authenticate token', 'success', true));
-            } else {
-                
-                var sqlInsert = "INSERT INTO `users` (`is_purchase_chat`) VALUES('1')";
 
-                client.query(sqlInsert + value, function(eI, dI, fI) {
-                    if (eI) {
-                        console.log(eI);
-                        return res.sendStatus(300);
-                    } else {
-                        return res.send(echoResponse(200, 'SUCCESS', 'success', false));
-                    }
-                });
+    console.log("User purcahse : "+ key + "access:  "+access_token);
+    BASE.authenticateWithToken(key, access_token, function(logged) {
+        if (logged) {
+            var sqlInsert = "INSERT INTO `users` (`is_purchase_chat`) VALUES('1')";
 
-            }
-        });
-    } else {
-        return res.send(echoResponse(403, 'Failed to authenticate token', 'success', true));
-    }
+            client.query(sqlInsert + value, function(eI, dI, fI) {
+                if (eI) {
+                    console.log(eI);
+                    return res.sendStatus(300);
+                } else {
+                    return res.send(echoResponse(200, 'SUCCESS', 'success', false));
+                }
+            });
+
+        } else {
+            return res.send(echoResponse(403, 'Authenticate failed', 'success', false));
+        }
+    });
+
+
 });
 
 
