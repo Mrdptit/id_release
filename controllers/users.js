@@ -1967,7 +1967,7 @@ router.post('/unrequest', urlParser, function(req, res) {
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             delete req.body.access_token;
-            var userSQL = "SELECT * FROM `requests` WHERE `friend_key`='" + req.body.users_key + "' AND `users_key`='" + req.body.friend_key + "'";
+            var userSQL = "SELECT * FROM `requests` WHERE `users_key`='" + req.body.users_key + "' AND `friend_key`='" + req.body.friend_key + "'";
             console.log("Check ------- query:" + userSQL);
             client.query(userSQL, function(error, data, fields) {
                 if (error) {
@@ -1976,7 +1976,7 @@ router.post('/unrequest', urlParser, function(req, res) {
                 } else {
                     if (data.length > 0) {
                         removeNotification(res, req.body.friend_key, req.body.users_key, "request");
-                        var deleteSQL = "DELETE FROM `requests` WHERE `friend_key`='" + req.body.users_key + "' AND `users_key`='" + req.body.friend_key + "'";
+                        var deleteSQL = "DELETE FROM `requests` WHERE `users_key`='" + req.body.users_key + "' AND `friend_key`='" + req.body.friend_key + "'";
                        console.log("Check -------:" + deleteSQL);
                         client.query(deleteSQL, function(eDelete, dDelete, fDelete) {
                             if (eDelete) {
