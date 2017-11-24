@@ -150,7 +150,7 @@ router.post('/update', urlParser, function(req, res) {
                                 console.log(eInsert);
                                 return res.sendStatus(300);
                             } else {
-                                console.log("Update conversation thành công với key " + req.body.key);
+                                //console.log("Update conversation thành công với key " + req.body.key);
                                 return res.send(echoResponse(200, 'Updated conversation successfully.', 'success', false));
                             }
                         });

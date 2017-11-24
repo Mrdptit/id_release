@@ -1976,6 +1976,7 @@ router.post('/unrequest', urlParser, function(req, res) {
                     if (data.length > 0) {
                         removeNotification(res, req.body.friend_key, req.body.users_key, "request");
                         var deleteSQL = "DELETE FROM `requests` WHERE `friend_key`='" + req.body.users_key + "' AND `users_key`='" + req.body.friend_key + "'";
+                       console.log("Check -------:" + deleteSQL);
                         client.query(deleteSQL, function(eDelete, dDelete, fDelete) {
                             if (eDelete) {
                                 console.log(eDelete);
