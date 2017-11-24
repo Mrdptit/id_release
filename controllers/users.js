@@ -1968,6 +1968,7 @@ router.post('/unrequest', urlParser, function(req, res) {
         if (logged) {
             delete req.body.access_token;
             var userSQL = "SELECT * FROM `requests` WHERE `friend_key`='" + req.body.users_key + "' AND `users_key`='" + req.body.friend_key + "'";
+            console.log("Check ------- query:" + userSQL);
             client.query(userSQL, function(error, data, fields) {
                 if (error) {
                     console.log(error);
