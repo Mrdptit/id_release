@@ -44,7 +44,7 @@ var apnService = new apn.Provider({
  **********------- FUNCTION ------*********
  **********--------------------------*********/
 
-    
+
 /*********--------Following----------*********/
 router.get('/:key/type=global_settings&access_token=:access_token', urlParser, function(req, res) {
 
@@ -63,13 +63,32 @@ router.get('/:key/type=global_settings&access_token=:access_token', urlParser, f
                         return res.send(echoResponse(404, "no data.", 'success', true));
                     }
                 }
-             });
+            });
         } else {
             return res.send(echoResponse(403, 'Authenticate failed', 'success', false));
         }
     });
 
 });
+
+/*********--------Following----------*********/
+router.get('/type=anime', urlParser, function(req, res) {
+
+    var userSQL = "SELECT * FROM `global_settings` AND `type` = 'anime'";
+    client.query(userSQL, function(e, d, fBlock) {
+        if (e) {
+            return res.sendStatus(300);
+        } else {
+            if (d.length > 0) {
+                return res.send(echoResponse(200, d[0], 'global setting', false));
+            } else {
+                return res.send(echoResponse(404, "no data.", 'success', true));
+            }
+        }
+    });
+
+});
+
 
 function isBlockedCheck(key, friend_key, isBlocked) {
     var userSQL = "SELECT * FROM `global_settings`";
