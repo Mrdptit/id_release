@@ -75,10 +75,10 @@ router.get('/:key/type=global_settings&access_token=:access_token', urlParser, f
 router.get('/type=anime', urlParser, function(req, res) {
 
     console.log("get setting anime");
-    var userSQL = "SELECT * FROM `global_settings` AND `type` = 'anime'";
+    var userSQL = "SELECT * FROM `global_settings` WHERE `type` = 'anime'";
     client.query(userSQL, function(e, d, fBlock) {
         if (e) {
-            return res.sendStatus(300);
+            return res.send(echoResponse(300, "data not found", false));
         } else {
             if (d.length > 0) {
                 return res.send(echoResponse(200, d[0], 'global setting', false));
