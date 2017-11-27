@@ -74,6 +74,7 @@ router.get('/:key/type=global_settings&access_token=:access_token', urlParser, f
 /*********--------Following----------*********/
 router.get('/type=anime', urlParser, function(req, res) {
 
+    console.log("get setting anime");
     var userSQL = "SELECT * FROM `global_settings` AND `type` = 'anime'";
     client.query(userSQL, function(e, d, fBlock) {
         if (e) {
