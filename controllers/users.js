@@ -1319,6 +1319,7 @@ router.get('/:key/type=findnearby', function(req, res) {
             var distance = req.body.distance || req.query.distance || req.params.distance;
             var min_age = req.body.min_age || req.query.min_age || req.params.min_age;
             var max_age = req.body.max_age || req.query.max_age || req.params.max_age;
+            var currentYear = (new Date()).getFullYear();
 
             var userSQL1 = "SELECT " + BASE.baseSelectFriendSQL() + ",ROUND(111.045* DEGREES(ACOS(COS(RADIANS(your_latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(your_longitude) - RADIANS(longitude)) + SIN(RADIANS(your_latitude)) * SIN(RADIANS(latitude)))),2) AS distance FROM users JOIN ";
             var userSQL2 = "(SELECT " + parseFloat(latitude) + " AS your_latitude, " + parseFloat(longitude) + " AS your_longitude ) AS p ON 1=1 WHERE";
@@ -1329,7 +1330,8 @@ router.get('/:key/type=findnearby', function(req, res) {
             var userSQL10 = "AND `key` NOT IN (SELECT `friend_key` FROM `blocks` WHERE `users_key`='" + key + "') AND `key` NOT IN (SELECT `users_key` FROM `blocks` WHERE `friend_key`='" + key + "')";
             var userSQL7 = "AND `key`!='" + key + "'";
             var userSQL9 = " AND ROUND(111.045* DEGREES(ACOS(COS(RADIANS(your_latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(your_longitude) - RADIANS(longitude)) + SIN(RADIANS(your_latitude)) * SIN(RADIANS(latitude)))),2) <= " + parseInt(distance, 10) + " ORDER BY distance";
-
+            var userSQL11 = " AND year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) >= '" + (currentYear - max_age).toString() + "' and year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) <= '" + (currentYear - min_age).toString() + "'";
+;
             var per_pageNan;
             if (isNaN(parseInt(page, 10) * parseInt(per_page, 10))) {
                 per_pageNan = 0;
@@ -1342,9 +1344,9 @@ router.get('/:key/type=findnearby', function(req, res) {
             var finalSQL;
             var array = [];
             if (gender == 0) {
-                finalSQL = userSQL1 + userSQL2 + userSQL4 + userSQL5 + userSQL6 + userSQL10 + userSQL7 + userSQL9 + pp;
+                finalSQL = userSQL1 + userSQL2 + userSQL4 + userSQL5 + userSQL6 + userSQL10 + userSQL7 + userSQL9 + userSQL11 + pp;
             } else {
-                finalSQL = userSQL1 + userSQL2 + userSQL3 + userSQL4 + userSQL5 + userSQL10 + userSQL6 + userSQL7 + userSQL9 + pp;
+                finalSQL = userSQL1 + userSQL2 + userSQL3 + userSQL4 + userSQL5 + userSQL10 + userSQL6 + userSQL7 + userSQL9 + userSQL11 + pp;
             }
             console.log(finalSQL);
             BASE.getObjectWithSQL(finalSQL, function(data) {
@@ -1361,13 +1363,17 @@ router.get('/:key/type=findnearby', function(req, res) {
                                 data[i].relation_ship = ketqua;
                                 delete data[i].your_latitude;
                                 delete data[i].your_longitude;
-                                var date = new Date(data[i].birthday);
+                                var date = new Date(STR_TO_DATE(data[i].birthday, '%m/%d/%Y')) ;//Date(data[i].birthday);
                                 var today = new Date();
-                                var age = today.getFullYear() - date.getFullYear();
-                                if (age >= min_age && age <= max_age) {
-                                    data[i].age = age;
-                                    array.push(data[i]);
-                                }
+                                var age = year(today) - year(date);
+                                // if (age >= min_age && age <= max_age) {
+                                //     data[i].age = age;
+                                //     array.push(data[i]);
+                                // }
+
+                                data[i].age = age;
+                                array.push(data[i]);
+
                                 if (i === data.length - 1) {
                                     if (array.length > 0) {
                                         return res.send(echoResponse(200, array, 'success', false));
