@@ -1321,8 +1321,8 @@ router.get('/:key/type=findnearby', function(req, res) {
             var max_age = req.body.max_age || req.query.max_age || req.params.max_age;
             var currentYear = (new Date()).getFullYear();
 
-            var userSQLAge = " WHERE year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) >= '" + (currentYear - max_age).toString() + "' and year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) <= '" + (currentYear - min_age).toString() + "' ";;
-            var userSQL1 = "SELECT " + BASE.baseSelectFriendSQL() + ",ROUND(111.045* DEGREES(ACOS(COS(RADIANS(your_latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(your_longitude) - RADIANS(longitude)) + SIN(RADIANS(your_latitude)) * SIN(RADIANS(latitude)))),2) AS distance FROM users " + userSQLAge + " JOIN ";
+            //var userSQLAge = " WHERE year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) >= '" + (currentYear - max_age).toString() + "' and year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) <= '" + (currentYear - min_age).toString() + "' ";;
+            var userSQL1 = "SELECT " + BASE.baseSelectFriendSQL() + ",ROUND(111.045* DEGREES(ACOS(COS(RADIANS(your_latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(your_longitude) - RADIANS(longitude)) + SIN(RADIANS(your_latitude)) * SIN(RADIANS(latitude)))),2) AS distance FROM users JOIN ";
             var userSQL2 = "(SELECT " + parseFloat(latitude) + " AS your_latitude, " + parseFloat(longitude) + " AS your_longitude ) AS p ON 1=1 WHERE";
             var userSQL3 = "`sex`='" + gender + "' AND ";
             var userSQL4 = "`key` IN (SELECT `users_key` FROM `users_settings` WHERE `find_nearby`=1)";
@@ -1366,13 +1366,13 @@ router.get('/:key/type=findnearby', function(req, res) {
                                 var date = new Date(STR_TO_DATE(data[i].birthday, '%m/%d/%Y')); //Date(data[i].birthday);
                                 var today = new Date();
                                 var age = year(today) - year(date);
-                                // if (age >= min_age && age <= max_age) {
-                                //     data[i].age = age;
-                                //     array.push(data[i]);
-                                // }
+                                if (age >= min_age && age <= max_age) {
+                                    data[i].age = age;
+                                    array.push(data[i]);
+                                }
 
-                                data[i].age = age;
-                                array.push(data[i]);
+                                // data[i].age = age;
+                                // array.push(data[i]);
 
                                 if (i === data.length - 1) {
                                     if (array.length > 0) {
