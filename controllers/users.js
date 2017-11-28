@@ -1321,7 +1321,8 @@ router.get('/:key/type=findnearby', function(req, res) {
             var max_age = req.body.max_age || req.query.max_age || req.params.max_age;
             var currentYear = (new Date()).getFullYear();
 
-            var userSQL1 = "SELECT " + BASE.baseSelectFriendSQL() + ",ROUND(111.045* DEGREES(ACOS(COS(RADIANS(your_latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(your_longitude) - RADIANS(longitude)) + SIN(RADIANS(your_latitude)) * SIN(RADIANS(latitude)))),2) AS distance FROM users JOIN ";
+            var userSQLAge = " WHERE year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) >= '" + (currentYear - max_age).toString() + "' and year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) <= '" + (currentYear - min_age).toString() + "' ";;
+            var userSQL1 = "SELECT " + BASE.baseSelectFriendSQL() + ",ROUND(111.045* DEGREES(ACOS(COS(RADIANS(your_latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(your_longitude) - RADIANS(longitude)) + SIN(RADIANS(your_latitude)) * SIN(RADIANS(latitude)))),2) AS distance FROM users " + userSQLAge + " JOIN ";
             var userSQL2 = "(SELECT " + parseFloat(latitude) + " AS your_latitude, " + parseFloat(longitude) + " AS your_longitude ) AS p ON 1=1 WHERE";
             var userSQL3 = "`sex`='" + gender + "' AND ";
             var userSQL4 = "`key` IN (SELECT `users_key` FROM `users_settings` WHERE `find_nearby`=1)";
@@ -1330,8 +1331,7 @@ router.get('/:key/type=findnearby', function(req, res) {
             var userSQL10 = "AND `key` NOT IN (SELECT `friend_key` FROM `blocks` WHERE `users_key`='" + key + "') AND `key` NOT IN (SELECT `users_key` FROM `blocks` WHERE `friend_key`='" + key + "')";
             var userSQL7 = "AND `key`!='" + key + "'";
             var userSQL9 = " AND ROUND(111.045* DEGREES(ACOS(COS(RADIANS(your_latitude)) * COS(RADIANS(latitude)) * COS(RADIANS(your_longitude) - RADIANS(longitude)) + SIN(RADIANS(your_latitude)) * SIN(RADIANS(latitude)))),2) <= " + parseInt(distance, 10) + " ORDER BY distance";
-            var userSQL11 = " AND year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) >= '" + (currentYear - max_age).toString() + "' and year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) <= '" + (currentYear - min_age).toString() + "'";
-;
+
             var per_pageNan;
             if (isNaN(parseInt(page, 10) * parseInt(per_page, 10))) {
                 per_pageNan = 0;
@@ -1344,9 +1344,9 @@ router.get('/:key/type=findnearby', function(req, res) {
             var finalSQL;
             var array = [];
             if (gender == 0) {
-                finalSQL = userSQL1 + userSQL2 + userSQL4 + userSQL5 + userSQL6 + userSQL10 + userSQL7 + userSQL9 + userSQL11 + pp;
+                finalSQL = userSQL1 + userSQL2 + userSQL4 + userSQL5 + userSQL6 + userSQL10 + userSQL7 + userSQL9 + pp;
             } else {
-                finalSQL = userSQL1 + userSQL2 + userSQL3 + userSQL4 + userSQL5 + userSQL10 + userSQL6 + userSQL7 + userSQL9 + userSQL11 + pp;
+                finalSQL = userSQL1 + userSQL2 + userSQL3 + userSQL4 + userSQL5 + userSQL10 + userSQL6 + userSQL7 + userSQL9 + pp;
             }
             console.log(finalSQL);
             BASE.getObjectWithSQL(finalSQL, function(data) {
@@ -1363,7 +1363,7 @@ router.get('/:key/type=findnearby', function(req, res) {
                                 data[i].relation_ship = ketqua;
                                 delete data[i].your_latitude;
                                 delete data[i].your_longitude;
-                                var date = new Date(STR_TO_DATE(data[i].birthday, '%m/%d/%Y')) ;//Date(data[i].birthday);
+                                var date = new Date(STR_TO_DATE(data[i].birthday, '%m/%d/%Y')); //Date(data[i].birthday);
                                 var today = new Date();
                                 var age = year(today) - year(date);
                                 // if (age >= min_age && age <= max_age) {
@@ -1983,7 +1983,7 @@ router.post('/unrequest', urlParser, function(req, res) {
                     if (data.length > 0) {
                         removeNotification(res, req.body.friend_key, req.body.users_key, "request");
                         var deleteSQL = "DELETE FROM `requests` WHERE `users_key`='" + req.body.users_key + "' AND `friend_key`='" + req.body.friend_key + "'";
-                       console.log("Check -------:" + deleteSQL);
+                        console.log("Check -------:" + deleteSQL);
                         client.query(deleteSQL, function(eDelete, dDelete, fDelete) {
                             if (eDelete) {
                                 console.log(eDelete);
@@ -2994,7 +2994,7 @@ router.post('/update_purchase_chat', urlParser, function(req, res) {
     var access_token = req.body.access_token || req.query.access_token || req.headers['x-access-token'];
     var key = req.body.key || req.query.key || req.params.key;
 
-    console.log("User purcahse : "+ key + "access:  "+access_token);
+    console.log("User purcahse : " + key + "access:  " + access_token);
     BASE.authenticateWithToken(key, access_token, function(logged) {
         if (logged) {
             var sqlInsert = "UPDATE `users` SET `is_purchase_chat` = '1' WHERE `key` = '" + key + "'";
