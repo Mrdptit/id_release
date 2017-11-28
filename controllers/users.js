@@ -1364,9 +1364,9 @@ router.get('/:key/type=findnearby', function(req, res) {
                                 delete data[i].your_latitude;
                                 delete data[i].your_longitude;
 
-                                if (isEmpty(data[i].birthday)) {
-                                    if ("/".indexOf(data[i].birthday) > -1) {
-                                        var date = stringToDate(data[i].birthday, "MM/dd/yyyy", "/"); //new Date(STR_TO_DATE(data[i].birthday, '%m/%d/%Y')); //Date(data[i].birthday);
+                                if (isEmpty(data[i].birthday) == false) {
+                                    
+                                     var date = stringToDate(data[i].birthday, "MM/dd/yyyy", "/"); //new Date(STR_TO_DATE(data[i].birthday, '%m/%d/%Y')); //Date(data[i].birthday);
                                         var today = new Date();
                                         var age = today.getFullYear() - date.getFullYear();
 
@@ -1374,7 +1374,6 @@ router.get('/:key/type=findnearby', function(req, res) {
                                             data[i].age = age;
                                             array.push(data[i]);
                                         }
-                                    }
 
                                 }
 
