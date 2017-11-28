@@ -150,7 +150,7 @@ router.post('/new', urlParser, function(req, res) {
                                 console.log(eInsert);
                                 return res.sendStatus(300);
                             } else {
-                                console.log("Vừa thêm message thành công với key " + req.body.key);
+                                // console.log("Vừa thêm message thành công với key " + req.body.key);
                                 var membersSelect = "SELECT * FROM `members` WHERE `conversations_key`='" + req.body.conversations_key + "'";
                                 client.query(membersSelect, function(e, d, f) {
                                     if (e) {
@@ -197,6 +197,13 @@ router.post('/new', urlParser, function(req, res) {
                                         }
                                     }
                                 });
+
+                                //Update isdelete conversation
+                                var updateDeleteSQL = "UPDATE `members` SET `is_deleted` = '0' WHERE `conversations_key`='" + req.body.conversations_key + "'";
+                                client.query(updateDeleteSQL, function(eSend, dSend, fSend) {
+                                    
+                                });
+
                                 return res.send(echoResponse(200, 'Insert message successfully.', 'success', false));
                             }
                         });
