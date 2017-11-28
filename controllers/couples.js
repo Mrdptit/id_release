@@ -327,7 +327,7 @@ router.post('/type=params', urlParser, function(req, res) {
             // var startDate = "01/01/" + (currentYear - max_age).toString();
             // var endDate = "12/30/" + (currentYear - min_age).toString();
             // 1995
-            console.log("min_age :" + startDate + "endDate: " + endDate);
+            // console.log("min_age :" + startDate + "endDate: " + endDate);
             param17 = "AND year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) >= '" + (currentYear - max_age).toString() + "' and year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) <= '" + (currentYear - min_age).toString() + "'";
 
             console.log(JSON.stringify(req.body));
