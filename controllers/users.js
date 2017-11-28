@@ -1365,7 +1365,7 @@ router.get('/:key/type=findnearby', function(req, res) {
                                 delete data[i].your_longitude;
                                 var date = stringToDate(data[i].birthday,"MM/dd/yyyy","/");//new Date(STR_TO_DATE(data[i].birthday, '%m/%d/%Y')); //Date(data[i].birthday);
                                 var today = new Date();
-                                var age = year(today) - year(date);
+                                var age = today.getFullYear() - date.getFullYear();
                                 if (age >= min_age && age <= max_age) {
                                     data[i].age = age;
                                     array.push(data[i]);
