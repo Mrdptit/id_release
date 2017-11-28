@@ -94,7 +94,7 @@ router.get('/type=all', function(req, res) {
            
            console.log("Query: " + sqlu);
 
-           
+
             client.query(sqlu, function(errr, rsss, fiii) {
                 if (errr) {
                     console.log(errr);
@@ -324,10 +324,11 @@ router.post('/type=params', urlParser, function(req, res) {
 
             var param17;
             var currentYear = (new Date()).getFullYear();
-            var startDate = "01/01/" + (currentYear - max_age).toString();
-            var endDate = "12/30/" + (currentYear - min_age).toString();
+            // var startDate = "01/01/" + (currentYear - max_age).toString();
+            // var endDate = "12/30/" + (currentYear - min_age).toString();
+            // 1995
             console.log("min_age :" + startDate + "endDate: " + endDate);
-            param17 = "AND `birthday` >= '" + startDate + "' and `birthday` <= '" + endDate + "'";
+            param17 = "AND year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) >= '" + (currentYear - max_age).toString() + "' and year(DATE(STR_TO_DATE(birthday, '%m/%d/%Y'))) <= '" + (currentYear - min_age).toString() + "'";
 
             console.log(JSON.stringify(req.body));
             var per_pageNan;
