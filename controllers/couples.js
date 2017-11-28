@@ -91,6 +91,10 @@ router.get('/type=all', function(req, res) {
             var dk5 = "AND `key` NOT IN (SELECT `friend_key` FROM `blocks` WHERE `users_key`='" + key + "')";
             var orderby = "ORDER BY RAND() LIMIT " + parseInt(per_page, 10) + " OFFSET " + parseInt(page, 10) * parseInt(per_page, 10);
             var sqlu = sqlsselect + dk1 + dk2 + dk3 + dk4 + dkbanbe + dkSetting + dk5 + orderby;
+           
+           console.log("Query: " + sqlu);
+
+           
             client.query(sqlu, function(errr, rsss, fiii) {
                 if (errr) {
                     console.log(errr);
